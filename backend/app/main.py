@@ -1,7 +1,13 @@
 import os
+import asyncio
+from contextlib import asynccontextmanager
+from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+
+from .models import opportunity_to_dict, simulated_trade_to_dict
+from .service import ArbitrageService
 
 
 def _parse_cors_origins(raw: str | None) -> list[str]:
@@ -13,7 +19,19 @@ def _parse_cors_origins(raw: str | None) -> list[str]:
     return [origin.strip() for origin in raw.split(",") if origin.strip()]
 
 
-app = FastAPI(title="BUGSBYTE API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    backend_root = Path(__file__).resolve().parents[1]
+    service = ArbitrageService(root_path=backend_root)
+    app.state.arbitrage_service = service
+    await service.start()
+    try:
+        yield
+    finally:
+        await service.stop()
+
+
+app = FastAPI(title="BUGSBYTE API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,7 +44,11 @@ app.add_middleware(
 
 @app.get("/")
 def root() -> dict:
-    return {"service": "bugsbyte-api", "status": "ok"}
+    return {
+        "service": "bugsbyte-api",
+        "status": "ok",
+        "module": "arbitrage-mvp",
+    }
 
 
 @app.get("/health")
@@ -37,3 +59,52 @@ def health() -> dict:
 @app.get("/api/echo")
 def echo(message: str = "hello") -> dict:
     return {"message": message}
+
+
+@app.get("/api/arbitrage/status")
+async def arbitrage_status() -> dict:
+    service: ArbitrageService = app.state.arbitrage_service
+    return await service.engine.snapshot()
+
+
+@app.get("/api/arbitrage/opportunities")
+async def arbitrage_opportunities(limit: int = 100) -> dict:
+    service: ArbitrageService = app.state.arbitrage_service
+    items = await service.engine.list_opportunities(limit=limit)
+    return {"items": [opportunity_to_dict(item) for item in items]}
+
+
+@app.get("/api/arbitrage/trades")
+async def arbitrage_trades(limit: int = 100) -> dict:
+    service: ArbitrageService = app.state.arbitrage_service
+    items = await service.engine.list_trades(limit=limit)
+    return {"items": [simulated_trade_to_dict(item) for item in items]}
+
+
+@app.get("/api/arbitrage/spread-series")
+async def arbitrage_spread_series(limit: int = 200) -> dict:
+    service: ArbitrageService = app.state.arbitrage_service
+    items = await service.engine.spread_series(limit=limit)
+    return {"items": items}
+
+
+@app.websocket("/ws/arbitrage")
+async def arbitrage_ws(websocket: WebSocket) -> None:
+    await websocket.accept()
+    service: ArbitrageService = app.state.arbitrage_service
+    try:
+        while True:
+            snapshot = await service.engine.snapshot()
+            spread_series = await service.engine.spread_series(limit=50)
+            await websocket.send_json(
+                {
+                    "type": "arbitrage_snapshot",
+                    "snapshot": snapshot,
+                    "spread_series": spread_series,
+                }
+            )
+            await asyncio.sleep(1.0)
+    except WebSocketDisconnect:
+        return
+    except Exception:
+        await websocket.close(code=1011)
