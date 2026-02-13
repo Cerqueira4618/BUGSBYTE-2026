@@ -4,20 +4,30 @@
 <template>
   <div class="app-container">
     <header class="app-header">
-      <div class="header-inner">
-        <div class="left">
-          <RouterLink :to="{ name: 'Main' }" class="logo-button">CryptoByte</RouterLink>
-        </div>
-        <nav class="main-nav">
-          <a href="#" class="nav-item">Individuals</a>
-          <a href="#" class="nav-item">Market</a>
-          <a href="#" class="nav-item">Learn</a>
-          <a href="#" class="nav-item">Transparency</a>
-          <a href="#" class="nav-item">Enterprise</a>
-        </nav>
-        <div class="actions">
-          <RouterLink :to="{ name: 'Login' }" class="login-link">Login</RouterLink>
-          <button class="cta">Get started</button>
+      <div class="header-shell">
+        <div class="header-inner">
+          <RouterLink :to="{ name: 'Main' }" class="brand">
+            <img
+              class="brand-mark"
+              src="/bitcoin-cash-coin-crypto-3d-illustration-png.png"
+              alt="Bitcoin"
+            />
+            <span class="brand-text">CryptoByte</span>
+          </RouterLink>
+          <nav class="main-nav">
+            <a href="#" class="nav-item nav-item-active">Individuals</a>
+            <a href="#" class="nav-item">Market</a>
+            <a href="#" class="nav-item">Learn</a>
+            <a href="#" class="nav-item">Transparency</a>
+            <a href="#" class="nav-item">Enterprise</a>
+          </nav>
+          <div class="actions">
+            <RouterLink :to="{ name: 'Login' }" class="login-link">Login</RouterLink>
+            <button class="cta">
+              <span>Get started</span>
+              <span class="arrow">→</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>
@@ -43,81 +53,103 @@
 }
 
 .app-header {
-  background: rgba(6, 10, 15, 0.55);
-  color: white;
-  padding: 14px 24px;
-  box-shadow: 0 8px 24px rgba(2,6,10,0.6);
+  padding: 16px 22px;
   position: sticky;
   top: 0;
   z-index: 40;
 }
 
+.header-shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  border-radius: 18px;
+  background: linear-gradient(90deg, rgba(14, 28, 45, 0.96) 0%, rgba(12, 25, 41, 0.96) 100%);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(95, 126, 166, 0.08);
+}
+
 .header-inner {
   display: flex;
   align-items: center;
-  gap: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 28px;
+  padding: 14px 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(102, 239, 139, 0.55);
+  box-shadow: 0 0 10px rgba(102, 239, 139, 0.22);
+}
+
+.brand-text {
+  color: #f4f8ff;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 700;
 }
 
 .main-nav {
   display: flex;
-  gap: 18px;
-  margin-left: 12px;
+  gap: 24px;
+  margin-left: 10px;
 }
 
 .nav-item {
-  color: rgba(230,238,246,0.85);
+  color: rgba(232, 240, 252, 0.88);
   text-decoration: none;
   font-weight: 500;
-  padding: 6px 8px;
+  padding: 6px 2px;
   border-radius: 6px;
 }
 
+.nav-item-active {
+  color: #63ea88;
+}
+
 .nav-item:hover {
-  background: rgba(255,255,255,0.02);
+  background: rgba(255,255,255,0.03);
   color: #dfffdc;
 }
 
 .actions {
   margin-left: auto;
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
 }
 
 .login-link {
-  color: rgba(230,238,246,0.85);
+  color: rgba(232, 240, 252, 0.92);
   text-decoration: none;
+  padding: 6px 2px;
 }
 
 .cta {
-  background: #46da7c;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #66ef8b;
   color: #031018;
   border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
+  padding: 9px 16px;
+  border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
 }
 
-.app-header h1 {
-  margin: 0;
-  font-size: 28px;
-}
-
-.logo-button {
-  color: white;
-  text-decoration: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: transparent;
-  cursor: pointer;
-}
-
-.logo-button:hover {
-  opacity: 0.9;
-  text-decoration: underline;
+.arrow {
+  font-size: 16px;
+  line-height: 1;
 }
 
 .app-main {
