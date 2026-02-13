@@ -1,9 +1,8 @@
 <script setup lang="ts">
-
-const str = "3rhjfg4rferk"
+import LoginPage from './components/LoginPage.vue'
 
 </script>
 
 <template>
-  <RouterView/>
+  <LoginPage />
 </template>
