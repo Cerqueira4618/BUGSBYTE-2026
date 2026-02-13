@@ -35,7 +35,10 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #000000;
+  background:
+    radial-gradient(circle at 8% 22%, rgba(70, 218, 124, 0.24) 0%, rgba(70, 218, 124, 0.08) 20%, transparent 38%),
+    radial-gradient(circle at 50% 48%, rgba(27, 92, 255, 0.18) 0%, rgba(9, 33, 78, 0.12) 25%, transparent 52%),
+    linear-gradient(180deg, #050f24 0%, #030a1a 40%, #010611 100%);
   color: #ffffff;
 }
 
