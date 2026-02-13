@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function handleSubmit() {
+  // Navega para a rota principal (nomeada 'Main') — demo estática
+  router.push({ name: 'Main' })
+}
 </script>
 
 <template>
@@ -6,7 +14,7 @@
     <div class="login-card">
       <h2>Entrar</h2>
       <p class="subtitle">Faça login para continuar (demo estática)</p>
-      <form class="login-form" @submit.prevent>
+      <form class="login-form" @submit.prevent="handleSubmit">
         <label>
           <span>Email</span>
           <input type="email" placeholder="seu@exemplo.com" />

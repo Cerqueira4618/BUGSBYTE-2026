@@ -3,9 +3,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    // lazy-load the LoginPage component for demo
+    name: 'Login',
     component: () => import('../components/LoginPage.vue'),
+  },
+  {
+    path: '/main',
+    name: 'Main',
+    component: () => import('../pages/Main.vue'),
   },
 ]
 
