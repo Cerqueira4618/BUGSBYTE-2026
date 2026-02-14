@@ -24,6 +24,11 @@ const routes = [
     name: 'Market',
     component: () => import('../pages/Market.vue'),
   },
+  {
+    path: '/ajuda',
+    name: 'Help',
+    component: () => import('../pages/Help.vue'),
+  },
 ]
 
 const router = createRouter({

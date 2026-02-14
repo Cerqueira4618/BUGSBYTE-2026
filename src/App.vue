@@ -58,6 +58,12 @@ const userDisplay = computed(() => {
               active-class="nav-item-active"
               >Mercado</RouterLink
             >
+            <RouterLink
+              :to="{ name: 'Help' }"
+              class="nav-item"
+              active-class="nav-item-active"
+              >Ajuda</RouterLink
+            >
           </nav>
           <div class="actions">
             <span v-if="isAuthenticated" class="user-greeting">
@@ -158,15 +164,16 @@ const userDisplay = computed(() => {
 
 .main-nav {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   margin-left: 10px;
+  align-items: center;
 }
 
 .nav-item {
   color: rgba(232, 240, 252, 0.88);
   text-decoration: none;
   font-weight: 500;
-  padding: 6px 2px;
+  padding: 6px 12px;
   border-radius: 6px;
 }
 
