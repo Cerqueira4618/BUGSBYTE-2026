@@ -7,25 +7,25 @@
   "opportunity_threshold_usd": 0.01,
   "feeds": [
     {
-      "name": "binance",
+      "name": "Binance",
       "kind": "binance_ws",
       "fee": 0.001,
       "enabled": true
     },
     {
-      "name": "uphold",
+      "name": "Uphold",
       "kind": "uphold_ticker",
       "fee": 0.002,
       "enabled": true
     },
     {
-      "name": "kraken",
+      "name": "Kraken",
       "kind": "kraken_ws",
       "fee": 0.0026,
       "enabled": true
     },
     {
-      "name": "bybit",
+      "name": "Bybit",
       "kind": "bybit_ws",
       "fee": 0.001,
       "enabled": true
