@@ -189,8 +189,6 @@ class KrakenDepthFeed(MarketDataFeed):
         "BTCUSDT": "BTC/USDT",
         "ETHUSDT": "ETH/USDT",
         "SOLUSDT": "SOL/USDT",
-        "BTCETH": "BTC/ETH",
-        "ETHBTC": "ETH/BTC",
     }
 
     def __init__(self, name: str, symbol: str) -> None:

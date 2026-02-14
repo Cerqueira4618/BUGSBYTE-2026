@@ -20,7 +20,6 @@ class FeedConfig:
 class AppConfig:
     symbol: str
     trade_size: float
-    simulation_volume_usd: float
     transfer_cost_usd: float
     starting_balance_usd: float
     auto_simulate_execution: bool
@@ -32,7 +31,6 @@ def _default_config() -> AppConfig:
     return AppConfig(
         symbol="BTCUSDT",
         trade_size=0.05,
-        simulation_volume_usd=2500,
         transfer_cost_usd=1.0,
         starting_balance_usd=10000,
         auto_simulate_execution=True,
@@ -71,7 +69,6 @@ def load_config(root_path: Path) -> AppConfig:
     return AppConfig(
         symbol=data.get("symbol", "BTCUSDT"),
         trade_size=float(data.get("trade_size", 0.05)),
-        simulation_volume_usd=float(data.get("simulation_volume_usd", 2500)),
         transfer_cost_usd=float(data.get("transfer_cost_usd", 1.0)),
         starting_balance_usd=float(data.get("starting_balance_usd", 10000)),
         auto_simulate_execution=bool(data.get("auto_simulate_execution", True)),

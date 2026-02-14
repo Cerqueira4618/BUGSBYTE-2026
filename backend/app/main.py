@@ -7,7 +7,6 @@ from urllib.request import Request, urlopen
 
 from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
 from .models import opportunity_to_dict, simulated_trade_to_dict
 from .service import ArbitrageService
@@ -20,24 +19,9 @@ def _symbol_name(symbol: str) -> str:
         "ADAUSDT": "Cardano (ADA/USDT)",
         "BNBUSDT": "BNB (BNB/USDT)",
         "SOLUSDT": "Solana (SOL/USDT)",
-        "BTCETH": "Bitcoin (BTC/ETH)",
-        "ETHBTC": "Ethereum (ETH/BTC)",
     }
     key = symbol.upper()
     return names.get(key, key)
-
-
-class SymbolSelectionPayload(BaseModel):
-    symbol: str
-
-
-class ExchangeTogglePayload(BaseModel):
-    exchange: str
-    enabled: bool
-
-
-class SimulationVolumePayload(BaseModel):
-    volume_usd: float
 
 
 def _parse_cors_origins(raw: str | None) -> list[str]:
@@ -163,40 +147,7 @@ def echo(message: str = "hello") -> dict:
 @app.get("/api/arbitrage/status")
 async def arbitrage_status() -> dict:
     service: ArbitrageService = app.state.arbitrage_service
-    snapshot = await service.engine.snapshot()
-    if "exchange_states" not in snapshot:
-        snapshot["exchange_states"] = service.exchange_states()
-    return snapshot
-
-
-@app.post("/api/arbitrage/symbol")
-async def arbitrage_set_symbol(payload: SymbolSelectionPayload) -> dict:
-    service: ArbitrageService = app.state.arbitrage_service
-    await service.set_symbol(payload.symbol)
-    snapshot = await service.engine.snapshot()
-    if "exchange_states" not in snapshot:
-        snapshot["exchange_states"] = service.exchange_states()
-    return snapshot
-
-
-@app.post("/api/arbitrage/exchanges")
-async def arbitrage_toggle_exchange(payload: ExchangeTogglePayload) -> dict:
-    service: ArbitrageService = app.state.arbitrage_service
-    await service.set_exchange_enabled(payload.exchange, payload.enabled)
-    snapshot = await service.engine.snapshot()
-    if "exchange_states" not in snapshot:
-        snapshot["exchange_states"] = service.exchange_states()
-    return snapshot
-
-
-@app.post("/api/arbitrage/simulation-volume")
-async def arbitrage_set_simulation_volume(payload: SimulationVolumePayload) -> dict:
-    service: ArbitrageService = app.state.arbitrage_service
-    service.set_simulation_volume_usd(payload.volume_usd)
-    snapshot = await service.engine.snapshot()
-    if "exchange_states" not in snapshot:
-        snapshot["exchange_states"] = service.exchange_states()
-    return snapshot
+    return await service.engine.snapshot()
 
 
 @app.get("/api/arbitrage/opportunities")

@@ -1,32 +1,15 @@
-export type ExchangeInventory = {
-  exchange: string;
-  base_balance: number;
-  quote_balance: number;
-  enabled?: boolean;
-};
-
-export type ExchangeState = {
-  exchange: string;
-  enabled: boolean;
-};
-
 export type ArbitrageStatus = {
   symbol: string;
   trade_size: number;
-  simulation_volume_usd: number;
   balance_usd: number;
   total_pnl_usd: number;
-  base_asset: string;
-  quote_asset: string;
-  exchange_inventory: ExchangeInventory[];
-  exchange_states: ExchangeState[];
   active_exchanges: string[];
   latest_opportunity: ArbitrageOpportunity | null;
 };
 
 export type ArbitrageOpportunity = {
   timestamp: string;
-  status: "accepted" | "discarded" | "no_funds";
+  status: "accepted" | "discarded";
   reason: string;
   symbol: string;
   symbol_name?: string;
@@ -57,7 +40,7 @@ export type SpreadPoint = {
   spread_gross_pct: number;
   spread_net_pct: number;
   expected_profit_usd: number;
-  status: "accepted" | "discarded" | "no_funds";
+  status: "accepted" | "discarded";
   reason: string;
   pair: string;
   trigger_exchange: string;
@@ -87,15 +70,14 @@ function orderedBases(): string[] {
   ];
 }
 
-async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+async function requestJson<T>(path: string): Promise<T> {
   let lastError = "Backend indisponível";
 
   for (const base of orderedBases()) {
     try {
-      const response = await fetch(`${base}${path}`, init);
+      const response = await fetch(`${base}${path}`);
       if (!response.ok) {
-        const responseText = await response.text();
-        lastError = `API error ${response.status} em ${base}${responseText ? `: ${responseText}` : ""}`;
+        lastError = `API error ${response.status} em ${base}`;
         continue;
       }
 
@@ -111,41 +93,6 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
 
 export async function getArbitrageStatus(): Promise<ArbitrageStatus> {
   return requestJson<ArbitrageStatus>("/api/arbitrage/status");
-}
-
-export async function setArbitrageSymbol(symbol: string): Promise<ArbitrageStatus> {
-  return requestJson<ArbitrageStatus>("/api/arbitrage/symbol", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ symbol }),
-  });
-}
-
-export async function setExchangeEnabled(
-  exchange: string,
-  enabled: boolean,
-): Promise<ArbitrageStatus> {
-  return requestJson<ArbitrageStatus>("/api/arbitrage/exchanges", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ exchange, enabled }),
-  });
-}
-
-export async function setSimulationVolumeUsd(
-  volumeUsd: number,
-): Promise<ArbitrageStatus> {
-  return requestJson<ArbitrageStatus>("/api/arbitrage/simulation-volume", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ volume_usd: volumeUsd }),
-  });
 }
 
 export async function getArbitrageOpportunities(

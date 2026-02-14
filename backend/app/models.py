@@ -36,7 +36,7 @@ class NormalizedOrderBook:
 @dataclass(slots=True)
 class Opportunity:
     timestamp: datetime
-    status: Literal["accepted", "discarded", "no_funds"]
+    status: Literal["accepted", "discarded"]
     reason: str
     symbol: str
     buy_exchange: str

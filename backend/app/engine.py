@@ -15,34 +15,6 @@ from .models import (
 )
 
 
-KNOWN_QUOTES = ("USDT", "USDC", "USD", "ETH", "BTC", "EUR")
-DEFAULT_INITIAL_CRYPTO_ALLOCATION = 0.5
-MIN_DYNAMIC_TRADE_SIZE_FACTOR = 0.1
-
-
-def split_symbol(symbol: str) -> tuple[str, str]:
-    value = symbol.upper().strip()
-    for quote in sorted(KNOWN_QUOTES, key=len, reverse=True):
-        if value.endswith(quote) and len(value) > len(quote):
-            return value[: -len(quote)], quote
-    if len(value) > 3:
-        return value[:-3], value[-3:]
-    return value, "USD"
-
-
-def bootstrap_price_for_symbol(symbol: str) -> float:
-    defaults = {
-        "BTCUSDT": 50000.0,
-        "ETHUSDT": 3000.0,
-        "ADAUSDT": 0.8,
-        "BNBUSDT": 500.0,
-        "SOLUSDT": 120.0,
-        "BTCETH": 15.0,
-        "ETHBTC": 0.066,
-    }
-    return defaults.get(symbol.upper(), 1.0)
-
-
 def _compute_vwap_for_buy(levels: list[OrderBookLevel], quantity: float) -> tuple[float, float]:
     remaining = quantity
     total_cost = 0.0
@@ -89,10 +61,6 @@ def _reserve_from_levels(levels: list[OrderBookLevel], quantity: float) -> None:
         remaining -= consume
 
 
-def _depth_available(levels: list[OrderBookLevel]) -> float:
-    return sum(max(level.quantity, 0.0) for level in levels)
-
-
 class ArbitrageEngine:
     def __init__(
         self,
@@ -112,73 +80,9 @@ class ArbitrageEngine:
         self.total_pnl_usd = 0.0
         self.balance_usd = config.starting_balance_usd
         self.fees = {feed.name: feed.fee for feed in config.feeds if feed.enabled}
-        self.base_asset, self.quote_asset = split_symbol(self.config.symbol)
-        self.exchange_balances: dict[str, dict[str, float]] = {}
-        self.exchange_enabled: dict[str, bool] = {
-            feed.name: feed.enabled for feed in config.feeds
-        }
-        self._reset_inventory()
-
-    def _reset_inventory(self) -> None:
-        exchanges = [feed.name for feed in self.config.feeds]
-        per_exchange_quote = (
-            self.config.starting_balance_usd / len(exchanges)
-            if exchanges
-            else 0.0
-        )
-        bootstrap_price = bootstrap_price_for_symbol(self.config.symbol)
-        self.exchange_balances = {
-            exchange: {
-                self.base_asset: (per_exchange_quote * DEFAULT_INITIAL_CRYPTO_ALLOCATION) / bootstrap_price,
-                self.quote_asset: per_exchange_quote * (1 - DEFAULT_INITIAL_CRYPTO_ALLOCATION),
-            }
-            for exchange in exchanges
-        }
-
-    def set_exchange_enabled(self, exchange: str, enabled: bool) -> None:
-        key = exchange.strip().lower()
-        if not key:
-            return
-        self.exchange_enabled[key] = enabled
-        if not enabled:
-            self.order_books.pop(key, None)
-
-    def set_simulation_volume_usd(self, volume_usd: float) -> None:
-        self.config.simulation_volume_usd = max(float(volume_usd), 1.0)
-
-    def _max_size_by_funds(
-        self,
-        *,
-        buy_exchange: str,
-        sell_exchange: str,
-        reference_buy_price: float,
-    ) -> float:
-        buy_fee = self.fees.get(buy_exchange, 0.0)
-        buy_unit_cost = reference_buy_price * (1 + buy_fee)
-
-        buy_wallet = self.exchange_balances.get(buy_exchange, {})
-        sell_wallet = self.exchange_balances.get(sell_exchange, {})
-
-        available_quote = max(buy_wallet.get(self.quote_asset, 0.0), 0.0)
-        available_base = max(sell_wallet.get(self.base_asset, 0.0), 0.0)
-
-        if buy_unit_cost <= 0:
-            return 0.0
-
-        max_size_by_quote = available_quote / buy_unit_cost
-        return min(max_size_by_quote, available_base)
-
-    def set_symbol(self, symbol: str) -> None:
-        self.config.symbol = symbol.upper().strip()
-        self.base_asset, self.quote_asset = split_symbol(self.config.symbol)
-        self.order_books.clear()
-        self.metrics_log.clear()
-        self._reset_inventory()
 
     async def on_order_book(self, book: NormalizedOrderBook) -> None:
         async with self._lock:
-            if not self.exchange_enabled.get(book.exchange, True):
-                return
             self.order_books[book.exchange] = book
             await self._evaluate_all_pairs(last_exchange=book.exchange)
 
@@ -189,10 +93,6 @@ class ArbitrageEngine:
 
         now = datetime.now(timezone.utc)
         for buy_exchange, sell_exchange in permutations(exchanges, 2):
-            if not self.exchange_enabled.get(buy_exchange, True):
-                continue
-            if not self.exchange_enabled.get(sell_exchange, True):
-                continue
             buy_book = self.order_books[buy_exchange]
             sell_book = self.order_books[sell_exchange]
             if buy_book.symbol != sell_book.symbol:
@@ -242,39 +142,7 @@ class ArbitrageEngine:
         latency_ms: float,
         timestamp: datetime,
     ) -> Opportunity:
-        max_depth_size = min(_depth_available(buy_book.asks), _depth_available(sell_book.bids))
-        reference_buy_price = buy_book.best_ask or 0.0
-        desired_size_from_volume = (
-            self.config.simulation_volume_usd / reference_buy_price
-            if reference_buy_price > 0
-            else 0.0
-        )
-        max_funds_size = self._max_size_by_funds(
-            buy_exchange=buy_book.exchange,
-            sell_exchange=sell_book.exchange,
-            reference_buy_price=reference_buy_price,
-        )
-        target_size = min(desired_size_from_volume, max_depth_size, max_funds_size)
-        min_dynamic_size = max(desired_size_from_volume * MIN_DYNAMIC_TRADE_SIZE_FACTOR, 0.0001)
-
-        if target_size < min_dynamic_size:
-            return Opportunity(
-                timestamp=timestamp,
-                status="no_funds",
-                reason="No Funds",
-                symbol=buy_book.symbol,
-                buy_exchange=buy_book.exchange,
-                sell_exchange=sell_book.exchange,
-                trade_size=0.0,
-                gross_spread_pct=0.0,
-                net_spread_pct=0.0,
-                expected_profit_usd=0.0,
-                latency_ms=latency_ms,
-                buy_vwap=reference_buy_price,
-                sell_vwap=sell_book.best_bid or 0.0,
-            )
-
-        size = target_size
+        size = self.config.trade_size
         buy_vwap, buy_filled = _compute_vwap_for_buy(buy_book.asks, size)
         sell_vwap, sell_filled = _compute_vwap_for_sell(sell_book.bids, size)
         filled = min(buy_filled, sell_filled)
@@ -350,35 +218,6 @@ class ArbitrageEngine:
         _reserve_from_levels(buy_book.asks, opportunity.trade_size)
         _reserve_from_levels(sell_book.bids, opportunity.trade_size)
 
-        buy_fee = self.fees.get(opportunity.buy_exchange, 0.0)
-        sell_fee = self.fees.get(opportunity.sell_exchange, 0.0)
-        buy_cost_with_fee = opportunity.buy_vwap * opportunity.trade_size * (1 + buy_fee)
-        sell_proceeds_after_fee = opportunity.sell_vwap * opportunity.trade_size * (1 - sell_fee)
-
-        buy_wallet = self.exchange_balances.setdefault(
-            opportunity.buy_exchange,
-            {self.base_asset: 0.0, self.quote_asset: 0.0},
-        )
-        sell_wallet = self.exchange_balances.setdefault(
-            opportunity.sell_exchange,
-            {self.base_asset: 0.0, self.quote_asset: 0.0},
-        )
-
-        buy_wallet[self.quote_asset] = max(
-            0.0,
-            buy_wallet.get(self.quote_asset, 0.0) - buy_cost_with_fee,
-        )
-        buy_wallet[self.base_asset] = buy_wallet.get(self.base_asset, 0.0) + opportunity.trade_size
-
-        sell_wallet[self.base_asset] = max(
-            0.0,
-            sell_wallet.get(self.base_asset, 0.0) - opportunity.trade_size,
-        )
-        sell_wallet[self.quote_asset] = sell_wallet.get(self.quote_asset, 0.0) + max(
-            0.0,
-            sell_proceeds_after_fee - self.config.transfer_cost_usd,
-        )
-
         self.total_pnl_usd += opportunity.expected_profit_usd
         self.balance_usd += opportunity.expected_profit_usd
         self.executed_trades.append(
@@ -403,25 +242,9 @@ class ArbitrageEngine:
             return {
                 "symbol": self.config.symbol,
                 "trade_size": self.config.trade_size,
-                "simulation_volume_usd": self.config.simulation_volume_usd,
                 "balance_usd": self.balance_usd,
                 "total_pnl_usd": self.total_pnl_usd,
                 "active_exchanges": list(self.order_books.keys()),
-                "exchange_states": [
-                    {"exchange": exchange, "enabled": enabled}
-                    for exchange, enabled in self.exchange_enabled.items()
-                ],
-                "base_asset": self.base_asset,
-                "quote_asset": self.quote_asset,
-                "exchange_inventory": [
-                    {
-                        "exchange": exchange,
-                        "base_balance": wallet.get(self.base_asset, 0.0),
-                        "quote_balance": wallet.get(self.quote_asset, 0.0),
-                        "enabled": self.exchange_enabled.get(exchange, True),
-                    }
-                    for exchange, wallet in self.exchange_balances.items()
-                ],
                 "latest_opportunity": opportunity_to_dict(latest) if latest else None,
             }
 
