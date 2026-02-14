@@ -36,6 +36,18 @@ const averageNetSpread = computed(() => {
   return total / acceptedOpportunities.value.length;
 });
 
+const uniqueOpportunities = computed(() => {
+  const map = new Map<string, ArbitrageOpportunity>();
+  for (const item of opportunities.value) {
+    const key = `${item.buy_exchange}-${item.sell_exchange}`;
+    const existing = map.get(key);
+    if (!existing || item.timestamp > existing.timestamp) {
+      map.set(key, item);
+    }
+  }
+  return Array.from(map.values());
+});
+
 function formatUsd(value: number): string {
   return new Intl.NumberFormat("pt-PT", {
     style: "currency",
@@ -188,12 +200,12 @@ onBeforeUnmount(() => {
             <tr v-if="loading">
               <td colspan="9">A carregar dados...</td>
             </tr>
-            <tr v-else-if="!opportunities.length">
+            <tr v-else-if="!uniqueOpportunities.length">
               <td colspan="9">Sem oportunidades recebidas.</td>
             </tr>
             <tr
-              v-for="item in opportunities"
-              :key="`${item.timestamp}-${item.buy_exchange}-${item.sell_exchange}`"
+              v-for="item in uniqueOpportunities"
+              :key="`${item.buy_exchange}-${item.sell_exchange}`"
             >
               <td>{{ item.symbol }}</td>
               <td>{{ item.buy_exchange }}</td>

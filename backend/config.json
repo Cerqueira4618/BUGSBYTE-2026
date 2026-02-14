@@ -17,6 +17,18 @@
       "kind": "uphold_ticker",
       "fee": 0.002,
       "enabled": true
+    },
+    {
+      "name": "kraken",
+      "kind": "kraken_ws",
+      "fee": 0.0026,
+      "enabled": true
+    },
+    {
+      "name": "bybit",
+      "kind": "bybit_ws",
+      "fee": 0.001,
+      "enabled": true
     }
   ]
 }

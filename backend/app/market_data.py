@@ -182,6 +182,125 @@ class UpholdTickerFeed(MarketDataFeed):
                 await asyncio.sleep(2.0)
 
 
+class KrakenDepthFeed(MarketDataFeed):
+    """Real-time order book from Kraken public WebSocket v2 API."""
+
+    _SYMBOL_MAP: dict[str, str] = {
+        "BTCUSDT": "BTC/USDT",
+        "ETHUSDT": "ETH/USDT",
+        "SOLUSDT": "SOL/USDT",
+    }
+
+    def __init__(self, name: str, symbol: str) -> None:
+        super().__init__(name=name, symbol=symbol)
+        self.ws_url = "wss://ws.kraken.com/v2"
+        self.kraken_pair = self._SYMBOL_MAP.get(symbol, symbol)
+
+    async def _run_loop(self, callback: OrderBookCallback) -> None:
+        while self._running:
+            try:
+                async with connect(self.ws_url, ping_interval=20, ping_timeout=20) as websocket:
+                    await websocket.send(json.dumps({
+                        "method": "subscribe",
+                        "params": {"channel": "book", "symbol": [self.kraken_pair], "depth": 25},
+                    }))
+
+                    current_bids: dict[float, float] = {}
+                    current_asks: dict[float, float] = {}
+
+                    async for message in websocket:
+                        if not self._running:
+                            break
+                        payload = json.loads(message)
+                        if payload.get("channel") != "book":
+                            continue
+                        for data in payload.get("data", []):
+                            for bid in data.get("bids", []):
+                                p, q = float(bid["price"]), float(bid["qty"])
+                                if q == 0:
+                                    current_bids.pop(p, None)
+                                else:
+                                    current_bids[p] = q
+                            for ask in data.get("asks", []):
+                                p, q = float(ask["price"]), float(ask["qty"])
+                                if q == 0:
+                                    current_asks.pop(p, None)
+                                else:
+                                    current_asks[p] = q
+                        if not current_bids or not current_asks:
+                            continue
+                        bids = [OrderBookLevel(price=p, quantity=q) for p, q in sorted(current_bids.items(), reverse=True)[:20]]
+                        asks = [OrderBookLevel(price=p, quantity=q) for p, q in sorted(current_asks.items())[:20]]
+                        await callback(NormalizedOrderBook(
+                            exchange=self.name, symbol=self.symbol, bids=bids, asks=asks,
+                            exchange_timestamp=datetime.now(timezone.utc),
+                        ))
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                await asyncio.sleep(2.0)
+
+
+class BybitDepthFeed(MarketDataFeed):
+    """Real-time order book from Bybit public WebSocket v5 API."""
+
+    def __init__(self, name: str, symbol: str) -> None:
+        super().__init__(name=name, symbol=symbol)
+        self.ws_url = "wss://stream.bybit.com/v5/public/spot"
+
+    async def _run_loop(self, callback: OrderBookCallback) -> None:
+        while self._running:
+            try:
+                async with connect(self.ws_url, ping_interval=20, ping_timeout=20) as websocket:
+                    await websocket.send(json.dumps({
+                        "op": "subscribe",
+                        "args": [f"orderbook.50.{self.symbol}"],
+                    }))
+
+                    current_bids: dict[float, float] = {}
+                    current_asks: dict[float, float] = {}
+
+                    async for message in websocket:
+                        if not self._running:
+                            break
+                        payload = json.loads(message)
+                        if "data" not in payload:
+                            continue
+                        data = payload["data"]
+                        if payload.get("type") == "snapshot":
+                            current_bids.clear()
+                            current_asks.clear()
+                        for bid in data.get("b", []):
+                            p, q = float(bid[0]), float(bid[1])
+                            if q == 0:
+                                current_bids.pop(p, None)
+                            else:
+                                current_bids[p] = q
+                        for ask in data.get("a", []):
+                            p, q = float(ask[0]), float(ask[1])
+                            if q == 0:
+                                current_asks.pop(p, None)
+                            else:
+                                current_asks[p] = q
+                        if not current_bids or not current_asks:
+                            continue
+                        ts = payload.get("ts")
+                        exchange_timestamp = (
+                            datetime.fromtimestamp(int(ts) / 1000, tz=timezone.utc)
+                            if ts else datetime.now(timezone.utc)
+                        )
+                        bids = [OrderBookLevel(price=p, quantity=q) for p, q in sorted(current_bids.items(), reverse=True)[:20]]
+                        asks = [OrderBookLevel(price=p, quantity=q) for p, q in sorted(current_asks.items())[:20]]
+                        await callback(NormalizedOrderBook(
+                            exchange=self.name, symbol=self.symbol, bids=bids, asks=asks,
+                            exchange_timestamp=exchange_timestamp,
+                        ))
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                await asyncio.sleep(2.0)
+
+
 class SimulatedDepthFeed(MarketDataFeed):
     def __init__(
         self,

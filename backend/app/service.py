@@ -6,7 +6,7 @@ from pathlib import Path
 from .config import AppConfig, load_config
 from .db import Database
 from .engine import ArbitrageEngine
-from .market_data import BinanceDepthFeed, MarketDataFeed, SimulatedDepthFeed, UpholdTickerFeed
+from .market_data import BinanceDepthFeed, BybitDepthFeed, KrakenDepthFeed, MarketDataFeed, SimulatedDepthFeed, UpholdTickerFeed
 from .persistence import PersistenceManager
 
 
@@ -29,6 +29,12 @@ class ArbitrageService:
                 continue
             if feed_cfg.kind == "uphold_ticker":
                 feeds.append(UpholdTickerFeed(name=feed_cfg.name, symbol=self.config.symbol))
+                continue
+            if feed_cfg.kind == "kraken_ws":
+                feeds.append(KrakenDepthFeed(name=feed_cfg.name, symbol=self.config.symbol))
+                continue
+            if feed_cfg.kind == "bybit_ws":
+                feeds.append(BybitDepthFeed(name=feed_cfg.name, symbol=self.config.symbol))
                 continue
             if feed_cfg.kind == "simulated":
                 feeds.append(
