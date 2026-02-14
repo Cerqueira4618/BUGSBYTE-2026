@@ -270,17 +270,22 @@ class ArbitrageEngine:
 
     async def list_trades(self, limit: int = 100, symbols: list[str] | None = None) -> list[SimulatedTrade]:
         async with self._lock:
+            items = list(self.executed_trades)[-limit:]
+            if symbols:
+                symbols_set = {s.upper() for s in symbols}
+                items = [item for item in items if item.symbol.upper() in symbols_set]
+
+            if items:
+                return items
+
             if self._db is not None:
                 list_fn = getattr(self._db, "list_trades", None)
                 if callable(list_fn):
                     try:
                         return await list_fn(limit=limit, symbols=symbols)
                     except Exception:
-                        return list(self.executed_trades)[-limit:]
-            items = list(self.executed_trades)[-limit:]
-            if symbols:
-                symbols_set = {s.upper() for s in symbols}
-                return [item for item in items if item.symbol.upper() in symbols_set]
+                        return []
+
             return items
 
     async def spread_series(self, limit: int = 200) -> list[dict]:
