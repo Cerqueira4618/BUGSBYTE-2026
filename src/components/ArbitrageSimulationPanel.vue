@@ -17,6 +17,9 @@ import {
   getArbitrageStatus,
   getArbitrageTrades,
   getSpreadSeries,
+  setExchangeEnabled,
+  setArbitrageSymbol,
+  setSimulationVolumeUsd,
   type ArbitrageOpportunity,
   type ArbitrageStatus,
   type SimulatedTrade,
@@ -41,11 +44,21 @@ const status = ref<ArbitrageStatus | null>(null);
 const opportunities = ref<ArbitrageOpportunity[]>([]);
 const trades = ref<SimulatedTrade[]>([]);
 const spreadSeries = ref<SpreadPoint[]>([]);
+const isSwitchingPair = ref(false);
+const isUpdatingVolume = ref(false);
+const exchangeToggleLoading = ref<Record<string, boolean>>({});
 
+<<<<<<< HEAD
 const availablePairs = ["BTCUSDT", "ETHUSDT", "ADAUSDT", "BNBUSDT", "SOLUSDT"];
 const selectedPair = ref<string>("");
 const performanceCanvas = ref<HTMLCanvasElement | null>(null);
 let performanceChart: Chart | null = null;
+=======
+const availablePairs = ["BTCUSDT", "ETHUSDT", "ADAUSDT", "BNBUSDT", "SOLUSDT", "BTCETH", "ETHBTC"];
+const selectedPair = ref<string>("BTCUSDT");
+const simulationVolumeInput = ref<number>(2500);
+const inventoryExchangeOrder = ["uphold", "binance", "kraken", "bybit"];
+>>>>>>> 3aecddf (Ponto 3 e 2)
 
 const activeSymbols = computed(() =>
   selectedPair.value ? [selectedPair.value] : [],
@@ -58,13 +71,22 @@ const acceptedOpportunities = computed(() =>
   opportunities.value.filter((item) => item.status === "accepted"),
 );
 
-const averageNetSpread = computed(() => {
-  if (!acceptedOpportunities.value.length) return 0;
-  const total = acceptedOpportunities.value.reduce(
-    (acc, item) => acc + item.net_spread_pct,
-    0,
+const inventoryCards = computed(() => {
+  const fromStatus = status.value?.exchange_inventory ?? [];
+  const byExchange = new Map(fromStatus.map((item) => [item.exchange.toLowerCase(), item]));
+  const states = new Map(
+    (status.value?.exchange_states ?? []).map((state) => [state.exchange.toLowerCase(), state.enabled]),
   );
-  return total / acceptedOpportunities.value.length;
+
+  return inventoryExchangeOrder.map((exchange) => {
+    const entry = byExchange.get(exchange);
+    return {
+      exchange,
+      baseBalance: entry?.base_balance ?? 0,
+      quoteBalance: entry?.quote_balance ?? 0,
+      enabled: states.get(exchange) ?? entry?.enabled ?? true,
+    };
+  });
 });
 
 const uniqueOpportunities = computed(() => {
@@ -123,6 +145,59 @@ function formatPct(value: number): string {
   return `${value >= 0 ? "+" : ""}${value.toFixed(3)}%`;
 }
 
+function formatAsset(value: number, symbol: string): string {
+  const maxFractionDigits = symbol === "USDT" || symbol === "USD" ? 2 : 6;
+  return `${new Intl.NumberFormat("pt-PT", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: maxFractionDigits,
+  }).format(value)} ${symbol}`;
+}
+
+function pairLabel(symbol: string): string {
+  const upper = symbol.toUpperCase();
+  const knownQuotes = ["USDT", "USDC", "USD", "ETH", "BTC", "EUR"];
+  for (const quote of knownQuotes) {
+    if (upper.endsWith(quote) && upper.length > quote.length) {
+      const base = upper.slice(0, upper.length - quote.length);
+      return `${base} / ${quote}`;
+    }
+  }
+  if (upper.length > 3) {
+    return `${upper.slice(0, upper.length - 3)} / ${upper.slice(-3)}`;
+  }
+  return upper;
+}
+
+function exchangeLabel(exchange: string): string {
+  return exchange.charAt(0).toUpperCase() + exchange.slice(1);
+}
+
+async function onToggleExchange(exchange: string, enabled: boolean): Promise<void> {
+  try {
+    exchangeToggleLoading.value = {
+      ...exchangeToggleLoading.value,
+      [exchange]: true,
+    };
+    const snapshot = await setExchangeEnabled(exchange, !enabled);
+    status.value = snapshot;
+
+    const [opportunitiesData, tradesData] = await Promise.all([
+      getArbitrageOpportunities(60, activeSymbols.value),
+      getArbitrageTrades(20, activeSymbols.value),
+    ]);
+    opportunities.value = opportunitiesData;
+    trades.value = tradesData;
+  } catch (cause) {
+    const details = cause instanceof Error ? cause.message : "erro desconhecido";
+    error.value = `Não foi possível ${enabled ? "parar" : "iniciar"} a exchange ${exchangeLabel(exchange)} (${details}).`;
+  } finally {
+    exchangeToggleLoading.value = {
+      ...exchangeToggleLoading.value,
+      [exchange]: false,
+    };
+  }
+}
+
 function volatilityText(latencyMs: number): string {
   if (latencyMs > 900) return "Alta";
   if (latencyMs > 450) return "Média";
@@ -135,8 +210,48 @@ function volatilityClass(latencyMs: number): string {
   return "baixa";
 }
 
-function onSymbolChange(): void {
-  void loadData();
+async function onSymbolChange(): Promise<void> {
+  try {
+    isSwitchingPair.value = true;
+    await setArbitrageSymbol(selectedPair.value);
+    await loadData();
+  } catch (cause) {
+    const details = cause instanceof Error ? cause.message : "erro desconhecido";
+    if (details.includes("404") && details.includes("/api/arbitrage/symbol")) {
+      error.value = "O backend ativo não suporta troca de par ainda. Reinicia o FastAPI para carregar a rota /api/arbitrage/symbol.";
+    } else {
+      error.value = `Não foi possível alterar o par de simulação no backend (${details}).`;
+    }
+  } finally {
+    isSwitchingPair.value = false;
+  }
+}
+
+async function onSimulationVolumeChange(): Promise<void> {
+  const nextVolume = Number.isFinite(simulationVolumeInput.value)
+    ? Math.max(1, simulationVolumeInput.value)
+    : 1;
+  simulationVolumeInput.value = nextVolume;
+
+  try {
+    isUpdatingVolume.value = true;
+    const snapshot = await setSimulationVolumeUsd(nextVolume);
+    status.value = snapshot;
+
+    const [opportunitiesData, tradesData, spreadData] = await Promise.all([
+      getArbitrageOpportunities(60, activeSymbols.value),
+      getArbitrageTrades(20, activeSymbols.value),
+      getSpreadSeries(40),
+    ]);
+    opportunities.value = opportunitiesData;
+    trades.value = tradesData;
+    spreadSeries.value = spreadData;
+  } catch (cause) {
+    const details = cause instanceof Error ? cause.message : "erro desconhecido";
+    error.value = `Não foi possível atualizar o volume de simulação (${details}).`;
+  } finally {
+    isUpdatingVolume.value = false;
+  }
 }
 
 function renderPerformanceChart(): void {
@@ -222,15 +337,21 @@ function renderPerformanceChart(): void {
 async function loadData() {
   try {
     error.value = "";
-    const [statusData, opportunitiesData, tradesData, spreadData] =
-      await Promise.all([
-        getArbitrageStatus(),
-        getArbitrageOpportunities(60, activeSymbols.value),
-        getArbitrageTrades(20, activeSymbols.value),
-        getSpreadSeries(40),
-      ]);
-
+    const statusData = await getArbitrageStatus();
     status.value = statusData;
+    if (statusData.symbol && statusData.symbol !== selectedPair.value) {
+      selectedPair.value = statusData.symbol;
+    }
+    if (statusData.simulation_volume_usd) {
+      simulationVolumeInput.value = statusData.simulation_volume_usd;
+    }
+
+    const [opportunitiesData, tradesData, spreadData] = await Promise.all([
+      getArbitrageOpportunities(60, activeSymbols.value),
+      getArbitrageTrades(20, activeSymbols.value),
+      getSpreadSeries(40),
+    ]);
+
     opportunities.value = opportunitiesData;
     trades.value = tradesData;
     spreadSeries.value = spreadData;
@@ -245,6 +366,12 @@ async function loadData() {
 function startSocket() {
   socket = connectArbitrageSocket(({ snapshot, spread_series }) => {
     status.value = snapshot;
+    if (snapshot.symbol && snapshot.symbol !== selectedPair.value) {
+      selectedPair.value = snapshot.symbol;
+    }
+    if (snapshot.simulation_volume_usd) {
+      simulationVolumeInput.value = snapshot.simulation_volume_usd;
+    }
     spreadSeries.value = spread_series;
     socketState.value = "connected";
   });
@@ -305,8 +432,9 @@ watch(cumulativePnlSeries, () => {
 
       <div class="filter-bar">
         <div class="filter-group">
-          <label for="pair">Crypto</label>
+          <label for="pair">Par de Simulação</label>
           <select id="pair" v-model="selectedPair" @change="onSymbolChange">
+<<<<<<< HEAD
             <option value="">Todos</option>
             <option
               v-for="symbol in availablePairs"
@@ -314,8 +442,47 @@ watch(cumulativePnlSeries, () => {
               :value="symbol"
             >
               {{ symbol.slice(0, -4) }} / {{ symbol.slice(-4) }}
+=======
+            <option v-for="symbol in availablePairs" :key="symbol" :value="symbol">
+              {{ pairLabel(symbol) }}
+>>>>>>> 3aecddf (Ponto 3 e 2)
             </option>
           </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="simulation-volume">Volume de Simulação (US$)</label>
+          <input
+            id="simulation-volume"
+            v-model.number="simulationVolumeInput"
+            type="number"
+            min="1"
+            step="100"
+            @change="onSimulationVolumeChange"
+          />
+        </div>
+
+        <span v-if="isSwitchingPair">A trocar par no backend...</span>
+        <span v-if="isUpdatingVolume">A atualizar volume...</span>
+      </div>
+
+      <div class="inventory-grid">
+        <div
+          v-for="item in inventoryCards"
+          :key="item.exchange"
+          class="inventory-card"
+          :class="{ disabled: !item.enabled }"
+        >
+          <h3>{{ exchangeLabel(item.exchange) }}</h3>
+          <p>{{ formatAsset(item.quoteBalance, status?.quote_asset ?? "USDT") }}</p>
+          <p>{{ formatAsset(item.baseBalance, status?.base_asset ?? "BTC") }}</p>
+          <button
+            class="exchange-toggle-btn"
+            :disabled="exchangeToggleLoading[item.exchange]"
+            @click="onToggleExchange(item.exchange, item.enabled)"
+          >
+            {{ exchangeToggleLoading[item.exchange] ? "A atualizar..." : item.enabled ? "Parar" : "Iniciar" }}
+          </button>
         </div>
       </div>
 
@@ -325,16 +492,16 @@ watch(cumulativePnlSeries, () => {
           <strong>{{ acceptedOpportunities.length }}</strong>
         </div>
         <div class="metric">
+          <span>Volume de simulação</span>
+          <strong>{{ formatUsd(status?.simulation_volume_usd ?? 0) }}</strong>
+        </div>
+        <div class="metric">
           <span>P&L acumulado</span>
           <strong>{{ formatUsd(status?.total_pnl_usd ?? 0) }}</strong>
         </div>
         <div class="metric">
           <span>Saldo simulado</span>
           <strong>{{ formatUsd(status?.balance_usd ?? 0) }}</strong>
-        </div>
-        <div class="metric">
-          <span>Spread líquido médio</span>
-          <strong>{{ formatPct(averageNetSpread) }}</strong>
         </div>
         <div class="metric">
           <span>Última latência</span>
@@ -403,9 +570,15 @@ watch(cumulativePnlSeries, () => {
                 </span>
               </td>
               <td>
+<<<<<<< HEAD
                 <span class="status-pill" :class="item.status">{{
                   item.status
                 }}</span>
+=======
+                <span class="status-pill" :class="item.status">
+                  {{ item.status === "no_funds" ? "No Funds" : item.status }}
+                </span>
+>>>>>>> 3aecddf (Ponto 3 e 2)
               </td>
             </tr>
           </tbody>
@@ -498,6 +671,58 @@ watch(cumulativePnlSeries, () => {
   color: #c9d6ea;
 }
 
+.inventory-grid {
+  margin: 12px 0 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.inventory-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(120, 151, 189, 0.16);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.inventory-card h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #f4f8ff;
+}
+
+.inventory-card p {
+  margin: 0;
+  color: #b8cae3;
+  font-size: 13px;
+}
+
+.inventory-card p + p {
+  margin-top: 4px;
+}
+
+.inventory-card.disabled {
+  opacity: 0.75;
+}
+
+.exchange-toggle-btn {
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(102, 239, 139, 0.35);
+  background: rgba(102, 239, 139, 0.12);
+  color: #dfffe9;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+.exchange-toggle-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .filter-group {
   display: flex;
   flex-direction: column;
@@ -518,6 +743,20 @@ watch(cumulativePnlSeries, () => {
   border-radius: 8px;
   padding: 8px 10px;
   outline: none;
+}
+
+.filter-group input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(102, 239, 139, 0.35);
+  color: #e6f7ff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  outline: none;
+}
+
+.filter-group input:focus {
+  border-color: #66ef8b;
+  box-shadow: 0 0 0 2px rgba(102, 239, 139, 0.25);
 }
 
 .filter-group select:focus {
@@ -675,6 +914,13 @@ th {
   box-shadow: 0 6px 12px rgba(255, 120, 120, 0.18);
 }
 
+.status-pill.no_funds {
+  background: linear-gradient(135deg, #382f12, #2a230f);
+  color: #ffe5a9;
+  border-color: rgba(255, 201, 106, 0.7);
+  box-shadow: 0 6px 12px rgba(255, 201, 106, 0.2);
+}
+
 .status-dot {
   display: inline-block;
   width: 12px;
@@ -752,9 +998,15 @@ th {
   margin-bottom: 6px;
 }
 
+<<<<<<< HEAD
 @media (max-width: 980px) {
   .split-grid {
     grid-template-columns: 1fr;
+=======
+@media (max-width: 1000px) {
+  .inventory-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+>>>>>>> 3aecddf (Ponto 3 e 2)
   }
 }
 </style>

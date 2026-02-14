@@ -57,10 +57,58 @@ class ArbitrageService:
         await asyncio.gather(*(feed.start(self.engine.on_order_book) for feed in self.feeds))
         self._started = True
 
+    async def _stop_feeds(self) -> None:
+        await asyncio.gather(*(feed.stop() for feed in self.feeds), return_exceptions=True)
+        self.feeds = []
+
+    async def set_symbol(self, symbol: str) -> None:
+        next_symbol = symbol.upper().strip()
+        if not next_symbol or next_symbol == self.config.symbol:
+            return
+
+        if self._started:
+            await self._stop_feeds()
+
+        self.config.symbol = next_symbol
+        self.engine.set_symbol(next_symbol)
+        self.feeds = self._build_feeds()
+
+        if self._started:
+            await asyncio.gather(*(feed.start(self.engine.on_order_book) for feed in self.feeds))
+
+    async def set_exchange_enabled(self, exchange: str, enabled: bool) -> None:
+        target = exchange.strip().lower()
+        if not target:
+            return
+
+        for feed_cfg in self.config.feeds:
+            if feed_cfg.name.lower() == target:
+                feed_cfg.enabled = enabled
+                break
+        else:
+            return
+
+        self.engine.set_exchange_enabled(target, enabled)
+
+        if self._started:
+            await self._stop_feeds()
+            self.feeds = self._build_feeds()
+            await asyncio.gather(*(feed.start(self.engine.on_order_book) for feed in self.feeds))
+
+    def set_simulation_volume_usd(self, volume_usd: float) -> None:
+        self.config.simulation_volume_usd = max(float(volume_usd), 1.0)
+        self.engine.set_simulation_volume_usd(self.config.simulation_volume_usd)
+
+    def exchange_states(self) -> list[dict[str, object]]:
+        return [
+            {"exchange": feed.name, "enabled": feed.enabled}
+            for feed in self.config.feeds
+        ]
+
     async def stop(self) -> None:
         if not self._started:
             return
-        await asyncio.gather(*(feed.stop() for feed in self.feeds), return_exceptions=True)
+        await self._stop_feeds()
         await self.persistence.stop()
         await self.db.close()
         self._started = False
