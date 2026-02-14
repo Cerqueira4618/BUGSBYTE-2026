@@ -58,7 +58,7 @@ DEFAULT_ASSET_PRICES_USD = {
     "AVAX": 35.0,
 }
 INITIAL_USD_PER_CRYPTO_PER_WALLET = 2000.0
-INITIAL_USDT_PER_WALLET = 2000.0
+INITIAL_USDT_PER_WALLET = 1500.0
 
 
 def _split_symbol_pair(symbol: str) -> tuple[str, str] | None:
@@ -433,6 +433,88 @@ class ArbitrageEngine:
             books_by_exchange = self.order_books.setdefault(book.symbol, {})
             books_by_exchange[book.exchange] = book
             await self._evaluate_all_pairs(symbol=book.symbol, last_exchange=book.exchange)
+
+    async def inject_demo_crash(
+        self,
+        symbol: str = "BTCUSDT",
+        crash_exchange: str = "Kraken",
+        normal_exchanges: list[str] | None = None,
+        price_drop_pct: float = 10.0,
+    ) -> dict:
+        """Inject synthetic orderbooks with price discrepancy for demo purposes."""
+        if normal_exchanges is None:
+            normal_exchanges = ["Binance", "Uphold", "Bybit"]
+
+        now = datetime.now(timezone.utc)
+        
+        # Get reference price (normal price)
+        base_asset = (_split_symbol_pair(symbol) or ("BTC", "USDT"))[0]
+        normal_price = self._reference_asset_price(base_asset)
+        
+        # Crashed price - lower on crash exchange
+        crashed_price = normal_price * (1 - price_drop_pct / 100)
+        
+        async with self._lock:
+            # Create orderbooks with spread
+            books_by_exchange = self.order_books.setdefault(symbol, {})
+            
+            # Crashed exchange (lower ask - good for buying)
+            books_by_exchange[crash_exchange] = NormalizedOrderBook(
+                exchange=crash_exchange,
+                symbol=symbol,
+                bids=[OrderBookLevel(price=crashed_price * 0.999, quantity=100.0)],
+                asks=[OrderBookLevel(price=crashed_price * 1.001, quantity=100.0)],
+                exchange_timestamp=now,
+                received_timestamp=now,
+            )
+            
+            # Normal exchanges (higher bid - good for selling)
+            for exchange in normal_exchanges:
+                books_by_exchange[exchange] = NormalizedOrderBook(
+                    exchange=exchange,
+                    symbol=symbol,
+                    bids=[OrderBookLevel(price=normal_price * 0.999, quantity=100.0)],
+                    asks=[OrderBookLevel(price=normal_price * 1.001, quantity=100.0)],
+                    exchange_timestamp=now,
+                    received_timestamp=now,
+                )
+            
+            # Evaluate opportunities - this will trigger execution if profitable
+            await self._evaluate_all_pairs(symbol=symbol, last_exchange=crash_exchange)
+            
+        # Collect debug information
+        recent_opps = [o for o in self.opportunities if o.symbol == symbol][-20:]  # Last 20
+        recent_trades = [t for t in self.executed_trades if t.symbol == symbol][-10:]  # Last 10
+        
+        debug_info = {
+            "recent_opportunities": [
+                {
+                    "status": o.status,
+                    "buy": o.buy_exchange,
+                    "sell": o.sell_exchange,
+                    "gross_spread": round(o.gross_spread_pct, 3),
+                    "net_spread": round(o.net_spread_pct, 3),
+                    "profit": round(o.expected_profit_usd, 2),
+                    "reason": o.reason,
+                }
+                for o in recent_opps[-6:]  # Last 6
+            ],
+            "recent_trades_count": len(recent_trades),
+            "auto_execute": self.config.auto_simulate_execution,
+            "threshold": self.config.opportunity_threshold_usd,
+        }
+        
+        return {
+            "status": "injected",
+            "symbol": symbol,
+            "crash_exchange": crash_exchange,
+            "crashed_price": round(crashed_price, 2),
+            "normal_price": round(normal_price, 2),
+            "spread_pct": round(price_drop_pct, 2),
+            "opportunities_created": len([o for o in self.opportunities if o.symbol == symbol and o.timestamp >= now]),
+            "accepted_count": len([o for o in self.opportunities if o.symbol == symbol and o.timestamp >= now and o.status == "accepted"]),
+            "debug": debug_info,
+        }
 
     async def _evaluate_all_pairs(self, symbol: str, last_exchange: str) -> None:
         books_by_exchange = self.order_books.get(symbol, {})

@@ -18,6 +18,7 @@ import {
   getArbitrageTrades,
   rebalanceArbitrageWallets,
   setSimulationVolumeUsd,
+  triggerDemoCrash,
   type ArbitrageOpportunity,
   type ArbitrageStatus,
   type SimulatedTrade,
@@ -46,6 +47,7 @@ const status = computed(() => websocketStore.status);
 const spreadSeries = computed(() => websocketStore.spreadSeries);
 const opportunitiesLimit = 500;
 const rebalancing = ref(false);
+const demoCrashing = ref(false);
 const rebalanceNotification = ref<{
   show: boolean;
   message: string;
@@ -379,6 +381,46 @@ function formatNetSpread(item: ArbitrageOpportunity): string {
   return formatPct(item.net_spread_pct);
 }
 
+function computeSpreadBreakdown(item: ArbitrageOpportunity): {
+  grossSpread: number;
+  fees: number;
+  slippage: number;
+  gas: number;
+  netSpread: number;
+} {
+  // Gross spread
+  const grossSpread = item.gross_spread_pct;
+
+  // Estimate fees (buy + sell fee, typically 0.1% each = 0.2% total)
+  const fees = 0.2;
+
+  // Slippage = difference between gross and net after removing fees and gas
+  const gasImpactPct =
+    ((item.network_cost_usd ?? 0) / (item.buy_vwap * item.trade_size)) * 100;
+  const slippage = grossSpread - item.net_spread_pct - fees - gasImpactPct;
+
+  return {
+    grossSpread: grossSpread,
+    fees: fees,
+    slippage: Math.max(0, slippage),
+    gas: gasImpactPct,
+    netSpread: item.net_spread_pct,
+  };
+}
+
+function spreadBreakdownTooltip(item: ArbitrageOpportunity): string {
+  if (item.status === "no_funds" || item.status === "insufficient_liquidity") {
+    return "";
+  }
+
+  const breakdown = computeSpreadBreakdown(item);
+  return `Spread Bruto: ${breakdown.grossSpread.toFixed(3)}%
+Impacto Volume (Slippage): -${breakdown.slippage.toFixed(3)}%
+Fees: -${breakdown.fees.toFixed(3)}%
+Gas: -${breakdown.gas.toFixed(3)}%
+= Spread Líquido: ${breakdown.netSpread.toFixed(3)}%`;
+}
+
 function latencyText(latencyMs: number): string {
   if (latencyMs > 900) return "Alta";
   if (latencyMs > 450) return "Média";
@@ -447,6 +489,66 @@ async function onRebalance(): Promise<void> {
     }, 3000);
   } finally {
     rebalancing.value = false;
+  }
+}
+
+async function onDemoCrash(): Promise<void> {
+  if (demoCrashing.value) return;
+  demoCrashing.value = true;
+
+  rebalanceNotification.value = {
+    show: true,
+    message: "A simular crash de preço...",
+    type: "info",
+  };
+
+  try {
+    const result = await triggerDemoCrash("BTCUSDT", "Kraken", 10.0);
+
+    console.log("🚨 Demo Crash Result:", result);
+
+    if (result.debug) {
+      console.log(
+        "📊 Recent Opportunities:",
+        result.debug.recent_opportunities,
+      );
+      console.log("✅ Trades Count:", result.debug.recent_trades_count);
+      console.log("⚙️ Auto Execute:", result.debug.auto_execute);
+      console.log("💰 Threshold:", result.debug.threshold);
+    }
+
+    const acceptedMsg = result.accepted_count
+      ? ` | ${result.accepted_count} aceites`
+      : " | nenhuma aceite";
+
+    const tradesMsg = result.debug?.recent_trades_count
+      ? ` | ${result.debug.recent_trades_count} trades`
+      : "";
+
+    rebalanceNotification.value = {
+      show: true,
+      message: `Crash simulado! ${result.crash_exchange}: ${formatUsd(result.crashed_price)} (${result.spread_pct}% spread)${acceptedMsg}${tradesMsg}`,
+      type: "success",
+    };
+
+    // Refresh data to show new opportunities
+    await loadData();
+
+    setTimeout(() => {
+      rebalanceNotification.value.show = false;
+    }, 4000);
+  } catch {
+    rebalanceNotification.value = {
+      show: true,
+      message: "Erro ao simular crash.",
+      type: "error",
+    };
+
+    setTimeout(() => {
+      rebalanceNotification.value.show = false;
+    }, 3000);
+  } finally {
+    demoCrashing.value = false;
   }
 }
 
@@ -700,13 +802,22 @@ watch(simulationVolumeUsd, (value) => {
       <div class="inventory-section">
         <div class="inventory-header">
           <h3>Carteiras por Exchange</h3>
-          <button
-            class="rebalance-btn"
-            :disabled="rebalancing"
-            @click="onRebalance"
-          >
-            {{ rebalancing ? "A reequilibrar..." : "Rebalance" }}
-          </button>
+          <div class="action-buttons">
+            <button
+              class="rebalance-btn"
+              :disabled="rebalancing"
+              @click="onRebalance"
+            >
+              {{ rebalancing ? "A reequilibrar..." : "Rebalance" }}
+            </button>
+            <button
+              class="demo-crash-btn"
+              :disabled="demoCrashing"
+              @click="onDemoCrash"
+            >
+              {{ demoCrashing ? "A simular..." : "🚨 Simular Crash" }}
+            </button>
+          </div>
         </div>
         <div class="inventory-table-wrap">
           <table class="inventory-table">
@@ -808,6 +919,7 @@ watch(simulationVolumeUsd, (value) => {
                       ? 'positive'
                       : 'negative'
                 "
+                :title="spreadBreakdownTooltip(item)"
               >
                 {{ formatNetSpread(item) }}
               </td>
@@ -1334,6 +1446,11 @@ th {
   color: #dbe9ff;
 }
 
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
 .rebalance-btn {
   border: 1px solid rgba(102, 239, 139, 0.5);
   color: #bfffe0;
@@ -1346,6 +1463,30 @@ th {
 }
 
 .rebalance-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.demo-crash-btn {
+  border: 1px solid rgba(255, 196, 88, 0.6);
+  color: #ffd27a;
+  background: rgba(255, 196, 88, 0.15);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.demo-crash-btn:hover:not(:disabled) {
+  background: rgba(255, 196, 88, 0.25);
+  border-color: rgba(255, 196, 88, 0.8);
+}
+
+.demo-crash-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

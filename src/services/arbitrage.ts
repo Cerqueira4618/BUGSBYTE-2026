@@ -171,6 +171,64 @@ export async function rebalanceArbitrageWallets(): Promise<{
   }>("/api/arbitrage/rebalance", {});
 }
 
+export async function triggerDemoCrash(
+  symbol: string = "BTCUSDT",
+  crashExchange: string = "Kraken",
+  priceDropPct: number = 10.0,
+): Promise<{
+  status: string;
+  symbol: string;
+  crash_exchange: string;
+  crashed_price: number;
+  normal_price: number;
+  spread_pct: number;
+  opportunities_created?: number;
+  accepted_count?: number;
+  debug?: {
+    recent_opportunities: Array<{
+      status: string;
+      buy: string;
+      sell: string;
+      gross_spread: number;
+      net_spread: number;
+      profit: number;
+      reason: string;
+    }>;
+    recent_trades_count: number;
+    auto_execute: boolean;
+    threshold: number;
+  };
+}> {
+  return requestJsonPost<{
+    status: string;
+    symbol: string;
+    crash_exchange: string;
+    crashed_price: number;
+    normal_price: number;
+    spread_pct: number;
+    opportunities_created?: number;
+    accepted_count?: number;
+    debug?: {
+      recent_opportunities: Array<{
+        status: string;
+        buy: string;
+        sell: string;
+        gross_spread: number;
+        net_spread: number;
+        profit: number;
+        reason: string;
+      }>;
+      recent_trades_count: number;
+      auto_execute: boolean;
+      threshold: number;
+    };
+  }>("/api/arbitrage/demo-crash", {
+    symbol,
+    crash_exchange: crashExchange,
+    price_drop_pct: priceDropPct,
+  });
+}
+
 export async function getArbitrageOpportunities(
   limit = 100,
   symbols: string[] = [],

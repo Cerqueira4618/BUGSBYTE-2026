@@ -200,6 +200,24 @@ async def rebalance_arbitrage_wallets() -> dict:
     return {"snapshot": snapshot, "rebalance": details}
 
 
+class DemoCrashRequest(BaseModel):
+    symbol: str = "BTCUSDT"
+    crash_exchange: str = "Kraken"
+    price_drop_pct: float = 10.0
+
+
+@app.post("/api/arbitrage/demo-crash")
+async def inject_demo_crash(request: DemoCrashRequest) -> dict:
+    """Inject synthetic price crash for demonstration purposes."""
+    service: ArbitrageService = app.state.arbitrage_service
+    result = await service.inject_demo_crash(
+        symbol=request.symbol,
+        crash_exchange=request.crash_exchange,
+        price_drop_pct=request.price_drop_pct,
+    )
+    return result
+
+
 @app.get("/api/arbitrage/opportunities")
 async def arbitrage_opportunities(
     limit: int = 100,

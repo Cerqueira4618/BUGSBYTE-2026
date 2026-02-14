@@ -65,3 +65,16 @@ class ArbitrageService:
         await self.persistence.stop()
         await self.db.close()
         self._started = False
+
+    async def inject_demo_crash(
+        self,
+        symbol: str = "BTCUSDT",
+        crash_exchange: str = "Kraken",
+        price_drop_pct: float = 10.0,
+    ) -> dict:
+        """Inject synthetic price crash for demo purposes."""
+        return await self.engine.inject_demo_crash(
+            symbol=symbol,
+            crash_exchange=crash_exchange,
+            price_drop_pct=price_drop_pct,
+        )
