@@ -1,9 +1,11 @@
 import os
 import asyncio
+import json
 from contextlib import asynccontextmanager
 from pathlib import Path
+from urllib.request import Request, urlopen
 
-from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from .models import opportunity_to_dict, simulated_trade_to_dict
@@ -29,6 +31,75 @@ def _parse_cors_origins(raw: str | None) -> list[str]:
             "http://127.0.0.1:5173",
         ]
     return [origin.strip() for origin in raw.split(",") if origin.strip()]
+
+
+def _coingecko_id(symbol: str) -> str | None:
+    ids = {
+        "BTC": "bitcoin",
+        "ETH": "ethereum",
+        "SOL": "solana",
+        "BNB": "binancecoin",
+        "XRP": "ripple",
+        "ADA": "cardano",
+        "AVAX": "avalanche-2",
+        "DOT": "polkadot",
+        "LINK": "chainlink",
+    }
+    return ids.get(symbol.upper())
+
+
+def _fetch_market_chart(coin_id: str, days: int) -> list[dict[str, float]]:
+    api_key = os.getenv("COINGECKO_API_KEY") or "CG-DemoAPIKey"
+    url = (
+        f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart"
+        f"?vs_currency=eur&days={days}&interval=daily&precision=2"
+        f"&x_cg_demo_api_key={api_key}"
+    )
+    request = Request(
+        url,
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "BUGSBYTE-Market/1.0",
+        },
+    )
+    with urlopen(request, timeout=12) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    prices = payload.get("prices", [])
+    return [
+        {"time": int(point[0]), "price": float(point[1])}
+        for point in prices
+        if isinstance(point, list) and len(point) >= 2
+    ]
+
+
+def _fetch_binance_klines(symbol: str, days: int) -> list[dict[str, float]]:
+    pair = f"{symbol.upper()}EUR"
+    url = (
+        "https://api.binance.com/api/v3/klines"
+        f"?symbol={pair}&interval=1d&limit={days}"
+    )
+    request = Request(
+        url,
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "BUGSBYTE-Market/1.0",
+        },
+    )
+    with urlopen(request, timeout=12) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    if not isinstance(payload, list):
+        return []
+
+    items: list[dict[str, float]] = []
+    for row in payload:
+        if not isinstance(row, list) or len(row) < 5:
+            continue
+        open_time = int(row[0])
+        close_price = float(row[4])
+        items.append({"time": open_time, "price": close_price})
+    return items
 
 
 @asynccontextmanager
@@ -114,6 +185,39 @@ async def arbitrage_spread_series(limit: int = 200) -> dict:
     service: ArbitrageService = app.state.arbitrage_service
     items = await service.engine.spread_series(limit=limit)
     return {"items": items}
+
+
+@app.get("/api/market/history")
+async def market_history(symbol: str = Query(...), days: int = Query(30, ge=7, le=90)) -> dict:
+    coin_id = _coingecko_id(symbol)
+    if not coin_id:
+        raise HTTPException(status_code=400, detail=f"Símbolo sem mapeamento: {symbol}")
+
+    items: list[dict[str, float]] = []
+    source = "coingecko"
+
+    try:
+        items = await asyncio.to_thread(_fetch_market_chart, coin_id, days)
+    except Exception:
+        items = []
+
+    if not items:
+        try:
+            items = await asyncio.to_thread(_fetch_binance_klines, symbol, days)
+            source = "binance"
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail="Falha ao obter histórico de mercado") from exc
+
+    if not items:
+        raise HTTPException(status_code=404, detail="Sem histórico disponível")
+
+    return {
+        "symbol": symbol.upper(),
+        "currency": "EUR",
+        "days": days,
+        "source": source,
+        "items": items,
+    }
 
 
 @app.websocket("/ws/arbitrage")
