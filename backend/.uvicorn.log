@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 INFO:     Started server process [17393]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
@@ -54,3 +55,103 @@ INFO:     connection open
 INFO:     connection closed
 INFO:     Shutting down
 INFO:     Waiting for application shutdown.
+=======
+INFO:     Started server process [98822]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:35800 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35804 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35804 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35800 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35800 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35804 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60976 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60988 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32770 - "WebSocket /ws/arbitrage" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     connection closed
+INFO:     127.0.0.1:32774 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32778 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36874 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36884 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36894 - "WebSocket /ws/arbitrage" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:36884 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36874 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36874 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36884 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36884 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36874 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     connection closed
+INFO:     127.0.0.1:36874 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36884 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37492 - "WebSocket /ws/arbitrage" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     connection closed
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50166 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50174 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50184 - "WebSocket /ws/arbitrage" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:50174 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50166 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36470 - "WebSocket /ws/arbitrage" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:37478 - "GET /api/arbitrage/opportunities?limit=60 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37466 - "GET /api/arbitrage/trades?limit=20 HTTP/1.1" 200 OK
+>>>>>>> 045e0f4154900abbdd41b2f49436e9ae1c4c2711

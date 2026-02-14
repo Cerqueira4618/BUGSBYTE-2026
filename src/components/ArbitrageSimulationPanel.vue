@@ -53,6 +53,15 @@ const activeSymbols = computed(() =>
 
 let socket: WebSocket | null = null;
 let refreshTimer: number | null = null;
+let tickTimer: number | null = null;
+const now = ref(Date.now());
+
+function timeAgo(iso: string): string {
+  const diff = Math.max(0, Math.floor((now.value - new Date(iso).getTime()) / 1000));
+  if (diff < 60) return `há ${diff}s`;
+  if (diff < 3600) return `há ${Math.floor(diff / 60)}m`;
+  return `há ${Math.floor(diff / 3600)}h`;
+}
 
 const acceptedOpportunities = computed(() =>
   opportunities.value.filter((item) => item.status === "accepted"),
@@ -267,6 +276,10 @@ onMounted(async () => {
   startSocket();
   renderPerformanceChart();
 
+  tickTimer = window.setInterval(() => {
+    now.value = Date.now();
+  }, 1000);
+
   refreshTimer = window.setInterval(() => {
     void Promise.all([
       getArbitrageOpportunities(60, activeSymbols.value),
@@ -281,6 +294,9 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   if (refreshTimer) {
     window.clearInterval(refreshTimer);
+  }
+  if (tickTimer) {
+    window.clearInterval(tickTimer);
   }
   socket?.close();
   performanceChart?.destroy();
@@ -363,15 +379,16 @@ watch(cumulativePnlSeries, () => {
               <th>P&L Esperado</th>
               <th>Latência (ms)</th>
               <th>Volatilidade</th>
+              <th>Atualização</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="loading">
-              <td colspan="9">A carregar dados...</td>
+              <td colspan="10">A carregar dados...</td>
             </tr>
             <tr v-else-if="!uniqueOpportunities.length">
-              <td colspan="9">Sem oportunidades recebidas.</td>
+              <td colspan="10">Sem oportunidades recebidas.</td>
             </tr>
             <tr
               v-for="item in uniqueOpportunities"
@@ -401,6 +418,16 @@ watch(cumulativePnlSeries, () => {
                 <span class="badge" :class="volatilityClass(item.latency_ms)">
                   {{ volatilityText(item.latency_ms) }}
                 </span>
+              </td>
+              <td>
+                <span v-if="item.buy_book_updated_at || item.sell_book_updated_at" class="update-ts">
+                  {{ timeAgo(
+                    [item.buy_book_updated_at, item.sell_book_updated_at]
+                      .filter(Boolean)
+                      .sort()[0]!
+                  ) }}
+                </span>
+                <span v-else>—</span>
               </td>
               <td>
                 <span class="status-pill" :class="item.status">{{
@@ -642,6 +669,15 @@ th {
 .badge.alta {
   background: rgba(255, 124, 124, 0.16);
   color: #ff8f8f;
+}
+
+.update-ts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: #a8bad2;
+  white-space: nowrap;
 }
 
 .status-pill {
