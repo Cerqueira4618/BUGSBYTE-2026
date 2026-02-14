@@ -9,15 +9,26 @@ const websocketStore = useWebSocketStore()
 
 const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true')
 const currentUserEmail = ref(localStorage.getItem('currentUserEmail') || '')
+const showScrollTop = ref(false)
+
+const onScroll = () => {
+  showScrollTop.value = window.scrollY > 300
+}
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 // Iniciar WebSocket quando o App é montado
 onMounted(() => {
   websocketStore.startArbitrageSocket()
+  window.addEventListener('scroll', onScroll)
 })
 
 // Desconectar quando o App é desmontado
 onBeforeUnmount(() => {
   websocketStore.disconnectSocket()
+  window.removeEventListener('scroll', onScroll)
 })
 
 // Atualiza o estado quando a rota muda
@@ -103,6 +114,13 @@ const userDisplay = computed(() => {
     <footer class="app-footer">
       <p>&copy;CryptoByte</p>
     </footer>
+
+    <button
+      v-show="showScrollTop"
+      class="scroll-top-btn"
+      aria-label="Voltar ao topo"
+      @click="scrollToTop"
+    >⬆</button>
   </div>
 </template>
 
@@ -293,6 +311,34 @@ const userDisplay = computed(() => {
   color: #ffd8d8;
   border: 1.2px solid rgba(255, 120, 120, 0.65);
   box-shadow: 0 4px 8px rgba(255, 120, 120, 0.18);
+}
+
+.scroll-top-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(102, 239, 139, 0.18);
+  color: #66ef8b;
+  border: 1px solid rgba(102, 239, 139, 0.4);
+  font-size: 20px;
+  line-height: 1;
+  padding-bottom: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transition: background 0.2s, transform 0.2s;
+  z-index: 50;
+}
+
+.scroll-top-btn:hover {
+  background: rgba(102, 239, 139, 0.32);
+  transform: scale(1.1);
 }
 </style>
 
