@@ -1,42 +1,98 @@
 <script setup lang="ts">
-const opportunities = [
-  {
-    pair: 'BTC/USDT',
-    buy: 'Binance',
-    sell: 'Kraken',
-    spread: '+0.92%',
-    fees: '-0.18%',
-    slippage: '-0.21%',
-    transfer: '-0.07%',
-    net: '+0.46%',
-    volatility: 'Média',
-    action: 'Simular'
-  },
-  {
-    pair: 'ETH/USDT',
-    buy: 'Coinbase',
-    sell: 'Bybit',
-    spread: '+0.74%',
-    fees: '-0.16%',
-    slippage: '-0.14%',
-    transfer: '-0.05%',
-    net: '+0.39%',
-    volatility: 'Baixa',
-    action: 'Simular'
-  },
-  {
-    pair: 'SOL/USDT',
-    buy: 'OKX',
-    sell: 'Gate',
-    spread: '+1.18%',
-    fees: '-0.22%',
-    slippage: '-0.44%',
-    transfer: '-0.09%',
-    net: '+0.43%',
-    volatility: 'Alta',
-    action: 'Aguardar'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import {
+  connectArbitrageSocket,
+  getArbitrageOpportunities,
+  getArbitrageStatus,
+  getArbitrageTrades,
+  type ArbitrageOpportunity,
+  type ArbitrageStatus,
+  type SimulatedTrade,
+} from '../services/arbitrage'
+
+const loading = ref(true)
+const error = ref('')
+const status = ref<ArbitrageStatus | null>(null)
+const opportunities = ref<ArbitrageOpportunity[]>([])
+const trades = ref<SimulatedTrade[]>([])
+const socketState = ref<'connected' | 'disconnected'>('disconnected')
+
+let socket: WebSocket | null = null
+
+const acceptedOpportunities = computed(() => opportunities.value.filter((item) => item.status === 'accepted'))
+
+const averageNetSpread = computed(() => {
+  if (!acceptedOpportunities.value.length) return 0
+  const total = acceptedOpportunities.value.reduce((acc, item) => acc + item.net_spread_pct, 0)
+  return total / acceptedOpportunities.value.length
+})
+
+const volatilityLabel = computed(() => {
+  const latestLatency = status.value?.latest_opportunity?.latency_ms ?? 0
+  if (latestLatency > 900) return 'Alta'
+  if (latestLatency > 450) return 'Média'
+  return 'Baixa'
+})
+
+function formatPct(value: number): string {
+  return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`
+}
+
+function formatUsd(value: number): string {
+  return `${value >= 0 ? '+' : ''}$${value.toFixed(2)}`
+}
+
+function volatilityClass(latencyMs: number): 'baixa' | 'media' | 'alta' {
+  if (latencyMs > 900) return 'alta'
+  if (latencyMs > 450) return 'media'
+  return 'baixa'
+}
+
+function volatilityText(latencyMs: number): 'Baixa' | 'Média' | 'Alta' {
+  if (latencyMs > 900) return 'Alta'
+  if (latencyMs > 450) return 'Média'
+  return 'Baixa'
+}
+
+async function loadData() {
+  try {
+    error.value = ''
+    const [statusData, opportunitiesData, tradesData] = await Promise.all([
+      getArbitrageStatus(),
+      getArbitrageOpportunities(50),
+      getArbitrageTrades(20),
+    ])
+    status.value = statusData
+    opportunities.value = opportunitiesData
+    trades.value = tradesData
+  } catch {
+    error.value = 'Não foi possível carregar os dados do backend. Verifica se o FastAPI está ativo na porta 8000.'
+  } finally {
+    loading.value = false
   }
-]
+}
+
+function startSocket() {
+  socket = connectArbitrageSocket(({ snapshot }) => {
+    status.value = snapshot
+    socketState.value = 'connected'
+  })
+  socket.addEventListener('close', () => {
+    socketState.value = 'disconnected'
+  })
+  socket.addEventListener('error', () => {
+    socketState.value = 'disconnected'
+  })
+}
+
+onMounted(async () => {
+  await loadData()
+  startSocket()
+})
+
+onBeforeUnmount(() => {
+  socket?.close()
+})
 </script>
 
 <template>
@@ -48,20 +104,35 @@ const opportunities = [
           Objetivo: detectar ineficiências entre order books e simular captura de lucro
           líquido automatizada, considerando volatilidade em tempo real.
         </p>
+        <p class="connection" :class="socketState">WS: {{ socketState }}</p>
       </div>
+
+      <p v-if="error" class="error-box">{{ error }}</p>
 
       <div class="metrics">
         <div class="metric">
           <span>Oportunidades ativas</span>
-          <strong>3</strong>
+          <strong>{{ acceptedOpportunities.length }}</strong>
         </div>
         <div class="metric">
           <span>Lucro líquido médio</span>
-          <strong>+0.43%</strong>
+          <strong>{{ formatPct(averageNetSpread) }}</strong>
         </div>
         <div class="metric">
           <span>Risco de volatilidade</span>
-          <strong>Médio</strong>
+          <strong>{{ volatilityLabel }}</strong>
+        </div>
+        <div class="metric">
+          <span>P&L acumulado</span>
+          <strong>{{ formatUsd(status?.total_pnl_usd ?? 0) }}</strong>
+        </div>
+        <div class="metric">
+          <span>Saldo simulado</span>
+          <strong>{{ formatUsd(status?.balance_usd ?? 0) }}</strong>
+        </div>
+        <div class="metric">
+          <span>Exchanges ativas</span>
+          <strong>{{ status?.active_exchanges?.join(', ') || '-' }}</strong>
         </div>
       </div>
 
@@ -73,33 +144,45 @@ const opportunities = [
               <th>Compra (A)</th>
               <th>Venda (B)</th>
               <th>Spread Bruto</th>
-              <th>Fees</th>
-              <th>Slippage</th>
-              <th>Transferência</th>
               <th>Lucro Líquido</th>
+              <th>Lucro Esperado (USD)</th>
+              <th>Latência (ms)</th>
               <th>Volatilidade</th>
-              <th>Ação</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in opportunities" :key="`${item.pair}-${item.buy}-${item.sell}`">
-              <td>{{ item.pair }}</td>
-              <td>{{ item.buy }}</td>
-              <td>{{ item.sell }}</td>
-              <td class="positive">{{ item.spread }}</td>
-              <td class="negative">{{ item.fees }}</td>
-              <td class="negative">{{ item.slippage }}</td>
-              <td class="negative">{{ item.transfer }}</td>
-              <td class="positive">{{ item.net }}</td>
+            <tr v-if="loading">
+              <td colspan="9">A carregar dados...</td>
+            </tr>
+            <tr v-else-if="!opportunities.length">
+              <td colspan="9">Sem oportunidades recebidas.</td>
+            </tr>
+            <tr v-for="item in opportunities" :key="`${item.timestamp}-${item.buy_exchange}-${item.sell_exchange}`">
+              <td>{{ item.symbol }}</td>
+              <td>{{ item.buy_exchange }}</td>
+              <td>{{ item.sell_exchange }}</td>
+              <td :class="item.gross_spread_pct >= 0 ? 'positive' : 'negative'">{{ formatPct(item.gross_spread_pct) }}</td>
+              <td :class="item.net_spread_pct >= 0 ? 'positive' : 'negative'">{{ formatPct(item.net_spread_pct) }}</td>
+              <td :class="item.expected_profit_usd >= 0 ? 'positive' : 'negative'">{{ formatUsd(item.expected_profit_usd) }}</td>
+              <td>{{ item.latency_ms.toFixed(1) }}</td>
               <td>
-                <span class="badge" :class="item.volatility.toLowerCase()">{{ item.volatility }}</span>
+                <span class="badge" :class="volatilityClass(item.latency_ms)">{{ volatilityText(item.latency_ms) }}</span>
               </td>
-              <td>
-                <button class="row-btn">{{ item.action }}</button>
-              </td>
+              <td>{{ item.status }}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="trades-section">
+        <h3>Execuções Simuladas</h3>
+        <ul>
+          <li v-for="trade in trades.slice().reverse().slice(0, 5)" :key="trade.timestamp + trade.buy_exchange + trade.sell_exchange">
+            {{ trade.symbol }} | {{ trade.buy_exchange }} → {{ trade.sell_exchange }} | {{ formatUsd(trade.pnl_usd) }}
+          </li>
+          <li v-if="!trades.length">Ainda não há execuções simuladas.</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -129,6 +212,28 @@ const opportunities = [
   margin: 0;
   color: #aebcd3;
   line-height: 1.45;
+}
+
+.connection {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.connection.connected {
+  color: #66ef8b;
+}
+
+.connection.disconnected {
+  color: #ff9d9d;
+}
+
+.error-box {
+  margin: 12px 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 116, 116, 0.12);
+  border: 1px solid rgba(255, 116, 116, 0.25);
+  color: #ffd4d4;
 }
 
 .metrics {
@@ -164,7 +269,7 @@ const opportunities = [
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 960px;
+  min-width: 900px;
 }
 
 thead {
@@ -212,6 +317,11 @@ th {
   color: #ffd27a;
 }
 
+.badge.media {
+  background: rgba(255, 206, 112, 0.14);
+  color: #ffd27a;
+}
+
 .badge.alta {
   background: rgba(255, 124, 124, 0.16);
   color: #ff8f8f;
@@ -224,5 +334,25 @@ th {
   border-radius: 8px;
   padding: 6px 10px;
   cursor: pointer;
+}
+
+.trades-section {
+  margin-top: 16px;
+}
+
+.trades-section h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: #dbe9ff;
+}
+
+.trades-section ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #b9cae3;
+}
+
+.trades-section li {
+  margin-bottom: 6px;
 }
 </style>
