@@ -36,6 +36,8 @@ class PersistenceManager:
         self._task = None
 
     def submit_opportunity(self, item: Opportunity) -> None:
+        if item.status != "accepted":
+            return
         try:
             self._queue.put_nowait(PersistEvent(kind="opportunity", payload=item))
         except asyncio.QueueFull:

@@ -109,7 +109,7 @@ class ArbitrageEngine:
                 timestamp=now,
             )
             self.opportunities.append(opportunity)
-            if self._persistence is not None:
+            if self._persistence is not None and opportunity.status == "accepted":
                 submit = getattr(self._persistence, "submit_opportunity", None)
                 if callable(submit):
                     submit(opportunity)
@@ -250,17 +250,22 @@ class ArbitrageEngine:
 
     async def list_opportunities(self, limit: int = 100, symbols: list[str] | None = None) -> list[Opportunity]:
         async with self._lock:
+            items = list(self.opportunities)[-limit:]
+            if symbols:
+                symbols_set = {s.upper() for s in symbols}
+                items = [item for item in items if item.symbol.upper() in symbols_set]
+
+            if items:
+                return items
+
             if self._db is not None:
                 list_fn = getattr(self._db, "list_opportunities", None)
                 if callable(list_fn):
                     try:
                         return await list_fn(limit=limit, symbols=symbols)
                     except Exception:
-                        return list(self.opportunities)[-limit:]
-            items = list(self.opportunities)[-limit:]
-            if symbols:
-                symbols_set = {s.upper() for s in symbols}
-                return [item for item in items if item.symbol.upper() in symbols_set]
+                        return []
+
             return items
 
     async def list_trades(self, limit: int = 100, symbols: list[str] | None = None) -> list[SimulatedTrade]:
