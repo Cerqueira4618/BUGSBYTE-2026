@@ -2,9 +2,20 @@ export type ArbitrageStatus = {
   symbol: string;
   symbols?: string[];
   trade_size: number;
+  simulation_volume_usd?: number | null;
   balance_usd: number;
   total_pnl_usd: number;
   active_exchanges: string[];
+  inventory_by_exchange?: Record<
+    string,
+    {
+      quote_asset: string;
+      quote_balance: number;
+      base_asset: string;
+      base_balance: number;
+      asset_balances?: Record<string, number>;
+    }
+  >;
   latest_opportunity: ArbitrageOpportunity | null;
 };
 

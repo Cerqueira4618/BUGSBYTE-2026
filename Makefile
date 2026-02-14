@@ -7,6 +7,8 @@ BACKEND_DIR := $(ROOT_DIR)/backend
 BACKEND_PID_FILE := $(BACKEND_DIR)/.uvicorn.pid
 BACKEND_LOG_FILE := $(BACKEND_DIR)/.uvicorn.log
 BACKEND_DB_FILE := $(BACKEND_DIR)/data/bugsbyte.db
+BACKEND_DB_WAL := $(BACKEND_DIR)/data/bugsbyte.db-wal
+BACKEND_DB_SHM := $(BACKEND_DIR)/data/bugsbyte.db-shm
 
 ifneq (,$(wildcard $(ROOT_DIR)/.venv/bin/python))
 PYTHON := $(ROOT_DIR)/.venv/bin/python
@@ -76,8 +78,13 @@ backend-off:
 			echo "Processo $$PID não estava em execução."
 		fi
 	fi
+	if fuser 8000/tcp >/dev/null 2>&1; then
+		fuser -k 8000/tcp >/dev/null 2>&1 || true
+		echo "Processos na porta 8000 terminados."
+	fi
 	rm -f "$(BACKEND_PID_FILE)"
 	rm -f "$(BACKEND_DB_FILE)"
+	rm -f "$(BACKEND_DB_WAL)" "$(BACKEND_DB_SHM)"
 	echo "Base de dados resetada: $(BACKEND_DB_FILE)"
 
 backend-status:

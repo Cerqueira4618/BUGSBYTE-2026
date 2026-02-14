@@ -97,7 +97,9 @@ const quoteSuffixes = [
   "ETH",
 ];
 
-function splitTradingPair(symbol: string): { base: string; quote: string } | null {
+function splitTradingPair(
+  symbol: string,
+): { base: string; quote: string } | null {
   const normalized = symbol.toUpperCase();
   for (const suffix of quoteSuffixes) {
     if (normalized.endsWith(suffix) && normalized.length > suffix.length) {
@@ -115,7 +117,10 @@ const parsedPairs = computed(() =>
       if (!parsed) return null;
       return { symbol, ...parsed };
     })
-    .filter((item): item is { symbol: string; base: string; quote: string } => item !== null),
+    .filter(
+      (item): item is { symbol: string; base: string; quote: string } =>
+        item !== null,
+    ),
 );
 
 const baseCurrencies = computed(() =>
@@ -124,7 +129,9 @@ const baseCurrencies = computed(() =>
 
 const quoteCurrencies = computed(() => {
   const candidates = selectedBaseCurrency.value
-    ? parsedPairs.value.filter((pair) => pair.base === selectedBaseCurrency.value)
+    ? parsedPairs.value.filter(
+        (pair) => pair.base === selectedBaseCurrency.value,
+      )
     : parsedPairs.value;
   return Array.from(new Set(candidates.map((pair) => pair.quote)))
     .filter((quote) => quote !== "BNB")
@@ -134,8 +141,16 @@ const quoteCurrencies = computed(() => {
 const matchingPairs = computed(() =>
   parsedPairs.value
     .filter((pair) => {
-      if (selectedBaseCurrency.value && pair.base !== selectedBaseCurrency.value) return false;
-      if (selectedQuoteCurrency.value && pair.quote !== selectedQuoteCurrency.value) return false;
+      if (
+        selectedBaseCurrency.value &&
+        pair.base !== selectedBaseCurrency.value
+      )
+        return false;
+      if (
+        selectedQuoteCurrency.value &&
+        pair.quote !== selectedQuoteCurrency.value
+      )
+        return false;
       return true;
     })
     .map((pair) => pair.symbol),
@@ -183,7 +198,10 @@ let tickTimer: number | null = null;
 const now = ref(Date.now());
 
 function timeAgo(iso: string): string {
-  const diff = Math.max(0, Math.floor((now.value - new Date(iso).getTime()) / 1000));
+  const diff = Math.max(
+    0,
+    Math.floor((now.value - new Date(iso).getTime()) / 1000),
+  );
   if (diff < 60) return `há ${diff}s`;
   if (diff < 3600) return `há ${Math.floor(diff / 60)}m`;
   return `há ${Math.floor(diff / 3600)}h`;
@@ -204,6 +222,23 @@ const acceptedTradesHistory = computed(() =>
         new Date(left.timestamp).getTime(),
     ),
 );
+
+const exchangeInventory = computed(() => {
+  const inventory = status.value?.inventory_by_exchange ?? {};
+  return Object.entries(inventory).map(([exchange, wallet]) => ({
+    exchange,
+    quoteAsset: wallet.quote_asset,
+    quoteBalance: wallet.quote_balance,
+    baseAsset: wallet.base_asset,
+    baseBalance: wallet.base_balance,
+    assetBalances: Object.entries(wallet.asset_balances ?? {}).map(
+      ([asset, balance]) => ({
+        asset,
+        balance,
+      }),
+    ),
+  }));
+});
 
 const averageNetSpread = computed(() => {
   if (!acceptedOpportunities.value.length) return 0;
@@ -266,6 +301,22 @@ function formatDateTime(value: string): string {
     minute: "2-digit",
     second: "2-digit",
   });
+}
+
+function reasonLabel(reason: string): string {
+  if (reason === "insufficient_exchange_balance") {
+    return "Sem saldo suficiente";
+  }
+  if (reason === "insufficient_depth") {
+    return "Sem profundidade";
+  }
+  if (reason === "fees_and_transfer_filtered") {
+    return "Filtrado por custos";
+  }
+  if (reason === "profitable") {
+    return "Rentável";
+  }
+  return reason;
 }
 
 function latencyText(latencyMs: number): string {
@@ -515,7 +566,11 @@ watch(simulationVolumeUsd, (value) => {
             @change="onCurrencyChange"
           >
             <option value="">Todas</option>
-            <option v-for="quote in quoteCurrencies" :key="quote" :value="quote">
+            <option
+              v-for="quote in quoteCurrencies"
+              :key="quote"
+              :value="quote"
+            >
               {{ quote }}
             </option>
           </select>
@@ -563,6 +618,35 @@ watch(simulationVolumeUsd, (value) => {
         <div class="metric">
           <span>Exchanges ativas</span>
           <strong>{{ status?.active_exchanges?.join(", ") || "-" }}</strong>
+        </div>
+      </div>
+
+      <div class="inventory-section">
+        <h3>Carteiras por Exchange</h3>
+        <div class="inventory-grid">
+          <div
+            v-for="wallet in exchangeInventory"
+            :key="wallet.exchange"
+            class="inventory-card"
+          >
+            <div class="inventory-title">{{ wallet.exchange }}</div>
+            <div class="inventory-line">
+              {{ formatUsd(wallet.quoteBalance) }} {{ wallet.quoteAsset }}
+            </div>
+            <div
+              v-for="asset in wallet.assetBalances"
+              :key="wallet.exchange + asset.asset"
+              class="inventory-line"
+            >
+              {{ asset.balance.toFixed(6) }} {{ asset.asset }}
+            </div>
+            <div v-if="!wallet.assetBalances.length" class="inventory-line">
+              {{ wallet.baseBalance.toFixed(6) }} {{ wallet.baseAsset }}
+            </div>
+          </div>
+          <div v-if="!exchangeInventory.length" class="inventory-empty">
+            Saldos indisponíveis.
+          </div>
         </div>
       </div>
 
@@ -617,12 +701,17 @@ watch(simulationVolumeUsd, (value) => {
                 </span>
               </td>
               <td>
-                <span v-if="item.buy_book_updated_at || item.sell_book_updated_at" class="update-ts">
-                  {{ timeAgo(
-                    [item.buy_book_updated_at, item.sell_book_updated_at]
-                      .filter(Boolean)
-                      .sort()[0]!
-                  ) }}
+                <span
+                  v-if="item.buy_book_updated_at || item.sell_book_updated_at"
+                  class="update-ts"
+                >
+                  {{
+                    timeAgo(
+                      [item.buy_book_updated_at, item.sell_book_updated_at]
+                        .filter(Boolean)
+                        .sort()[0]!,
+                    )
+                  }}
                 </span>
                 <span v-else>—</span>
               </td>
@@ -637,17 +726,34 @@ watch(simulationVolumeUsd, (value) => {
 
         <div v-if="totalPages > 1" class="pagination">
           <button :disabled="currentPage <= 1" @click="goToPage(1)">«</button>
-          <button :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">‹</button>
+          <button
+            :disabled="currentPage <= 1"
+            @click="goToPage(currentPage - 1)"
+          >
+            ‹
+          </button>
           <template v-for="page in visiblePages" :key="page">
             <span v-if="page < 0" class="ellipsis">…</span>
             <button
               v-else
               :class="{ active: page === currentPage }"
               @click="goToPage(page)"
-            >{{ page }}</button>
+            >
+              {{ page }}
+            </button>
           </template>
-          <button :disabled="currentPage >= totalPages" @click="goToPage(currentPage + 1)">›</button>
-          <button :disabled="currentPage >= totalPages" @click="goToPage(totalPages)">»</button>
+          <button
+            :disabled="currentPage >= totalPages"
+            @click="goToPage(currentPage + 1)"
+          >
+            ›
+          </button>
+          <button
+            :disabled="currentPage >= totalPages"
+            @click="goToPage(totalPages)"
+          >
+            »
+          </button>
           <span class="page-info">{{ opportunities.length }} resultados</span>
         </div>
       </div>
@@ -945,7 +1051,9 @@ th {
   font-size: 13px;
   cursor: pointer;
   min-width: 32px;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 
 .pagination button:hover:not(:disabled):not(.active) {
@@ -1009,6 +1117,22 @@ th {
   box-shadow: 0 6px 12px rgba(255, 120, 120, 0.18);
 }
 
+.reason-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #c8d7ee;
+  background: rgba(120, 151, 189, 0.18);
+  border: 1px solid rgba(120, 151, 189, 0.24);
+}
+
+.reason-pill.warning {
+  color: #ffd27a;
+  background: rgba(255, 206, 112, 0.16);
+  border-color: rgba(255, 206, 112, 0.45);
+}
+
 .status-dot {
   display: inline-block;
   width: 12px;
@@ -1038,6 +1162,46 @@ th {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+}
+
+.inventory-section {
+  margin-top: 16px;
+  margin-bottom: 18px;
+}
+
+.inventory-section h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: #dbe9ff;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.inventory-card {
+  border-radius: 10px;
+  border: 1px solid rgba(120, 151, 189, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px;
+}
+
+.inventory-title {
+  color: #f6fbff;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.inventory-line {
+  color: #b9cae3;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.inventory-empty {
+  color: #a8bad2;
 }
 
 .chart-section,
