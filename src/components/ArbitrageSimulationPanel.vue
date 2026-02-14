@@ -146,6 +146,37 @@ const activeSymbols = computed(() => {
   return matchingPairs.value;
 });
 
+const PAGE_SIZE = 26;
+const currentPage = ref(1);
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(opportunities.value.length / PAGE_SIZE)),
+);
+
+const visiblePages = computed(() => {
+  const total = totalPages.value;
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const current = currentPage.value;
+  const pages: number[] = [1];
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+  if (start > 2) pages.push(-1);
+  for (let i = start; i <= end; i++) pages.push(i);
+  if (end < total - 1) pages.push(-2);
+  pages.push(total);
+  return pages;
+});
+
+const paginatedOpportunities = computed(() => {
+  const page = Math.min(currentPage.value, totalPages.value);
+  const start = (page - 1) * PAGE_SIZE;
+  return opportunities.value.slice(start, start + PAGE_SIZE);
+});
+
+function goToPage(page: number): void {
+  currentPage.value = Math.max(1, Math.min(page, totalPages.value));
+}
+
 let socket: WebSocket | null = null;
 let refreshTimer: number | null = null;
 let tickTimer: number | null = null;
@@ -250,6 +281,7 @@ function latencyClass(latencyMs: number): string {
 }
 
 function onCurrencyChange(): void {
+  currentPage.value = 1;
   void loadData();
 }
 
@@ -557,7 +589,7 @@ watch(simulationVolumeUsd, (value) => {
               <td colspan="9">Sem oportunidades recebidas.</td>
             </tr>
             <tr
-              v-for="item in opportunities"
+              v-for="item in paginatedOpportunities"
               :key="`${item.symbol}-${item.buy_exchange}-${item.sell_exchange}`"
             >
               <td>
@@ -602,6 +634,22 @@ watch(simulationVolumeUsd, (value) => {
             </tr>
           </tbody>
         </table>
+
+        <div v-if="totalPages > 1" class="pagination">
+          <button :disabled="currentPage <= 1" @click="goToPage(1)">«</button>
+          <button :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">‹</button>
+          <template v-for="page in visiblePages" :key="page">
+            <span v-if="page < 0" class="ellipsis">…</span>
+            <button
+              v-else
+              :class="{ active: page === currentPage }"
+              @click="goToPage(page)"
+            >{{ page }}</button>
+          </template>
+          <button :disabled="currentPage >= totalPages" @click="goToPage(currentPage + 1)">›</button>
+          <button :disabled="currentPage >= totalPages" @click="goToPage(totalPages)">»</button>
+          <span class="page-info">{{ opportunities.length }} resultados</span>
+        </div>
       </div>
 
       <div class="split-grid">
@@ -877,6 +925,57 @@ th {
   font-size: 13px;
   color: #a8bad2;
   white-space: nowrap;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  background: rgba(255, 255, 255, 0.05);
+  color: #c9d6ea;
+  border: 1px solid rgba(109, 141, 180, 0.2);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  min-width: 32px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pagination button:hover:not(:disabled):not(.active) {
+  background: rgba(102, 239, 139, 0.1);
+  border-color: rgba(102, 239, 139, 0.3);
+}
+
+.pagination button.active {
+  background: rgba(102, 239, 139, 0.2);
+  color: #66ef8b;
+  border-color: rgba(102, 239, 139, 0.5);
+  font-weight: 700;
+}
+
+.pagination button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-info {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #8899b0;
+}
+
+.ellipsis {
+  color: #8899b0;
+  padding: 0 4px;
+  font-size: 14px;
+  user-select: none;
 }
 
 .status-pill {
