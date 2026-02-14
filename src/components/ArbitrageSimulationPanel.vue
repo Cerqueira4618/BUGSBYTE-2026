@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useWebSocketStore } from "../stores/websocket";
+import CustomSelect from "./CustomSelect.vue";
 import {
   CategoryScale,
   Chart,
@@ -633,34 +634,22 @@ watch(simulationVolumeUsd, (value) => {
       <div class="filter-bar">
         <div class="filter-group">
           <label for="base-currency">Moeda base</label>
-          <select
-            id="base-currency"
+          <CustomSelect
             v-model="selectedBaseCurrency"
-            @change="onCurrencyChange"
-          >
-            <option value="">Todas</option>
-            <option v-for="base in baseCurrencies" :key="base" :value="base">
-              {{ base }}
-            </option>
-          </select>
+            :options="baseCurrencies"
+            placeholder="Todas"
+            @update:model-value="onCurrencyChange"
+          />
         </div>
 
         <div class="filter-group">
           <label for="quote-currency">Moeda cotada</label>
-          <select
-            id="quote-currency"
+          <CustomSelect
             v-model="selectedQuoteCurrency"
-            @change="onCurrencyChange"
-          >
-            <option value="">Todas</option>
-            <option
-              v-for="quote in quoteCurrencies"
-              :key="quote"
-              :value="quote"
-            >
-              {{ quote }}
-            </option>
-          </select>
+            :options="quoteCurrencies"
+            placeholder="Todas"
+            @update:model-value="onCurrencyChange"
+          />
         </div>
 
         <div class="filter-group">
@@ -1031,8 +1020,12 @@ watch(simulationVolumeUsd, (value) => {
   border: 1px solid rgba(102, 239, 139, 0.35);
   color: #e6f7ff;
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 7px 10px;
   outline: none;
+  height: 38px;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .filter-group input {
@@ -1040,8 +1033,12 @@ watch(simulationVolumeUsd, (value) => {
   border: 1px solid rgba(102, 239, 139, 0.35);
   color: #e6f7ff;
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 7px 10px;
   outline: none;
+  height: 38px;
+  box-sizing: border-box;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .filter-group input:focus {
