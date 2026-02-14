@@ -19,6 +19,11 @@ const routes = [
       requiresAuth: true,
     },
   },
+  {
+    path: '/mercado',
+    name: 'Market',
+    component: () => import('../pages/Market.vue'),
+  },
 ]
 
 const router = createRouter({

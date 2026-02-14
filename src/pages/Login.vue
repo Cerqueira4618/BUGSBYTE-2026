@@ -1,10 +1,67 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+type LoginUser = {
+  email: string
+  password: string
+}
+
+const DEFAULT_USERS: LoginUser[] = [
+  {
+    email: 'admin@cryptobyte.com',
+    password: '123456',
+  },
+]
+
 const router = useRouter()
+const email = ref('')
+const password = ref('')
+const errorMessage = ref('')
+
+const getExistingUsers = (): LoginUser[] => {
+  const rawUsers = localStorage.getItem('users')
+
+  if (!rawUsers) {
+    return DEFAULT_USERS
+  }
+
+  try {
+    const parsed = JSON.parse(rawUsers)
+    if (!Array.isArray(parsed)) {
+      return DEFAULT_USERS
+    }
+
+    return parsed.filter(
+      (user): user is LoginUser =>
+        typeof user?.email === 'string' && typeof user?.password === 'string',
+    )
+  } catch {
+    return DEFAULT_USERS
+  }
+}
 
 const handleLogin = () => {
+  errorMessage.value = ''
+
+  const normalizedEmail = email.value.trim().toLowerCase()
+  const typedPassword = password.value
+
+  const users = getExistingUsers()
+  const validUser = users.find(
+    (user) =>
+      user.email.trim().toLowerCase() === normalizedEmail &&
+      user.password === typedPassword,
+  )
+
+  if (!validUser) {
+    localStorage.setItem('isAuthenticated', 'false')
+    errorMessage.value = 'Email ou senha inválidos. Verifique os dados e tente novamente.'
+    return
+  }
+
   localStorage.setItem('isAuthenticated', 'true')
+  localStorage.setItem('currentUserEmail', validUser.email)
   router.push({ name: 'Simulator' })
 }
 </script>
@@ -17,10 +74,12 @@ const handleLogin = () => {
 
       <form class="login-form" @submit.prevent="handleLogin">
         <label for="email">E-mail</label>
-        <input id="email" type="email" placeholder="seuemail@dominio.com" required />
+        <input id="email" v-model="email" type="email" placeholder="seuemail@dominio.com" required />
 
         <label for="password">Senha</label>
-        <input id="password" type="password" placeholder="••••••••" required />
+        <input id="password" v-model="password" type="password" placeholder="••••••••" required />
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <p class="help-message">Conta de teste: admin@cryptobyte.com / 123456</p>
         <button type="submit">Entrar</button>
       </form>
     </div>
@@ -87,5 +146,17 @@ button {
   color: #031018;
   font-weight: 700;
   cursor: pointer;
+}
+
+.error-message {
+  margin: 0;
+  font-size: 13px;
+  color: #ff9ea1;
+}
+
+.help-message {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(232, 240, 252, 0.68);
 }
 </style>

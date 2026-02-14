@@ -16,7 +16,7 @@
           </RouterLink>
           <nav class="main-nav">
             <RouterLink :to="{ name: 'Simulator' }" class="nav-item" active-class="nav-item-active">Simulador</RouterLink>
-            <a href="#" class="nav-item">Market</a>
+            <RouterLink :to="{ name: 'Market' }" class="nav-item" active-class="nav-item-active">Mercado</RouterLink>
             <a href="#" class="nav-item">Learn</a>
             <a href="#" class="nav-item">Transparency</a>
             <a href="#" class="nav-item">Enterprise</a>
