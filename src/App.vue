@@ -22,7 +22,7 @@
             <a href="#" class="nav-item">Enterprise</a>
           </nav>
           <div class="actions">
-            <RouterLink :to="{ name: 'Login' }" class="login-link">Login</RouterLink>
+            <span class="login-link">Login</span>
             <button class="cta">
               <span>Get started</span>
               <span class="arrow">→</span>
