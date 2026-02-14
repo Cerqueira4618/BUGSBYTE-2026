@@ -62,9 +62,17 @@ def _reserve_from_levels(levels: list[OrderBookLevel], quantity: float) -> None:
 
 
 class ArbitrageEngine:
-    def __init__(self, config: AppConfig) -> None:
+    def __init__(
+        self,
+        config: AppConfig,
+        *,
+        db: object | None = None,
+        persistence: object | None = None,
+    ) -> None:
         self.config = config
         self._lock = asyncio.Lock()
+        self._db = db
+        self._persistence = persistence
         self.order_books: dict[str, NormalizedOrderBook] = {}
         self.opportunities: deque[Opportunity] = deque(maxlen=600)
         self.executed_trades: deque[SimulatedTrade] = deque(maxlen=300)
@@ -101,6 +109,10 @@ class ArbitrageEngine:
                 timestamp=now,
             )
             self.opportunities.append(opportunity)
+            if self._persistence is not None:
+                submit = getattr(self._persistence, "submit_opportunity", None)
+                if callable(submit):
+                    submit(opportunity)
             self.metrics_log.append(
                 {
                     "timestamp": now.isoformat(),
@@ -219,6 +231,10 @@ class ArbitrageEngine:
                 latency_ms=opportunity.latency_ms,
             )
         )
+        if self._persistence is not None and self.executed_trades:
+            submit = getattr(self._persistence, "submit_trade", None)
+            if callable(submit):
+                submit(self.executed_trades[-1])
 
     async def snapshot(self) -> dict:
         async with self._lock:
@@ -234,10 +250,24 @@ class ArbitrageEngine:
 
     async def list_opportunities(self, limit: int = 100) -> list[Opportunity]:
         async with self._lock:
+            if self._db is not None:
+                list_fn = getattr(self._db, "list_opportunities", None)
+                if callable(list_fn):
+                    try:
+                        return await list_fn(limit=limit)
+                    except Exception:
+                        return list(self.opportunities)[-limit:]
             return list(self.opportunities)[-limit:]
 
     async def list_trades(self, limit: int = 100) -> list[SimulatedTrade]:
         async with self._lock:
+            if self._db is not None:
+                list_fn = getattr(self._db, "list_trades", None)
+                if callable(list_fn):
+                    try:
+                        return await list_fn(limit=limit)
+                    except Exception:
+                        return list(self.executed_trades)[-limit:]
             return list(self.executed_trades)[-limit:]
 
     async def spread_series(self, limit: int = 200) -> list[dict]:

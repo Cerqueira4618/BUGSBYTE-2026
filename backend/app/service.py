@@ -4,14 +4,18 @@ import asyncio
 from pathlib import Path
 
 from .config import AppConfig, load_config
+from .db import Database
 from .engine import ArbitrageEngine
 from .market_data import BinanceDepthFeed, MarketDataFeed, SimulatedDepthFeed
+from .persistence import PersistenceManager
 
 
 class ArbitrageService:
     def __init__(self, root_path: Path) -> None:
         self.config: AppConfig = load_config(root_path)
-        self.engine = ArbitrageEngine(self.config)
+        self.db = Database.from_env(root_path)
+        self.persistence = PersistenceManager(self.db)
+        self.engine = ArbitrageEngine(self.config, db=self.db, persistence=self.persistence)
         self.feeds: list[MarketDataFeed] = []
         self._started = False
 
@@ -38,6 +42,8 @@ class ArbitrageService:
     async def start(self) -> None:
         if self._started:
             return
+        await self.db.init()
+        await self.persistence.start()
         self.feeds = self._build_feeds()
         await asyncio.gather(*(feed.start(self.engine.on_order_book) for feed in self.feeds))
         self._started = True
@@ -46,4 +52,6 @@ class ArbitrageService:
         if not self._started:
             return
         await asyncio.gather(*(feed.stop() for feed in self.feeds), return_exceptions=True)
+        await self.persistence.stop()
+        await self.db.close()
         self._started = False

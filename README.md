@@ -76,6 +76,22 @@ Edita `backend/config.json` para:
 - `WS /ws/arbitrage`
   - stream de snapshot em tempo real para dashboard
 
+### Persistência de dados (trades/oportunidades)
+
+O motor guarda oportunidades e trades em memória para o dashboard em tempo real, mas agora também persiste em BD.
+
+- Por defeito usa **SQLite** em `backend/data/bugsbyte.db`
+- Para usar **PostgreSQL**, define `DATABASE_URL`
+
+Exemplos:
+
+- SQLite (default, não precisas definir nada)
+- PostgreSQL:
+
+```bash
+export DATABASE_URL='postgresql+asyncpg://user:pass@localhost:5432/bugsbyte'
+```
+
 ### Como testar rápido
 
 1. Arranca o backend:
