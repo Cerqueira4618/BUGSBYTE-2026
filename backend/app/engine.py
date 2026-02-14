@@ -80,6 +80,21 @@ class ArbitrageEngine:
         self.total_pnl_usd = 0.0
         self.balance_usd = config.starting_balance_usd
         self.fees = {feed.name: feed.fee for feed in config.feeds if feed.enabled}
+        self.simulation_volume_usd: float | None = None
+
+    def set_simulation_volume_usd(self, value: float | None) -> None:
+        if value is None or value <= 0:
+            self.simulation_volume_usd = None
+            return
+        self.simulation_volume_usd = float(value)
+
+    def _resolve_trade_size(self, buy_book: NormalizedOrderBook) -> float:
+        if self.simulation_volume_usd is None:
+            return self.config.trade_size
+        reference_price = buy_book.best_ask or 0.0
+        if reference_price <= 0:
+            return 0.0
+        return self.simulation_volume_usd / reference_price
 
     async def on_order_book(self, book: NormalizedOrderBook) -> None:
         async with self._lock:
@@ -107,6 +122,7 @@ class ArbitrageEngine:
                 sell_book=sell_book,
                 latency_ms=max(decision_latency_ms, 0.0),
                 timestamp=now,
+                trade_size=self._resolve_trade_size(buy_book),
             )
             self.opportunities.append(opportunity)
             if self._persistence is not None and opportunity.status == "accepted":
@@ -141,8 +157,28 @@ class ArbitrageEngine:
         sell_book: NormalizedOrderBook,
         latency_ms: float,
         timestamp: datetime,
+        trade_size: float | None = None,
     ) -> Opportunity:
-        size = self.config.trade_size
+        size = trade_size if trade_size is not None else self.config.trade_size
+        if size <= 0:
+            return Opportunity(
+                timestamp=timestamp,
+                status="discarded",
+                reason="invalid_trade_size",
+                symbol=buy_book.symbol,
+                buy_exchange=buy_book.exchange,
+                sell_exchange=sell_book.exchange,
+                trade_size=size,
+                gross_spread_pct=0.0,
+                net_spread_pct=0.0,
+                expected_profit_usd=0.0,
+                latency_ms=latency_ms,
+                buy_vwap=0.0,
+                sell_vwap=0.0,
+                buy_book_updated_at=buy_book.exchange_timestamp,
+                sell_book_updated_at=sell_book.exchange_timestamp,
+            )
+
         buy_vwap, buy_filled = _compute_vwap_for_buy(buy_book.asks, size)
         sell_vwap, sell_filled = _compute_vwap_for_sell(sell_book.bids, size)
         filled = min(buy_filled, sell_filled)
@@ -248,14 +284,56 @@ class ArbitrageEngine:
             return {
                 "symbol": self.config.symbol,
                 "trade_size": self.config.trade_size,
+                "simulation_volume_usd": self.simulation_volume_usd,
                 "balance_usd": self.balance_usd,
                 "total_pnl_usd": self.total_pnl_usd,
                 "active_exchanges": list(self.order_books.keys()),
                 "latest_opportunity": opportunity_to_dict(latest) if latest else None,
             }
 
-    async def list_opportunities(self, limit: int = 100, symbols: list[str] | None = None) -> list[Opportunity]:
+    async def list_opportunities(
+        self,
+        limit: int = 100,
+        symbols: list[str] | None = None,
+        simulation_volume_usd: float | None = None,
+    ) -> list[Opportunity]:
         async with self._lock:
+            if simulation_volume_usd is not None and simulation_volume_usd > 0:
+                generated: list[Opportunity] = []
+                exchanges = list(self.order_books.keys())
+                symbols_set = {s.upper() for s in symbols} if symbols else None
+                if len(exchanges) >= 2:
+                    now = datetime.now(timezone.utc)
+                    for buy_exchange, sell_exchange in permutations(exchanges, 2):
+                        buy_book = self.order_books[buy_exchange]
+                        sell_book = self.order_books[sell_exchange]
+                        if buy_book.symbol != sell_book.symbol:
+                            continue
+                        if symbols_set and buy_book.symbol.upper() not in symbols_set:
+                            continue
+
+                        reference_price = buy_book.best_ask or 0.0
+                        if reference_price <= 0:
+                            continue
+
+                        trade_size = simulation_volume_usd / reference_price
+                        decision_latency_ms = (
+                            now - max(buy_book.received_timestamp, sell_book.received_timestamp)
+                        ).total_seconds() * 1000
+
+                        generated.append(
+                            self._evaluate_pair(
+                                buy_book=buy_book,
+                                sell_book=sell_book,
+                                latency_ms=max(decision_latency_ms, 0.0),
+                                timestamp=now,
+                                trade_size=trade_size,
+                            )
+                        )
+
+                if generated:
+                    return generated[-limit:]
+
             items = list(self.opportunities)[-limit:]
             if symbols:
                 symbols_set = {s.upper() for s in symbols}

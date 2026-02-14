@@ -7,6 +7,7 @@ from urllib.request import Request, urlopen
 
 from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from .models import opportunity_to_dict, simulated_trade_to_dict
 from .service import ArbitrageService
@@ -116,6 +117,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="BUGSBYTE API", lifespan=lifespan)
 
+
+class SimulationVolumePayload(BaseModel):
+    simulation_volume_usd: float | None = None
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_parse_cors_origins(os.getenv("CORS_ORIGINS")),
@@ -150,10 +155,25 @@ async def arbitrage_status() -> dict:
     return await service.engine.snapshot()
 
 
-@app.get("/api/arbitrage/opportunities")
-async def arbitrage_opportunities(limit: int = 100, symbols: list[str] | None = Query(None)) -> dict:
+@app.post("/api/arbitrage/simulation-volume")
+async def set_arbitrage_simulation_volume(payload: SimulationVolumePayload) -> dict:
     service: ArbitrageService = app.state.arbitrage_service
-    items = await service.engine.list_opportunities(limit=limit, symbols=symbols)
+    service.engine.set_simulation_volume_usd(payload.simulation_volume_usd)
+    return await service.engine.snapshot()
+
+
+@app.get("/api/arbitrage/opportunities")
+async def arbitrage_opportunities(
+    limit: int = 100,
+    symbols: list[str] | None = Query(None),
+    simulation_volume_usd: float | None = Query(None, gt=0),
+) -> dict:
+    service: ArbitrageService = app.state.arbitrage_service
+    items = await service.engine.list_opportunities(
+        limit=limit,
+        symbols=symbols,
+        simulation_volume_usd=simulation_volume_usd,
+    )
     return {
         "items": [
             {

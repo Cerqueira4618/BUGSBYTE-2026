@@ -93,16 +93,60 @@ async function requestJson<T>(path: string): Promise<T> {
   throw new Error(lastError);
 }
 
+async function requestJsonPost<T>(path: string, body: unknown): Promise<T> {
+  let lastError = "Backend indisponível";
+
+  for (const base of orderedBases()) {
+    try {
+      const response = await fetch(`${base}${path}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        lastError = `API error ${response.status} em ${base}`;
+        continue;
+      }
+
+      resolvedApiBase = base;
+      return (await response.json()) as T;
+    } catch {
+      lastError = `Sem ligação a ${base}`;
+    }
+  }
+
+  throw new Error(lastError);
+}
+
 export async function getArbitrageStatus(): Promise<ArbitrageStatus> {
   return requestJson<ArbitrageStatus>("/api/arbitrage/status");
+}
+
+export async function setSimulationVolumeUsd(
+  simulationVolumeUsd: number | null,
+): Promise<ArbitrageStatus> {
+  return requestJsonPost<ArbitrageStatus>("/api/arbitrage/simulation-volume", {
+    simulation_volume_usd: simulationVolumeUsd,
+  });
 }
 
 export async function getArbitrageOpportunities(
   limit = 100,
   symbols: string[] = [],
+  simulationVolumeUsd?: number,
 ): Promise<ArbitrageOpportunity[]> {
-  const querySymbols = symbols.map((s) => `symbols=${encodeURIComponent(s)}`).join("&");
-  const query = [`limit=${limit}`, querySymbols].filter(Boolean).join("&");
+  const querySymbols = symbols
+    .map((s) => `symbols=${encodeURIComponent(s)}`)
+    .join("&");
+  const queryVolume =
+    simulationVolumeUsd && simulationVolumeUsd > 0
+      ? `simulation_volume_usd=${encodeURIComponent(simulationVolumeUsd)}`
+      : "";
+  const query = [`limit=${limit}`, querySymbols, queryVolume]
+    .filter(Boolean)
+    .join("&");
   const data = await requestJson<{ items: ArbitrageOpportunity[] }>(
     `/api/arbitrage/opportunities?${query}`,
   );
@@ -113,7 +157,9 @@ export async function getArbitrageTrades(
   limit = 50,
   symbols: string[] = [],
 ): Promise<SimulatedTrade[]> {
-  const querySymbols = symbols.map((s) => `symbols=${encodeURIComponent(s)}`).join("&");
+  const querySymbols = symbols
+    .map((s) => `symbols=${encodeURIComponent(s)}`)
+    .join("&");
   const query = [`limit=${limit}`, querySymbols].filter(Boolean).join("&");
   const data = await requestJson<{ items: SimulatedTrade[] }>(
     `/api/arbitrage/trades?${query}`,

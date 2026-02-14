@@ -17,6 +17,7 @@ import {
   getArbitrageStatus,
   getArbitrageTrades,
   getSpreadSeries,
+  setSimulationVolumeUsd,
   type ArbitrageOpportunity,
   type ArbitrageStatus,
   type SimulatedTrade,
@@ -44,6 +45,7 @@ const spreadSeries = ref<SpreadPoint[]>([]);
 
 const availablePairs = ["BTCUSDT", "ETHUSDT", "ADAUSDT", "BNBUSDT", "SOLUSDT"];
 const selectedPair = ref<string>("");
+const simulationVolumeUsd = ref<number>(1000);
 const performanceCanvas = ref<HTMLCanvasElement | null>(null);
 let performanceChart: Chart | null = null;
 
@@ -161,6 +163,16 @@ function onSymbolChange(): void {
   void loadData();
 }
 
+function onSimulationVolumeChange(): void {
+  if (
+    !Number.isFinite(simulationVolumeUsd.value) ||
+    simulationVolumeUsd.value <= 0
+  ) {
+    simulationVolumeUsd.value = 1000;
+  }
+  void loadData();
+}
+
 function renderPerformanceChart(): void {
   const canvas = performanceCanvas.value;
   if (!canvas) return;
@@ -244,10 +256,15 @@ function renderPerformanceChart(): void {
 async function loadData() {
   try {
     error.value = "";
+    await setSimulationVolumeUsd(simulationVolumeUsd.value);
     const [statusData, opportunitiesData, tradesData, spreadData] =
       await Promise.all([
         getArbitrageStatus(),
-        getArbitrageOpportunities(60, activeSymbols.value),
+        getArbitrageOpportunities(
+          60,
+          activeSymbols.value,
+          simulationVolumeUsd.value,
+        ),
         getArbitrageTrades(5000, activeSymbols.value),
         getSpreadSeries(40),
       ]);
@@ -291,7 +308,11 @@ onMounted(async () => {
 
   refreshTimer = window.setInterval(() => {
     void Promise.all([
-      getArbitrageOpportunities(60, activeSymbols.value),
+      getArbitrageOpportunities(
+        60,
+        activeSymbols.value,
+        simulationVolumeUsd.value,
+      ),
       getArbitrageTrades(5000, activeSymbols.value),
     ]).then(([opportunitiesData, tradesData]) => {
       opportunities.value = opportunitiesData;
@@ -311,6 +332,11 @@ onBeforeUnmount(() => {
 
 watch(cumulativePnlSeries, () => {
   renderPerformanceChart();
+});
+
+watch(simulationVolumeUsd, (value) => {
+  if (!Number.isFinite(value) || value <= 0) return;
+  void setSimulationVolumeUsd(value);
 });
 </script>
 
@@ -339,6 +365,18 @@ watch(cumulativePnlSeries, () => {
             </option>
           </select>
         </div>
+
+        <div class="filter-group">
+          <label for="simulation-volume">Volume de Simulação (US$)</label>
+          <input
+            id="simulation-volume"
+            v-model.number="simulationVolumeUsd"
+            type="number"
+            min="1"
+            step="100"
+            @change="onSimulationVolumeChange"
+          />
+        </div>
       </div>
 
       <div class="metrics">
@@ -355,8 +393,8 @@ watch(cumulativePnlSeries, () => {
           <strong>{{ formatUsd(status?.balance_usd ?? 0) }}</strong>
         </div>
         <div class="metric">
-          <span>Spread líquido médio</span>
-          <strong>{{ formatPct(averageNetSpread) }}</strong>
+          <span>Volume de Simulação atual</span>
+          <strong>{{ formatUsd(simulationVolumeUsd) }}</strong>
         </div>
         <div class="metric">
           <span>Última latência</span>
@@ -563,6 +601,20 @@ watch(cumulativePnlSeries, () => {
   border-radius: 8px;
   padding: 8px 10px;
   outline: none;
+}
+
+.filter-group input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(102, 239, 139, 0.35);
+  color: #e6f7ff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  outline: none;
+}
+
+.filter-group input:focus {
+  border-color: #66ef8b;
+  box-shadow: 0 0 0 2px rgba(102, 239, 139, 0.25);
 }
 
 .filter-group select:focus {
