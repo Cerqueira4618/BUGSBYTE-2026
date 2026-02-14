@@ -4,15 +4,20 @@ import abc
 import asyncio
 import contextlib
 import json
+import logging
 import random
+import time
 from datetime import datetime, timezone
 from typing import Awaitable, Callable
 
 from websockets.client import connect
+from websockets.exceptions import ConnectionClosed
 
 from .models import NormalizedOrderBook, OrderBookLevel
 
 OrderBookCallback = Callable[[NormalizedOrderBook], Awaitable[None]]
+
+logger = logging.getLogger(__name__)
 
 
 class MarketDataFeed(abc.ABC):
@@ -41,16 +46,61 @@ class MarketDataFeed(abc.ABC):
 
 
 class BinanceDepthFeed(MarketDataFeed):
-    def __init__(self, name: str, symbol: str) -> None:
+    def __init__(
+        self,
+        name: str,
+        symbol: str,
+        *,
+        ping_interval_sec: float = 20.0,
+        ping_timeout_sec: float = 20.0,
+        stale_timeout_sec: float = 10.0,
+        backoff_min_sec: float = 1.0,
+        backoff_max_sec: float = 30.0,
+        backoff_factor: float = 2.0,
+        backoff_jitter: float = 0.3,
+    ) -> None:
         super().__init__(name=name, symbol=symbol)
         stream = f"{symbol.lower()}@depth20@100ms"
         self.ws_url = f"wss://stream.binance.com:9443/ws/{stream}"
+        self.ping_interval_sec = ping_interval_sec
+        self.ping_timeout_sec = ping_timeout_sec
+        self.stale_timeout_sec = stale_timeout_sec
+        self.backoff_min_sec = backoff_min_sec
+        self.backoff_max_sec = backoff_max_sec
+        self.backoff_factor = backoff_factor
+        self.backoff_jitter = backoff_jitter
+
+    def _next_backoff(self, attempt: int) -> float:
+        base = self.backoff_min_sec * (self.backoff_factor**max(attempt, 0))
+        delay = min(self.backoff_max_sec, base)
+        if self.backoff_jitter > 0:
+            delay = delay + random.uniform(-self.backoff_jitter, self.backoff_jitter) * delay
+        return max(0.0, delay)
 
     async def _run_loop(self, callback: OrderBookCallback) -> None:
+        attempt = 0
         while self._running:
             try:
-                async with connect(self.ws_url, ping_interval=20, ping_timeout=20) as websocket:
-                    async for message in websocket:
+                async with connect(
+                    self.ws_url,
+                    ping_interval=self.ping_interval_sec,
+                    ping_timeout=self.ping_timeout_sec,
+                    close_timeout=5,
+                    open_timeout=10,
+                ) as websocket:
+                    attempt = 0
+                    while self._running:
+                        try:
+                            message = await asyncio.wait_for(
+                                websocket.recv(), timeout=self.stale_timeout_sec
+                            )
+                        except asyncio.TimeoutError as exc:
+                            raise RuntimeError(
+                                f"stale websocket: no messages for {self.stale_timeout_sec}s"
+                            ) from exc
+                        except ConnectionClosed as exc:
+                            raise RuntimeError("websocket closed") from exc
+
                         payload = json.loads(message)
                         if "bids" not in payload or "asks" not in payload:
                             continue
@@ -87,7 +137,16 @@ class BinanceDepthFeed(MarketDataFeed):
             except asyncio.CancelledError:
                 raise
             except Exception:
-                await asyncio.sleep(1.0)
+                delay = self._next_backoff(attempt)
+                attempt += 1
+                logger.warning(
+                    "[%s] WS error; reconnecting in %.1fs (attempt=%s)",
+                    self.name,
+                    delay,
+                    attempt,
+                    exc_info=True,
+                )
+                await asyncio.sleep(delay)
 
 
 class SimulatedDepthFeed(MarketDataFeed):
