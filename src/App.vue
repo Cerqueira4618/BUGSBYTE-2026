@@ -6,7 +6,7 @@
     <header class="app-header">
       <div class="header-shell">
         <div class="header-inner">
-          <RouterLink :to="{ name: 'Main' }" class="brand">
+          <RouterLink :to="{ name: 'Home' }" class="brand">
             <img
               class="brand-mark"
               src="/bitcoin-cash-coin-crypto-3d-illustration-png.png"
@@ -15,18 +15,17 @@
             <span class="brand-text">CryptoByte</span>
           </RouterLink>
           <nav class="main-nav">
-            <a href="#" class="nav-item nav-item-active">Individuals</a>
+            <RouterLink :to="{ name: 'Simulator' }" class="nav-item" active-class="nav-item-active">Simulador</RouterLink>
             <a href="#" class="nav-item">Market</a>
             <a href="#" class="nav-item">Learn</a>
             <a href="#" class="nav-item">Transparency</a>
             <a href="#" class="nav-item">Enterprise</a>
           </nav>
           <div class="actions">
-            <span class="login-link">Login</span>
-            <button class="cta">
-              <span>Get started</span>
+            <RouterLink :to="{ name: 'Login' }" class="cta">
+              <span>Login</span>
               <span class="arrow">→</span>
-            </button>
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -145,6 +144,7 @@
   border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .arrow {

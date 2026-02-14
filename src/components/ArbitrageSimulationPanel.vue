@@ -15,7 +15,6 @@ import {
 const loading = ref(true);
 const error = ref("");
 const socketState = ref<"connected" | "disconnected">("disconnected");
-
 const status = ref<ArbitrageStatus | null>(null);
 const opportunities = ref<ArbitrageOpportunity[]>([]);
 const trades = ref<SimulatedTrade[]>([]);
