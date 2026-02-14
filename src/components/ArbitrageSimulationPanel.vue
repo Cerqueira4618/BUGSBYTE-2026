@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { useWebSocketStore } from "../stores/websocket";
 import {
   CategoryScale,
   Chart,
@@ -12,12 +13,9 @@ import {
   Tooltip,
 } from "chart.js";
 import {
-  connectArbitrageSocket,
   getArbitrageOpportunities,
-  getArbitrageStatus,
   getArbitrageTrades,
   rebalanceArbitrageWallets,
-  getSpreadSeries,
   setSimulationVolumeUsd,
   type ArbitrageOpportunity,
   type ArbitrageStatus,
@@ -38,11 +36,13 @@ Chart.register(
 
 const loading = ref(true);
 const error = ref("");
-const socketState = ref<"connected" | "disconnected">("disconnected");
-const status = ref<ArbitrageStatus | null>(null);
+const websocketStore = useWebSocketStore();
 const opportunities = ref<ArbitrageOpportunity[]>([]);
 const trades = ref<SimulatedTrade[]>([]);
-const spreadSeries = ref<SpreadPoint[]>([]);
+
+// Usar dados do store em vez de refs locais
+const status = computed(() => websocketStore.status);
+const spreadSeries = computed(() => websocketStore.spreadSeries);
 const opportunitiesLimit = 500;
 const rebalancing = ref(false);
 
@@ -194,7 +194,6 @@ function goToPage(page: number): void {
   currentPage.value = Math.max(1, Math.min(page, totalPages.value));
 }
 
-let socket: WebSocket | null = null;
 let refreshTimer: number | null = null;
 let tickTimer: number | null = null;
 const now = ref(Date.now());
@@ -384,8 +383,7 @@ async function onRebalance(): Promise<void> {
   if (rebalancing.value) return;
   rebalancing.value = true;
   try {
-    const result = await rebalanceArbitrageWallets();
-    status.value = result.snapshot;
+    await rebalanceArbitrageWallets();
     await loadData();
   } catch {
     error.value = "Não foi possível executar o rebalance.";
@@ -478,19 +476,15 @@ async function loadData() {
   try {
     error.value = "";
     await setSimulationVolumeUsd(simulationVolumeUsd.value);
-    const [statusData, opportunitiesData, tradesData, spreadData] =
-      await Promise.all([
-        getArbitrageStatus(),
-        getArbitrageOpportunities(
-          opportunitiesLimit,
-          activeSymbols.value,
-          simulationVolumeUsd.value,
-        ),
-        getArbitrageTrades(5000, activeSymbols.value),
-        getSpreadSeries(40),
-      ]);
+    const [opportunitiesData, tradesData] = await Promise.all([
+      getArbitrageOpportunities(
+        opportunitiesLimit,
+        activeSymbols.value,
+        simulationVolumeUsd.value,
+      ),
+      getArbitrageTrades(5000, activeSymbols.value),
+    ]);
 
-    status.value = statusData;
     if (
       selectedBaseCurrency.value &&
       !baseCurrencies.value.includes(selectedBaseCurrency.value)
@@ -505,7 +499,6 @@ async function loadData() {
     }
     opportunities.value = opportunitiesData;
     trades.value = tradesData;
-    spreadSeries.value = spreadData;
   } catch {
     error.value =
       "Não foi possível carregar dados do backend. Inicia o FastAPI (uvicorn app.main:app --reload --port 8000). O frontend tenta automaticamente as portas 8000 e 8001.";
@@ -514,29 +507,8 @@ async function loadData() {
   }
 }
 
-function startSocket() {
-  socket = connectArbitrageSocket(({ snapshot, spread_series }) => {
-    status.value = snapshot;
-    spreadSeries.value = spread_series;
-    socketState.value = "connected";
-  });
-
-  socket.addEventListener("open", () => {
-    socketState.value = "connected";
-  });
-
-  socket.addEventListener("close", () => {
-    socketState.value = "disconnected";
-  });
-
-  socket.addEventListener("error", () => {
-    socketState.value = "disconnected";
-  });
-}
-
 onMounted(async () => {
   await loadData();
-  startSocket();
   renderPerformanceChart();
 
   tickTimer = window.setInterval(() => {
@@ -565,12 +537,15 @@ onBeforeUnmount(() => {
   if (tickTimer) {
     window.clearInterval(tickTimer);
   }
-  socket?.close();
   performanceChart?.destroy();
   performanceChart = null;
 });
 
 watch(cumulativePnlSeries, () => {
+  renderPerformanceChart();
+});
+
+watch(spreadSeries, () => {
   renderPerformanceChart();
 });
 
@@ -585,8 +560,6 @@ watch(simulationVolumeUsd, (value) => {
     <div class="panel">
       <div class="panel-header">
         <h2>Simulador de Captura de Arbitragem</h2>
-        <p>Painel de validação do backend em tempo real (REST + WebSocket).</p>
-        <p class="connection" :class="socketState">WS: {{ socketState }}</p>
       </div>
 
       <p v-if="error" class="error-box">{{ error }}</p>

@@ -1,12 +1,24 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useWebSocketStore } from './stores/websocket'
 
 const router = useRouter()
 const route = useRoute()
+const websocketStore = useWebSocketStore()
 
 const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true')
 const currentUserEmail = ref(localStorage.getItem('currentUserEmail') || '')
+
+// Iniciar WebSocket quando o App é montado
+onMounted(() => {
+  websocketStore.startArbitrageSocket()
+})
+
+// Desconectar quando o App é desmontado
+onBeforeUnmount(() => {
+  websocketStore.disconnectSocket()
+})
 
 // Atualiza o estado quando a rota muda
 watch(
@@ -28,6 +40,7 @@ const handleLogout = () => {
 const userDisplay = computed(() => {
   if (!currentUserEmail.value) return ''
   const emailPart = currentUserEmail.value.split('@')[0]
+  if (!emailPart) return ''
   return emailPart.charAt(0).toUpperCase() + emailPart.slice(1)
 })
 </script>
@@ -66,6 +79,9 @@ const userDisplay = computed(() => {
             >
           </nav>
           <div class="actions">
+            <span class="status-pill" :class="websocketStore.socketState">
+              {{ websocketStore.socketState }}
+            </span>
             <span v-if="isAuthenticated" class="user-greeting">
               👤 {{ userDisplay }}
             </span>
@@ -250,6 +266,33 @@ const userDisplay = computed(() => {
 
 .app-footer p {
   margin: 0;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  text-transform: capitalize;
+}
+
+.status-pill.connected {
+  background: linear-gradient(135deg, #103428, #0b2620);
+  color: #bfffe0;
+  border: 1.2px solid rgba(102, 239, 139, 0.6);
+  box-shadow: 0 4px 8px rgba(102, 239, 139, 0.2);
+}
+
+.status-pill.disconnected {
+  background: linear-gradient(135deg, #3a1f28, #2c161d);
+  color: #ffd8d8;
+  border: 1.2px solid rgba(255, 120, 120, 0.65);
+  box-shadow: 0 4px 8px rgba(255, 120, 120, 0.18);
 }
 </style>
 
