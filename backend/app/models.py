@@ -112,4 +112,7 @@ def simulated_trade_to_dict(item: SimulatedTrade) -> dict:
         "size": item.size,
         "pnl_usd": item.pnl_usd,
         "latency_ms": item.latency_ms,
+        "buy_execution_ms": item.buy_execution_ms,
+        "sell_execution_ms": item.sell_execution_ms,
+        "sync_delay_ms": item.sync_delay_ms,
     }
