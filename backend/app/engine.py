@@ -166,14 +166,14 @@ class ArbitrageEngine:
 
         buy_fee = self.fees.get(buy_book.exchange, 0.0)
         sell_fee = self.fees.get(sell_book.exchange, 0.0)
-        buy_total = buy_vwap * size
-        sell_total = sell_vwap * size
 
-        buy_total_with_fee = buy_total * (1 + buy_fee)
-        sell_total_after_fee = sell_total * (1 - sell_fee)
-        net_profit = sell_total_after_fee - buy_total_with_fee - self.config.transfer_cost_usd
+        buy_unit_with_fee = buy_vwap * (1 + buy_fee)
+        sell_unit_after_fee = sell_vwap * (1 - sell_fee)
+
+        net_profit = ((sell_unit_after_fee - buy_unit_with_fee) * size) - self.config.transfer_cost_usd
 
         gross_spread_pct = ((sell_vwap - buy_vwap) / buy_vwap) * 100 if buy_vwap > 0 else 0.0
+        buy_total_with_fee = buy_unit_with_fee * size
         net_spread_pct = (net_profit / buy_total_with_fee) * 100 if buy_total_with_fee > 0 else 0.0
 
         if net_profit <= 0:

@@ -13,22 +13,10 @@
       "enabled": true
     },
     {
-      "name": "sim_exchange",
-      "kind": "simulated",
-      "fee": 0.0015,
-      "enabled": true,
-      "price_offset": 220.0,
-      "volatility": 3.5,
-      "depth_levels": 20
-    },
-    {
-      "name": "sim_exchange_b",
-      "kind": "simulated",
-      "fee": 0.0012,
-      "enabled": true,
-      "price_offset": -220.0,
-      "volatility": 3.0,
-      "depth_levels": 20
+      "name": "uphold",
+      "kind": "uphold_ticker",
+      "fee": 0.002,
+      "enabled": true
     }
   ]
 }

@@ -38,22 +38,10 @@ def _default_config() -> AppConfig:
         feeds=[
             FeedConfig(name="binance", kind="binance_ws", fee=0.001, enabled=True),
             FeedConfig(
-                name="sim_exchange",
-                kind="simulated",
-                fee=0.0015,
+                name="uphold",
+                kind="uphold_ticker",
+                fee=0.016,
                 enabled=True,
-                price_offset=220.0,
-                volatility=3.5,
-                depth_levels=20,
-            ),
-            FeedConfig(
-                name="sim_exchange_b",
-                kind="simulated",
-                fee=0.0012,
-                enabled=True,
-                price_offset=-220.0,
-                volatility=3.0,
-                depth_levels=20,
             ),
         ],
     )

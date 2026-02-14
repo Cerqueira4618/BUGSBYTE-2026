@@ -41,8 +41,10 @@ O backend agora inclui um MVP com 3 camadas:
 
 1. Data Layer (`WebSocket push`)
    - `binance` via WebSocket de profundidade (`depth20@100ms`)
-   - `sim_exchange` para simulação controlada e testes de estratégia
-   - Normalização para formato único de order book
+
+- `uphold` via API pública de ticker (bid/ask)
+- `sim_exchange` para simulação controlada e testes de estratégia (opcional)
+- Normalização para formato único de order book
 
 2. Motor de Cálculo
    - Spread bruto e spread líquido
