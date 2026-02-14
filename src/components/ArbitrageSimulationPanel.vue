@@ -16,7 +16,9 @@ import {
 import {
   getArbitrageOpportunities,
   getArbitrageTrades,
+  getBotStatus,
   rebalanceArbitrageWallets,
+  setBotEnabled,
   setSimulationVolumeUsd,
   triggerDemoCrash,
   type ArbitrageOpportunity,
@@ -82,6 +84,7 @@ const fallbackPairs = [
 const selectedBaseCurrency = ref<string>("");
 const selectedQuoteCurrency = ref<string>("");
 const simulationVolumeUsd = ref<number>(1000);
+const botEnabled = ref<boolean>(false);
 const performanceCanvas = ref<HTMLCanvasElement | null>(null);
 let performanceChart: Chart | null = null;
 
@@ -463,11 +466,23 @@ async function onRebalance(): Promise<void> {
     const result = await rebalanceArbitrageWallets();
     const movedUsd = result.rebalance?.moved_quote_usd ?? 0;
     const transfers = result.rebalance?.transfers ?? 0;
+    const movedBaseAssets = result.rebalance?.moved_base_assets ?? {};
+
+    // Build message with base assets if any were moved
+    let message = `Rebalance concluído. ${transfers} transferências, ${formatUsd(movedUsd)} movidos`;
+    
+    const baseAssetsList = Object.entries(movedBaseAssets)
+      .map(([asset, amount]) => `${amount.toFixed(4)} ${asset}`)
+      .join(", ");
+    
+    if (baseAssetsList) {
+      message += `, ${baseAssetsList}`;
+    }
 
     // Show success notification with moved amount
     rebalanceNotification.value = {
       show: true,
-      message: `Rebalance concluído. ${transfers} transferências, ${formatUsd(movedUsd)} movidos`,
+      message,
       type: "success",
     };
 
@@ -671,6 +686,14 @@ onMounted(async () => {
   await loadData();
   renderPerformanceChart();
 
+  // Load bot status
+  try {
+    const status = await getBotStatus();
+    botEnabled.value = status.enabled;
+  } catch {
+    console.error("Failed to load bot status");
+  }
+
   tickTimer = window.setInterval(() => {
     now.value = Date.now();
   }, 1000);
@@ -712,6 +735,14 @@ watch(spreadSeries, () => {
 watch(simulationVolumeUsd, (value) => {
   if (!Number.isFinite(value) || value <= 0) return;
   void setSimulationVolumeUsd(value);
+});
+
+watch(botEnabled, async (enabled) => {
+  try {
+    await setBotEnabled(enabled);
+  } catch {
+    console.error("Failed to update bot status");
+  }
 });
 </script>
 
@@ -764,6 +795,21 @@ watch(simulationVolumeUsd, (value) => {
             step="100"
             @change="onSimulationVolumeChange"
           />
+        </div>
+
+        <div class="filter-group">
+          <label for="bot-toggle">Estado do Bot</label>
+          <div class="toggle-wrapper">
+            <label class="toggle-switch">
+              <input
+                id="bot-toggle"
+                v-model="botEnabled"
+                type="checkbox"
+              />
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">{{ botEnabled ? 'Ativo' : 'Inativo' }}</span>
+          </div>
         </div>
       </div>
 
@@ -1161,6 +1207,66 @@ watch(simulationVolumeUsd, (value) => {
 .filter-group select:focus {
   border-color: #66ef8b;
   box-shadow: 0 0 0 2px rgba(102, 239, 139, 0.25);
+}
+
+.toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: rgba(102, 239, 139, 0.3);
+  border-color: #66ef8b;
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(24px);
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  min-width: 60px;
 }
 
 .connection {

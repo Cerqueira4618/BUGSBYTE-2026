@@ -153,12 +153,23 @@ export async function setSimulationVolumeUsd(
   });
 }
 
+export async function getBotStatus(): Promise<{ enabled: boolean }> {
+  return requestJson<{ enabled: boolean }>("/api/arbitrage/bot-status");
+}
+
+export async function setBotEnabled(enabled: boolean): Promise<{ enabled: boolean }> {
+  return requestJsonPost<{ enabled: boolean }>("/api/arbitrage/bot-control", {
+    enabled,
+  });
+}
+
 export async function rebalanceArbitrageWallets(): Promise<{
   snapshot: ArbitrageStatus;
   rebalance: {
     transfers: number;
     moved_quote_usd: number;
     target_quote_usd: number;
+    moved_base_assets?: Record<string, number>;
   };
 }> {
   return requestJsonPost<{
@@ -167,6 +178,7 @@ export async function rebalanceArbitrageWallets(): Promise<{
       transfers: number;
       moved_quote_usd: number;
       target_quote_usd: number;
+      moved_base_assets?: Record<string, number>;
     };
   }>("/api/arbitrage/rebalance", {});
 }

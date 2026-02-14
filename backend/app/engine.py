@@ -135,6 +135,7 @@ class ArbitrageEngine:
         self.balance_usd = config.starting_balance_usd
         self.fees = {feed.name: feed.fee for feed in config.feeds if feed.enabled}
         self.simulation_volume_usd: float | None = None
+        self.trading_enabled: bool = True
         enabled_exchange_names = [feed.name for feed in config.feeds if feed.enabled]
         base_assets = sorted(
             {
@@ -182,6 +183,14 @@ class ArbitrageEngine:
             self.simulation_volume_usd = None
             return
         self.simulation_volume_usd = float(value)
+
+    def set_trading_enabled(self, enabled: bool) -> None:
+        """Enable or disable trade execution."""
+        self.trading_enabled = bool(enabled)
+
+    def is_trading_enabled(self) -> bool:
+        """Check if trading is currently enabled."""
+        return self.trading_enabled
 
     def _resolve_trade_size(self, buy_book: NormalizedOrderBook) -> float:
         if self.simulation_volume_usd is None:
@@ -365,6 +374,7 @@ class ArbitrageEngine:
 
     async def rebalance_quotes(self) -> dict[str, float | int]:
         async with self._lock:
+            # Rebalance quote assets (USDT)
             wallets = {
                 exchange: float(data.get("quote_balance", 0.0))
                 for exchange, data in self.inventory_by_exchange.items()
@@ -374,6 +384,7 @@ class ArbitrageEngine:
                     "transfers": 0,
                     "moved_quote_usd": 0.0,
                     "target_quote_usd": 0.0,
+                    "moved_base_assets": {},
                 }
 
             target_balance = sum(wallets.values()) / len(wallets)
@@ -398,10 +409,63 @@ class ArbitrageEngine:
                 moved_quote += transfer_amount
                 transfer_count += 1
 
+            # Rebalance base assets (BTC, ETH, SOL, etc)
+            moved_base_assets: dict[str, float] = {}
+            
+            # Get all base assets from all exchanges
+            all_base_assets: set[str] = set()
+            for wallet in self.inventory_by_exchange.values():
+                asset_balances = wallet.get("asset_balances")
+                if isinstance(asset_balances, dict):
+                    all_base_assets.update(asset_balances.keys())
+            
+            # Rebalance each base asset
+            for base_asset in sorted(all_base_assets):
+                base_wallets = {}
+                for exchange, wallet in self.inventory_by_exchange.items():
+                    asset_balances = wallet.get("asset_balances")
+                    if isinstance(asset_balances, dict):
+                        base_wallets[exchange] = float(asset_balances.get(base_asset, 0.0))
+                    else:
+                        base_wallets[exchange] = 0.0
+                
+                if len(base_wallets) < 2:
+                    continue
+                
+                target_base = sum(base_wallets.values()) / len(base_wallets)
+                moved_base = 0.0
+                
+                while True:
+                    donor = max(base_wallets, key=base_wallets.get)
+                    receiver = min(base_wallets, key=base_wallets.get)
+                    donor_surplus = base_wallets[donor] - target_base
+                    receiver_deficit = target_base - base_wallets[receiver]
+                    transfer_amount = min(donor_surplus, receiver_deficit)
+                    
+                    if transfer_amount <= 0.0001:  # Smaller threshold for crypto assets
+                        break
+                    
+                    if not self._transfer_base_between_exchanges(
+                        from_exchange=donor,
+                        to_exchange=receiver,
+                        base_asset=base_asset,
+                        amount=transfer_amount,
+                    ):
+                        break
+                    
+                    base_wallets[donor] -= transfer_amount
+                    base_wallets[receiver] += transfer_amount
+                    moved_base += transfer_amount
+                    transfer_count += 1
+                
+                if moved_base > 0:
+                    moved_base_assets[base_asset] = round(moved_base, 8)
+
             return {
                 "transfers": transfer_count,
                 "moved_quote_usd": round(moved_quote, 8),
                 "target_quote_usd": round(target_balance, 8),
+                "moved_base_assets": moved_base_assets,
             }
 
     def _inventory_view(self) -> dict[str, dict[str, object]]:
@@ -560,7 +624,8 @@ class ArbitrageEngine:
             )
 
             if (
-                self.config.auto_simulate_execution
+                self.trading_enabled
+                and self.config.auto_simulate_execution
                 and opportunity.status == "accepted"
                 and opportunity.expected_profit_usd >= self.config.opportunity_threshold_usd
             ):

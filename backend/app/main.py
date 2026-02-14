@@ -192,6 +192,25 @@ async def set_arbitrage_simulation_volume(payload: SimulationVolumePayload) -> d
     return await service.engine.snapshot()
 
 
+class BotControlPayload(BaseModel):
+    enabled: bool
+
+
+@app.get("/api/arbitrage/bot-status")
+async def get_bot_status() -> dict:
+    """Get the current bot trading status."""
+    service: ArbitrageService = app.state.arbitrage_service
+    return {"enabled": service.engine.is_trading_enabled()}
+
+
+@app.post("/api/arbitrage/bot-control")
+async def set_bot_control(payload: BotControlPayload) -> dict:
+    """Enable or disable bot trading."""
+    service: ArbitrageService = app.state.arbitrage_service
+    service.engine.set_trading_enabled(payload.enabled)
+    return {"enabled": service.engine.is_trading_enabled()}
+
+
 @app.post("/api/arbitrage/rebalance")
 async def rebalance_arbitrage_wallets() -> dict:
     service: ArbitrageService = app.state.arbitrage_service
