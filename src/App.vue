@@ -1,4 +1,36 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
+
+const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true')
+const currentUserEmail = ref(localStorage.getItem('currentUserEmail') || '')
+
+// Atualiza o estado quando a rota muda
+watch(
+  () => route.path,
+  () => {
+    isAuthenticated.value = localStorage.getItem('isAuthenticated') === 'true'
+    currentUserEmail.value = localStorage.getItem('currentUserEmail') || ''
+  },
+)
+
+const handleLogout = () => {
+  localStorage.setItem('isAuthenticated', 'false')
+  localStorage.removeItem('currentUserEmail')
+  isAuthenticated.value = false
+  currentUserEmail.value = ''
+  router.push({ name: 'Login' })
+}
+
+const userDisplay = computed(() => {
+  if (!currentUserEmail.value) return ''
+  const emailPart = currentUserEmail.value.split('@')[0]
+  return emailPart.charAt(0).toUpperCase() + emailPart.slice(1)
+})
+</script>
 
 <template>
   <div class="app-container">
@@ -28,10 +60,17 @@
             >
           </nav>
           <div class="actions">
-            <RouterLink :to="{ name: 'Login' }" class="cta">
+            <span v-if="isAuthenticated" class="user-greeting">
+              👤 {{ userDisplay }}
+            </span>
+            <RouterLink v-if="!isAuthenticated" :to="{ name: 'Login' }" class="cta">
               <span>Login</span>
               <span class="arrow">→</span>
             </RouterLink>
+            <button v-else class="cta" @click="handleLogout">
+              <span>Logout</span>
+              <span class="arrow">←</span>
+            </button>
           </div>
         </div>
       </div>
@@ -165,6 +204,23 @@
   font-weight: 700;
   cursor: pointer;
   text-decoration: none;
+  font-size: 14px;
+}
+
+.cta:hover {
+  background: #4fd975;
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+.user-greeting {
+  color: rgba(232, 240, 252, 0.95);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 12px;
+  background: rgba(102, 239, 139, 0.1);
+  border-radius: 999px;
+  border: 1px solid rgba(102, 239, 139, 0.3);
 }
 
 .arrow {

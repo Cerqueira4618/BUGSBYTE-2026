@@ -917,6 +917,8 @@ watch(simulationVolumeUsd, (value) => {
 .panel-header h2 {
   margin: 0 0 8px;
   color: #ecf3ff;
+  font-size: 40px;
+  text-align: center;
 }
 
 .panel-header p {

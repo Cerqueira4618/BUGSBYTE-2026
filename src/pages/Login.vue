@@ -2,67 +2,37 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-type LoginUser = {
-  email: string
-  password: string
+// Única conta válida para acesso ao simulador
+const VALID_ACCOUNT = {
+  email: 'admin@cryptobyte.com',
+  password: '123456',
 }
-
-const DEFAULT_USERS: LoginUser[] = [
-  {
-    email: 'admin@cryptobyte.com',
-    password: '123456',
-  },
-]
 
 const router = useRouter()
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
 
-const getExistingUsers = (): LoginUser[] => {
-  const rawUsers = localStorage.getItem('users')
-
-  if (!rawUsers) {
-    return DEFAULT_USERS
-  }
-
-  try {
-    const parsed = JSON.parse(rawUsers)
-    if (!Array.isArray(parsed)) {
-      return DEFAULT_USERS
-    }
-
-    return parsed.filter(
-      (user): user is LoginUser =>
-        typeof user?.email === 'string' && typeof user?.password === 'string',
-    )
-  } catch {
-    return DEFAULT_USERS
-  }
-}
-
 const handleLogin = () => {
   errorMessage.value = ''
 
   const normalizedEmail = email.value.trim().toLowerCase()
-  const typedPassword = password.value
+  const typedPassword = password.value.trim()
 
-  const users = getExistingUsers()
-  const validUser = users.find(
-    (user) =>
-      user.email.trim().toLowerCase() === normalizedEmail &&
-      user.password === typedPassword,
-  )
-
-  if (!validUser) {
+  // Verifica se as credenciais correspondem à conta válida
+  if (
+    normalizedEmail === VALID_ACCOUNT.email.toLowerCase() &&
+    typedPassword === VALID_ACCOUNT.password
+  ) {
+    // Login bem-sucedido
+    localStorage.setItem('isAuthenticated', 'true')
+    localStorage.setItem('currentUserEmail', VALID_ACCOUNT.email)
+    router.push({ name: 'Simulator' })
+  } else {
+    // Credenciais inválidas
     localStorage.setItem('isAuthenticated', 'false')
-    errorMessage.value = 'Email ou senha inválidos. Verifique os dados e tente novamente.'
-    return
+    errorMessage.value = '❌ Credenciais inválidas! Use a conta de teste: admin@cryptobyte.com / 123456'
   }
-
-  localStorage.setItem('isAuthenticated', 'true')
-  localStorage.setItem('currentUserEmail', validUser.email)
-  router.push({ name: 'Simulator' })
 }
 </script>
 
@@ -70,7 +40,8 @@ const handleLogin = () => {
   <section class="login-page">
     <div class="login-card">
       <h1>Login</h1>
-      <p class="subtitle">Entre para acessar sua área e usar o simulador.</p>
+      <p class="subtitle">Entre para acessar o Simulador de Arbitragem.</p>
+      <p class="info-message">ℹ️ O Mercado está acessível sem login, mas o Simulador requer autenticação.</p>
 
       <form class="login-form" @submit.prevent="handleLogin">
         <label for="email">E-mail</label>
@@ -79,7 +50,7 @@ const handleLogin = () => {
         <label for="password">Senha</label>
         <input id="password" v-model="password" type="password" placeholder="••••••••" required />
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        <p class="help-message">Conta de teste: admin@cryptobyte.com / 123456</p>
+        <p class="help-message">💡 Conta de teste: admin@cryptobyte.com / 123456</p>
         <button type="submit">Entrar</button>
       </form>
     </div>
@@ -152,11 +123,26 @@ button {
   margin: 0;
   font-size: 13px;
   color: #ff9ea1;
+  background: rgba(255, 95, 95, 0.1);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 95, 95, 0.3);
 }
 
 .help-message {
   margin: 0;
   font-size: 12px;
   color: rgba(232, 240, 252, 0.68);
+}
+
+.info-message {
+  margin: -8px 0 12px;
+  font-size: 13px;
+  color: rgba(102, 239, 139, 0.9);
+  background: rgba(102, 239, 139, 0.08);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(102, 239, 139, 0.25);
+  line-height: 1.4;
 }
 </style>

@@ -3,8 +3,7 @@
     <div class="home-card">
       <h1>CryptoByte</h1>
       <p class="lead">
-        Plataforma para simulação de arbitragem em cripto, focada em comparar preços entre mercados e
-        analisar oportunidades de forma rápida e visual.
+        Plataforma para simulação de arbitragem em cripto, focada em comparar preços entre mercados e analisar oportunidades de forma rápida e visual para tentar encontrar uma boa opurtunidade de negócio.
       </p>
 
       <div class="summary-grid">
