@@ -196,6 +196,14 @@ async def set_arbitrage_simulation_volume(payload: SimulationVolumePayload) -> d
     return await service.engine.snapshot()
 
 
+@app.post("/api/arbitrage/rebalance")
+async def rebalance_arbitrage_wallets() -> dict:
+    service: ArbitrageService = app.state.arbitrage_service
+    details = await service.engine.rebalance_quotes()
+    snapshot = await service.engine.snapshot()
+    return {"snapshot": snapshot, "rebalance": details}
+
+
 @app.get("/api/arbitrage/opportunities")
 async def arbitrage_opportunities(
     limit: int = 100,
@@ -208,14 +216,24 @@ async def arbitrage_opportunities(
         symbols=symbols,
         simulation_volume_usd=simulation_volume_usd,
     )
-    return {
-        "items": [
+    enriched_items: list[dict] = []
+    for item in items:
+        fee_asset, fee_units, fee_cost_usd = service.engine.estimate_transfer_fee(
+            item.symbol,
+            reference_price=item.buy_vwap,
+            exchange=item.buy_exchange,
+        )
+        enriched_items.append(
             {
                 **opportunity_to_dict(item),
                 "symbol_name": _symbol_name(item.symbol),
+                "network_fee_asset": fee_asset,
+                "network_fee_units": fee_units,
+                "network_cost_usd": fee_cost_usd,
             }
-            for item in items
-        ]
+        )
+    return {
+        "items": enriched_items
     }
 
 

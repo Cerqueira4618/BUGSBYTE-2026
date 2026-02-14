@@ -1,845 +1,844 @@
-INFO:     Started server process [54305]
+INFO:     Started server process [79549]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     127.0.0.1:58100 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58102 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58104 - "OPTIONS /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58104 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58104 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58126 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58146 - "WebSocket /ws/arbitrage" [accepted]
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60710 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60722 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60738 - "WebSocket /ws/arbitrage" [accepted]
 INFO:     connection open
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35712 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35716 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53098 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53104 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=2000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56200 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=20000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35814 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35820 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "OPTIONS /api/arbitrage/rebalance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/rebalance HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33366 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33368 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "OPTIONS /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56426 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56434 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
 INFO:     connection closed
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49550 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49552 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49558 - "WebSocket /ws/arbitrage" [accepted]
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47106 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47108 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47114 - "WebSocket /ws/arbitrage" [accepted]
 INFO:     connection open
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
 INFO:     connection closed
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54216 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54228 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54238 - "WebSocket /ws/arbitrage" [accepted]
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40026 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40036 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40042 - "WebSocket /ws/arbitrage" [accepted]
 INFO:     connection open
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     connection closed
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57442 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57456 - "WebSocket /ws/arbitrage" [accepted]
-INFO:     connection open
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     connection closed
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "OPTIONS /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60036 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60048 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60064 - "WebSocket /ws/arbitrage" [accepted]
-INFO:     connection open
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38488 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38492 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=10000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52946 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=100000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     connection closed
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:45616 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:45624 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:45638 - "WebSocket /ws/arbitrage" [accepted]
-INFO:     connection open
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     connection closed
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57744 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57746 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57758 - "WebSocket /ws/arbitrage" [accepted]
-INFO:     connection open
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     connection closed
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58422 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58434 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58444 - "WebSocket /ws/arbitrage" [accepted]
-INFO:     connection open
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&symbols=ADAEUR&symbols=ADAUSD&symbols=ADAUSDT&symbols=ADABTC&symbols=ADAETH&symbols=ADABNB&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53136 - "GET /api/arbitrage/trades?limit=5000&symbols=ADAEUR&symbols=ADAUSD&symbols=ADAUSDT&symbols=ADABTC&symbols=ADAETH&symbols=ADABNB HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53142 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&symbols=ADAEUR&symbols=ADAUSD&symbols=ADAUSDT&symbols=ADABTC&symbols=ADAETH&symbols=ADABNB&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000&symbols=ADAEUR&symbols=ADAUSD&symbols=ADAUSDT&symbols=ADABTC&symbols=ADAETH&symbols=ADABNB HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&symbols=ADAEUR&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53142 - "GET /api/arbitrage/trades?limit=5000&symbols=ADAEUR HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53136 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&symbols=BTCEUR&symbols=ETHEUR&symbols=SOLEUR&symbols=BNBEUR&symbols=ADAEUR&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53136 - "GET /api/arbitrage/trades?limit=5000&symbols=BTCEUR&symbols=ETHEUR&symbols=SOLEUR&symbols=BNBEUR&symbols=ADAEUR HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&symbols=BTCEUR&symbols=ETHEUR&symbols=SOLEUR&symbols=BNBEUR&symbols=ADAEUR&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000&symbols=BTCEUR&symbols=ETHEUR&symbols=SOLEUR&symbols=BNBEUR&symbols=ADAEUR HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53136 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53142 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-Failed to persist opportunity
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, Close(code=<CloseCode.INTERNAL_ERROR: 1011>, reason='keepalive ping timeout'), None)>
 Traceback (most recent call last):
-  File "/home/guilherme/BUGSBYTE-2026/backend/app/persistence.py", line 65, in _run
-    await self._db.insert_opportunity(event.payload)  # type: ignore[arg-type]
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/guilherme/BUGSBYTE-2026/backend/app/db.py", line 122, in insert_opportunity
-    session.add(OpportunityRecord.from_model(item))
-                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
-  File "/home/guilherme/BUGSBYTE-2026/backend/app/db.py", line 44, in from_model
-    return OpportunityRecord(**asdict(item))
-  File "<string>", line 4, in __init__
-  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/sqlalchemy/orm/state.py", line 596, in _initialize_instance
-    with util.safe_reraise():
-         ~~~~~~~~~~~~~~~~~^^
-  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
-    raise exc_value.with_traceback(exc_tb)
-  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/sqlalchemy/orm/state.py", line 594, in _initialize_instance
-    manager.original_init(*mixed[1:], **kwargs)
-    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/sqlalchemy/orm/decl_base.py", line 2179, in _declarative_constructor
-    raise TypeError(
-        "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1276, in close_connection
+    await self.transfer_data_task
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
     )
-TypeError: 'buy_book_updated_at' is an invalid keyword argument for OpportunityRecord
-Failed to persist opportunity
+    ^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/asyncio/streams.py", line 769, in readexactly
+    await self._wait_for_data('readexactly')
+  File "/usr/lib/python3.14/asyncio/streams.py", line 539, in _wait_for_data
+    await self._waiter
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, Close(code=<CloseCode.INTERNAL_ERROR: 1011>, reason='keepalive ping timeout'), None)>
 Traceback (most recent call last):
-  File "/home/guilherme/BUGSBYTE-2026/backend/app/persistence.py", line 65, in _run
-    await self._db.insert_opportunity(event.payload)  # type: ignore[arg-type]
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/guilherme/BUGSBYTE-2026/backend/app/db.py", line 122, in insert_opportunity
-    session.add(OpportunityRecord.from_model(item))
-                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
-  File "/home/guilherme/BUGSBYTE-2026/backend/app/db.py", line 44, in from_model
-    return OpportunityRecord(**asdict(item))
-  File "<string>", line 4, in __init__
-  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/sqlalchemy/orm/state.py", line 596, in _initialize_instance
-    with util.safe_reraise():
-         ~~~~~~~~~~~~~~~~~^^
-  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
-    raise exc_value.with_traceback(exc_tb)
-  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/sqlalchemy/orm/state.py", line 594, in _initialize_instance
-    manager.original_init(*mixed[1:], **kwargs)
-    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/sqlalchemy/orm/decl_base.py", line 2179, in _declarative_constructor
-    raise TypeError(
-        "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1276, in close_connection
+    await self.transfer_data_task
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
     )
-TypeError: 'buy_book_updated_at' is an invalid keyword argument for OpportunityRecord
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58110 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58130 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+    ^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/asyncio/streams.py", line 769, in readexactly
+    await self._wait_for_data('readexactly')
+  File "/usr/lib/python3.14/asyncio/streams.py", line 539, in _wait_for_data
+    await self._waiter
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, Close(code=<CloseCode.INTERNAL_ERROR: 1011>, reason='keepalive ping timeout'), None)>
+Traceback (most recent call last):
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1276, in close_connection
+    await self.transfer_data_task
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/asyncio/streams.py", line 769, in readexactly
+    await self._wait_for_data('readexactly')
+  File "/usr/lib/python3.14/asyncio/streams.py", line 539, in _wait_for_data
+    await self._waiter
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, Close(code=<CloseCode.INTERNAL_ERROR: 1011>, reason='keepalive ping timeout'), None)>
+Traceback (most recent call last):
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1276, in close_connection
+    await self.transfer_data_task
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/asyncio/streams.py", line 769, in readexactly
+    await self._wait_for_data('readexactly')
+  File "/usr/lib/python3.14/asyncio/streams.py", line 539, in _wait_for_data
+    await self._waiter
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, Close(code=<CloseCode.INTERNAL_ERROR: 1011>, reason='keepalive ping timeout'), None)>
+Traceback (most recent call last):
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1276, in close_connection
+    await self.transfer_data_task
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/asyncio/streams.py", line 769, in readexactly
+    await self._wait_for_data('readexactly')
+  File "/usr/lib/python3.14/asyncio/streams.py", line 539, in _wait_for_data
+    await self._waiter
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, Close(code=<CloseCode.INTERNAL_ERROR: 1011>, reason='keepalive ping timeout'), None)>
+Traceback (most recent call last):
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1276, in close_connection
+    await self.transfer_data_task
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/asyncio/streams.py", line 769, in readexactly
+    await self._wait_for_data('readexactly')
+  File "/usr/lib/python3.14/asyncio/streams.py", line 539, in _wait_for_data
+    await self._waiter
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+ConnectionClosedError exception in shielded future
+future: <Future finished exception=ConnectionClosedError(None, Close(code=<CloseCode.INTERNAL_ERROR: 1011>, reason='keepalive ping timeout'), None)>
+Traceback (most recent call last):
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1276, in close_connection
+    await self.transfer_data_task
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 940, in transfer_data
+    message = await self.read_message()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1010, in read_message
+    frame = await self.read_data_frame(max_size=self.max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1087, in read_data_frame
+    frame = await self.read_frame(max_size)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/protocol.py", line 1144, in read_frame
+    frame = await Frame.read(
+            ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "/home/guilherme/BUGSBYTE-2026/.venv/lib/python3.14/site-packages/websockets/legacy/framing.py", line 70, in read
+    data = await reader(2)
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/asyncio/streams.py", line 769, in readexactly
+    await self._wait_for_data('readexactly')
+  File "/usr/lib/python3.14/asyncio/streams.py", line 539, in _wait_for_data
+    await self._waiter
+asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+
+websockets.exceptions.ConnectionClosedError: sent 1011 (internal error) keepalive ping timeout; no close frame received
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     connection closed
+INFO:     127.0.0.1:40740 - "POST /api/arbitrage/simulation-volume HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49662 - "GET /api/arbitrage/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49668 - "GET /api/arbitrage/spread-series?limit=40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49672 - "WebSocket /ws/arbitrage" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40740 - "GET /api/arbitrage/opportunities?limit=500&simulation_volume_usd=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40730 - "GET /api/arbitrage/trades?limit=5000 HTTP/1.1" 200 OK

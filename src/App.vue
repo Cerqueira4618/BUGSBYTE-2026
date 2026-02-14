@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="app-container">
@@ -15,11 +14,18 @@
             <span class="brand-text">CryptoByte</span>
           </RouterLink>
           <nav class="main-nav">
-            <RouterLink :to="{ name: 'Simulator' }" class="nav-item" active-class="nav-item-active">Simulador</RouterLink>
-            <RouterLink :to="{ name: 'Market' }" class="nav-item" active-class="nav-item-active">Mercado</RouterLink>
-            <a href="#" class="nav-item">Learn</a>
-            <a href="#" class="nav-item">Transparency</a>
-            <a href="#" class="nav-item">Enterprise</a>
+            <RouterLink
+              :to="{ name: 'Simulator' }"
+              class="nav-item"
+              active-class="nav-item-active"
+              >Simulador</RouterLink
+            >
+            <RouterLink
+              :to="{ name: 'Market' }"
+              class="nav-item"
+              active-class="nav-item-active"
+              >Mercado</RouterLink
+            >
           </nav>
           <div class="actions">
             <RouterLink :to="{ name: 'Login' }" class="cta">
@@ -45,8 +51,18 @@
   flex-direction: column;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 8% 22%, rgba(70, 218, 124, 0.24) 0%, rgba(70, 218, 124, 0.08) 20%, transparent 38%),
-    radial-gradient(circle at 50% 48%, rgba(27, 92, 255, 0.18) 0%, rgba(9, 33, 78, 0.12) 25%, transparent 52%),
+    radial-gradient(
+      circle at 8% 22%,
+      rgba(70, 218, 124, 0.24) 0%,
+      rgba(70, 218, 124, 0.08) 20%,
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(27, 92, 255, 0.18) 0%,
+      rgba(9, 33, 78, 0.12) 25%,
+      transparent 52%
+    ),
     linear-gradient(180deg, #050f24 0%, #030a1a 40%, #010611 100%);
   color: #ffffff;
 }
@@ -62,7 +78,11 @@
   max-width: 1240px;
   margin: 0 auto;
   border-radius: 18px;
-  background: linear-gradient(90deg, rgba(14, 28, 45, 0.96) 0%, rgba(12, 25, 41, 0.96) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(14, 28, 45, 0.96) 0%,
+    rgba(12, 25, 41, 0.96) 100%
+  );
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
   border: 1px solid rgba(95, 126, 166, 0.08);
 }
@@ -116,7 +136,7 @@
 }
 
 .nav-item:hover {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   color: #dfffdc;
 }
 

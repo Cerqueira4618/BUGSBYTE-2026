@@ -5,6 +5,7 @@ export type ArbitrageStatus = {
   simulation_volume_usd?: number | null;
   balance_usd: number;
   total_pnl_usd: number;
+  portfolio_total_usd?: number;
   active_exchanges: string[];
   inventory_by_exchange?: Record<
     string,
@@ -14,6 +15,8 @@ export type ArbitrageStatus = {
       base_asset: string;
       base_balance: number;
       asset_balances?: Record<string, number>;
+      total_value_usd?: number;
+      status?: string;
     }
   >;
   latest_opportunity: ArbitrageOpportunity | null;
@@ -21,7 +24,7 @@ export type ArbitrageStatus = {
 
 export type ArbitrageOpportunity = {
   timestamp: string;
-  status: "accepted" | "discarded";
+  status: "accepted" | "discarded" | "no_funds" | "insufficient_liquidity";
   reason: string;
   symbol: string;
   symbol_name?: string;
@@ -34,6 +37,9 @@ export type ArbitrageOpportunity = {
   latency_ms: number;
   buy_vwap: number;
   sell_vwap: number;
+  network_fee_asset?: string;
+  network_fee_units?: number;
+  network_cost_usd?: number;
   buy_book_updated_at: string | null;
   sell_book_updated_at: string | null;
 };
@@ -54,7 +60,7 @@ export type SpreadPoint = {
   spread_gross_pct: number;
   spread_net_pct: number;
   expected_profit_usd: number;
-  status: "accepted" | "discarded";
+  status: "accepted" | "discarded" | "no_funds" | "insufficient_liquidity";
   reason: string;
   pair: string;
   trigger_exchange: string;
@@ -142,6 +148,24 @@ export async function setSimulationVolumeUsd(
   return requestJsonPost<ArbitrageStatus>("/api/arbitrage/simulation-volume", {
     simulation_volume_usd: simulationVolumeUsd,
   });
+}
+
+export async function rebalanceArbitrageWallets(): Promise<{
+  snapshot: ArbitrageStatus;
+  rebalance: {
+    transfers: number;
+    moved_quote_usd: number;
+    target_quote_usd: number;
+  };
+}> {
+  return requestJsonPost<{
+    snapshot: ArbitrageStatus;
+    rebalance: {
+      transfers: number;
+      moved_quote_usd: number;
+      target_quote_usd: number;
+    };
+  }>("/api/arbitrage/rebalance", {});
 }
 
 export async function getArbitrageOpportunities(

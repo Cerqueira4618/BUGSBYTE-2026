@@ -16,6 +16,7 @@ import {
   getArbitrageOpportunities,
   getArbitrageStatus,
   getArbitrageTrades,
+  rebalanceArbitrageWallets,
   getSpreadSeries,
   setSimulationVolumeUsd,
   type ArbitrageOpportunity,
@@ -43,6 +44,7 @@ const opportunities = ref<ArbitrageOpportunity[]>([]);
 const trades = ref<SimulatedTrade[]>([]);
 const spreadSeries = ref<SpreadPoint[]>([]);
 const opportunitiesLimit = 500;
+const rebalancing = ref(false);
 
 const fallbackPairs = [
   "BTCEUR",
@@ -231,6 +233,8 @@ const exchangeInventory = computed(() => {
     quoteBalance: wallet.quote_balance,
     baseAsset: wallet.base_asset,
     baseBalance: wallet.base_balance,
+    totalValueUsd: wallet.total_value_usd ?? wallet.quote_balance,
+    walletStatus: wallet.status ?? "OK",
     assetBalances: Object.entries(wallet.asset_balances ?? {}).map(
       ([asset, balance]) => ({
         asset,
@@ -239,6 +243,20 @@ const exchangeInventory = computed(() => {
     ),
   }));
 });
+
+function walletCryptoBalances(wallet: {
+  baseAsset: string;
+  baseBalance: number;
+  assetBalances: Array<{ asset: string; balance: number }>;
+}): Array<{ asset: string; balance: number }> {
+  if (wallet.assetBalances.length) {
+    return wallet.assetBalances
+      .filter((item) => item.balance > 0)
+      .sort((left, right) => left.asset.localeCompare(right.asset));
+  }
+
+  return [{ asset: wallet.baseAsset, balance: wallet.baseBalance }];
+}
 
 const averageNetSpread = computed(() => {
   if (!acceptedOpportunities.value.length) return 0;
@@ -303,20 +321,21 @@ function formatDateTime(value: string): string {
   });
 }
 
-function reasonLabel(reason: string): string {
-  if (reason === "insufficient_exchange_balance") {
-    return "Sem saldo suficiente";
+function statusLabel(statusValue: ArbitrageOpportunity["status"]): string {
+  if (statusValue === "accepted") return "Accepted";
+  if (statusValue === "no_funds") return "No Funds";
+  if (statusValue === "insufficient_liquidity") return "Insufficient Liquidity";
+  return "Discarded";
+}
+
+function networkFeeLabel(item: ArbitrageOpportunity): string {
+  const feeCost = item.network_cost_usd ?? 0;
+  const feeUnits = item.network_fee_units ?? 0;
+  const feeAsset = item.network_fee_asset ?? "";
+  if (!feeCost || !feeUnits || !feeAsset) {
+    return formatUsd(feeCost);
   }
-  if (reason === "insufficient_depth") {
-    return "Sem profundidade";
-  }
-  if (reason === "fees_and_transfer_filtered") {
-    return "Filtrado por custos";
-  }
-  if (reason === "profitable") {
-    return "Rentável";
-  }
-  return reason;
+  return `⛽ ${feeUnits.toFixed(4)} ${feeAsset} (${formatUsd(feeCost)})`;
 }
 
 function latencyText(latencyMs: number): string {
@@ -344,6 +363,20 @@ function onSimulationVolumeChange(): void {
     simulationVolumeUsd.value = 1000;
   }
   void loadData();
+}
+
+async function onRebalance(): Promise<void> {
+  if (rebalancing.value) return;
+  rebalancing.value = true;
+  try {
+    const result = await rebalanceArbitrageWallets();
+    status.value = result.snapshot;
+    await loadData();
+  } catch {
+    error.value = "Não foi possível executar o rebalance.";
+  } finally {
+    rebalancing.value = false;
+  }
 }
 
 function renderPerformanceChart(): void {
@@ -603,6 +636,10 @@ watch(simulationVolumeUsd, (value) => {
           <strong>{{ formatUsd(status?.balance_usd ?? 0) }}</strong>
         </div>
         <div class="metric">
+          <span>Portfólio total</span>
+          <strong>{{ formatUsd(status?.portfolio_total_usd ?? 0) }}</strong>
+        </div>
+        <div class="metric">
           <span>Volume de Simulação atual</span>
           <strong>{{ formatUsd(simulationVolumeUsd) }}</strong>
         </div>
@@ -622,31 +659,57 @@ watch(simulationVolumeUsd, (value) => {
       </div>
 
       <div class="inventory-section">
-        <h3>Carteiras por Exchange</h3>
-        <div class="inventory-grid">
-          <div
-            v-for="wallet in exchangeInventory"
-            :key="wallet.exchange"
-            class="inventory-card"
+        <div class="inventory-header">
+          <h3>Carteiras por Exchange</h3>
+          <button
+            class="rebalance-btn"
+            :disabled="rebalancing"
+            @click="onRebalance"
           >
-            <div class="inventory-title">{{ wallet.exchange }}</div>
-            <div class="inventory-line">
-              {{ formatUsd(wallet.quoteBalance) }} {{ wallet.quoteAsset }}
-            </div>
-            <div
-              v-for="asset in wallet.assetBalances"
-              :key="wallet.exchange + asset.asset"
-              class="inventory-line"
-            >
-              {{ asset.balance.toFixed(6) }} {{ asset.asset }}
-            </div>
-            <div v-if="!wallet.assetBalances.length" class="inventory-line">
-              {{ wallet.baseBalance.toFixed(6) }} {{ wallet.baseAsset }}
-            </div>
-          </div>
-          <div v-if="!exchangeInventory.length" class="inventory-empty">
-            Saldos indisponíveis.
-          </div>
+            {{ rebalancing ? "A reequilibrar..." : "Rebalance" }}
+          </button>
+        </div>
+        <div class="inventory-table-wrap">
+          <table class="inventory-table">
+            <thead>
+              <tr>
+                <th>Exchange</th>
+                <th>Saldo USDT</th>
+                <th>Crypto Balance</th>
+                <th>Valor Total (USD)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="!exchangeInventory.length">
+                <td colspan="5" class="inventory-empty">
+                  Saldos indisponíveis.
+                </td>
+              </tr>
+              <tr v-for="wallet in exchangeInventory" :key="wallet.exchange">
+                <td>{{ wallet.exchange }}</td>
+                <td>{{ formatUsd(wallet.quoteBalance) }}</td>
+                <td class="crypto-balances-cell">
+                  <div
+                    v-for="asset in walletCryptoBalances(wallet)"
+                    :key="wallet.exchange + asset.asset"
+                    class="crypto-balance-line"
+                  >
+                    {{ asset.balance.toFixed(6) }} {{ asset.asset }}
+                  </div>
+                </td>
+                <td>{{ formatUsd(wallet.totalValueUsd) }}</td>
+                <td>
+                  <span
+                    class="wallet-status"
+                    :class="wallet.walletStatus === 'OK' ? 'ok' : 'low'"
+                  >
+                    {{ wallet.walletStatus }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -659,6 +722,7 @@ watch(simulationVolumeUsd, (value) => {
               <th>Venda (B)</th>
               <th>Spread Bruto</th>
               <th>Spread Líquido</th>
+              <th class="network-fee-head">Gas</th>
               <th>P&L Esperado</th>
               <th>Latência</th>
               <th>Atualização</th>
@@ -667,10 +731,10 @@ watch(simulationVolumeUsd, (value) => {
           </thead>
           <tbody>
             <tr v-if="loading">
-              <td colspan="9">A carregar dados...</td>
+              <td colspan="10">A carregar dados...</td>
             </tr>
             <tr v-else-if="!opportunities.length">
-              <td colspan="9">Sem oportunidades recebidas.</td>
+              <td colspan="10">Sem oportunidades recebidas.</td>
             </tr>
             <tr
               v-for="item in paginatedOpportunities"
@@ -689,6 +753,9 @@ watch(simulationVolumeUsd, (value) => {
               </td>
               <td :class="item.net_spread_pct >= 0 ? 'positive' : 'negative'">
                 {{ formatPct(item.net_spread_pct) }}
+              </td>
+              <td class="network-fee-cell">
+                {{ networkFeeLabel(item) }}
               </td>
               <td
                 :class="item.expected_profit_usd >= 0 ? 'positive' : 'negative'"
@@ -717,7 +784,7 @@ watch(simulationVolumeUsd, (value) => {
               </td>
               <td>
                 <span class="status-pill" :class="item.status">{{
-                  item.status
+                  statusLabel(item.status)
                 }}</span>
               </td>
             </tr>
@@ -1091,6 +1158,7 @@ th {
   align-items: center;
   justify-content: center;
   min-width: 72px;
+  max-width: 72px;
   padding: 5px 12px;
   border-radius: 999px;
   font-weight: 700;
@@ -1117,20 +1185,18 @@ th {
   box-shadow: 0 6px 12px rgba(255, 120, 120, 0.18);
 }
 
-.reason-pill {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  color: #c8d7ee;
-  background: rgba(120, 151, 189, 0.18);
-  border: 1px solid rgba(120, 151, 189, 0.24);
+.status-pill.no_funds {
+  background: linear-gradient(135deg, #4b3d1f, #312510);
+  color: #ffe7ad;
+  border-color: rgba(255, 196, 88, 0.65);
+  box-shadow: 0 6px 12px rgba(255, 196, 88, 0.18);
 }
 
-.reason-pill.warning {
-  color: #ffd27a;
-  background: rgba(255, 206, 112, 0.16);
-  border-color: rgba(255, 206, 112, 0.45);
+.status-pill.insufficient_liquidity {
+  background: linear-gradient(135deg, #2b2347, #1d1733);
+  color: #d7d2ff;
+  border-color: rgba(152, 136, 255, 0.6);
+  box-shadow: 0 6px 12px rgba(152, 136, 255, 0.2);
 }
 
 .status-dot {
@@ -1169,39 +1235,107 @@ th {
   margin-bottom: 18px;
 }
 
+.inventory-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
 .inventory-section h3 {
-  margin: 0 0 10px;
+  margin: 0;
   font-size: 16px;
   color: #dbe9ff;
 }
 
-.inventory-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 10px;
+.rebalance-btn {
+  border: 1px solid rgba(102, 239, 139, 0.5);
+  color: #bfffe0;
+  background: rgba(102, 239, 139, 0.12);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.inventory-card {
+.rebalance-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.network-fee-cell {
+  color: #c4d3ea;
+  font-size: 12px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.network-fee-head {
+  text-align: center;
+}
+
+.inventory-table-wrap {
   border-radius: 10px;
   border: 1px solid rgba(120, 151, 189, 0.12);
   background: rgba(255, 255, 255, 0.03);
-  padding: 12px;
+  overflow: auto;
 }
 
-.inventory-title {
-  color: #f6fbff;
-  font-weight: 700;
-  margin-bottom: 6px;
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.inventory-line {
-  color: #b9cae3;
-  font-size: 14px;
-  margin-bottom: 4px;
+.inventory-table th,
+.inventory-table td {
+  padding: 10px;
+  border-bottom: 1px solid rgba(120, 151, 189, 0.12);
+}
+
+.inventory-table th {
+  color: #a8bad2;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 12px;
+  text-align: left;
+}
+
+.crypto-balances-cell {
+  min-width: 180px;
+}
+
+.crypto-balance-line {
+  color: #c4d3ea;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
 .inventory-empty {
   color: #a8bad2;
+  text-align: center;
+}
+
+.wallet-status {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid;
+}
+
+.wallet-status.ok {
+  color: #bfffe0;
+  background: rgba(102, 239, 139, 0.14);
+  border-color: rgba(102, 239, 139, 0.38);
+}
+
+.wallet-status.low {
+  color: #ffe7ad;
+  background: rgba(255, 196, 88, 0.14);
+  border-color: rgba(255, 196, 88, 0.42);
 }
 
 .chart-section,

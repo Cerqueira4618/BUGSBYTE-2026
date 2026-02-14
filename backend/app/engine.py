@@ -31,6 +31,33 @@ QUOTE_SUFFIXES = (
     "ETH",
 )
 
+STABLE_QUOTES = {"USDT", "USDC", "USD", "EUR"}
+NETWORK_FEE_UNITS = {
+    "USDT": 1.0,
+    "USDC": 1.0,
+    "USD": 1.0,
+    "EUR": 1.0,
+    "ADA": 0.8,
+    "ETH": 0.003,
+    "BTC": 0.0004,
+    "SOL": 0.01,
+    "BNB": 0.005,
+    "XRP": 0.25,
+}
+
+DEFAULT_ASSET_PRICES_USD = {
+    "BTC": 72000.0,
+    "ETH": 3000.0,
+    "SOL": 160.0,
+    "BNB": 600.0,
+    "ADA": 0.6,
+    "XRP": 0.55,
+    "DOT": 7.0,
+    "LINK": 18.0,
+    "AVAX": 35.0,
+}
+INITIAL_USD_PER_CRYPTO_PER_WALLET = 2000.0
+
 
 def _split_symbol_pair(symbol: str) -> tuple[str, str] | None:
     normalized = symbol.upper().strip()
@@ -107,19 +134,51 @@ class ArbitrageEngine:
         self.fees = {feed.name: feed.fee for feed in config.feeds if feed.enabled}
         self.simulation_volume_usd: float | None = None
         enabled_exchange_names = [feed.name for feed in config.feeds if feed.enabled]
-        initial_quote_balance = (
-            config.starting_balance_usd / len(enabled_exchange_names)
-            if enabled_exchange_names
-            else 0.0
-        )
-        self.inventory_by_exchange: dict[str, dict[str, object]] = {
-            exchange_name: {
-                "quote_asset": "USDT",
-                "quote_balance": initial_quote_balance,
-                "asset_balances": {},
+        base_assets = sorted(
+            {
+                parsed[0]
+                for symbol in config.symbols
+                if (parsed := _split_symbol_pair(symbol)) is not None
             }
-            for exchange_name in enabled_exchange_names
-        }
+        )
+        self.inventory_by_exchange = self._build_initial_inventory(
+            exchanges=enabled_exchange_names,
+            base_assets=base_assets,
+        )
+
+    def _reference_asset_price(self, asset: str) -> float:
+        return float(DEFAULT_ASSET_PRICES_USD.get(asset.upper(), 1.0))
+
+    def _build_initial_inventory(
+        self,
+        *,
+        exchanges: list[str],
+        base_assets: list[str],
+    ) -> dict[str, dict[str, object]]:
+        if not exchanges:
+            return {}
+
+        exchange_count = len(exchanges)
+        quote_budget_usd = self.config.starting_balance_usd * 0.5
+
+        quote_per_exchange = quote_budget_usd / exchange_count
+
+        inventory: dict[str, dict[str, object]] = {}
+        for exchange in exchanges:
+            asset_balances: dict[str, float] = {}
+            for asset in base_assets:
+                reference_price = self._reference_asset_price(asset)
+                if reference_price <= 0:
+                    continue
+                asset_balances[asset] = INITIAL_USD_PER_CRYPTO_PER_WALLET / reference_price
+
+            inventory[exchange] = {
+                "quote_asset": "USDT",
+                "quote_balance": quote_per_exchange,
+                "asset_balances": asset_balances,
+            }
+
+        return inventory
 
     def set_simulation_volume_usd(self, value: float | None) -> None:
         if value is None or value <= 0:
@@ -154,6 +213,200 @@ class ArbitrageEngine:
         current_value = float(asset_balances.get(base_asset, 0.0))
         asset_balances[base_asset] = current_value + delta
 
+    def _find_exchange_asset_price_usd(self, exchange: str, asset: str) -> float:
+        normalized_asset = asset.upper()
+        if normalized_asset in STABLE_QUOTES:
+            return 1.0
+
+        best_price = 0.0
+        for symbol, books_by_exchange in self.order_books.items():
+            parsed = _split_symbol_pair(symbol)
+            if not parsed:
+                continue
+            base_asset, quote_asset = parsed
+            if base_asset != normalized_asset or quote_asset not in STABLE_QUOTES:
+                continue
+            book = books_by_exchange.get(exchange)
+            if not book:
+                continue
+
+            bid = book.best_bid or 0.0
+            ask = book.best_ask or 0.0
+            if bid > 0 and ask > 0:
+                price = (bid + ask) / 2
+            else:
+                price = bid or ask
+
+            if price > best_price:
+                best_price = price
+
+        if best_price > 0:
+            return best_price
+        return self._reference_asset_price(normalized_asset)
+
+    def _estimate_wallet_value_usd(self, exchange: str, wallet: dict[str, object]) -> float:
+        quote_balance = float(wallet.get("quote_balance", 0.0))
+        total = quote_balance
+
+        asset_balances = wallet.get("asset_balances")
+        if isinstance(asset_balances, dict):
+            for asset, balance in asset_balances.items():
+                asset_balance = float(balance)
+                if asset_balance <= 0:
+                    continue
+                unit_price = self._find_exchange_asset_price_usd(exchange, str(asset))
+                total += asset_balance * unit_price
+
+        return total
+
+    def _wallet_status(self, exchange: str, wallet: dict[str, object]) -> str:
+        quote_asset = str(wallet.get("quote_asset", "USDT"))
+        quote_balance = float(wallet.get("quote_balance", 0.0))
+        current_symbol = self.config.symbol
+        parsed = _split_symbol_pair(current_symbol)
+        if not parsed:
+            return "OK"
+
+        base_asset, _ = parsed
+        reference_book = self.order_books.get(current_symbol, {}).get(exchange)
+        required_quote = 0.0
+        if reference_book and reference_book.best_ask and reference_book.best_ask > 0:
+            fee = self.fees.get(exchange, 0.0)
+            required_quote = reference_book.best_ask * self.config.trade_size * (1 + fee)
+
+        base_balance = self._get_base_balance(exchange, base_asset)
+        low_quote = required_quote > 0 and quote_balance < required_quote
+        low_base = base_balance < self.config.trade_size
+
+        if low_quote and low_base:
+            return f"Low {quote_asset} & {base_asset}"
+        if low_quote:
+            return f"Low {quote_asset}"
+        if low_base:
+            return f"Low {base_asset}"
+        return "OK"
+
+    def _network_fee_units(self, asset: str) -> float:
+        return float(NETWORK_FEE_UNITS.get(asset.upper(), 0.5))
+
+    def estimate_transfer_fee(
+        self,
+        symbol: str,
+        reference_price: float | None = None,
+        exchange: str | None = None,
+    ) -> tuple[str, float, float]:
+        parsed = _split_symbol_pair(symbol)
+        if not parsed:
+            return "USD", 0.0, self.config.transfer_cost_usd
+
+        base_asset, quote_asset = parsed
+        fee_units = self._network_fee_units(base_asset)
+
+        unit_price_usd = 0.0
+        if quote_asset in STABLE_QUOTES and reference_price and reference_price > 0:
+            unit_price_usd = reference_price
+        elif exchange:
+            unit_price_usd = self._find_exchange_asset_price_usd(exchange, base_asset)
+
+        if unit_price_usd <= 0:
+            return base_asset, fee_units, self.config.transfer_cost_usd
+        return base_asset, fee_units, fee_units * unit_price_usd
+
+    def _transfer_cost_for_asset(self, asset: str, exchange: str) -> float:
+        fee_units = self._network_fee_units(asset)
+        unit_price_usd = self._find_exchange_asset_price_usd(exchange, asset)
+        if unit_price_usd <= 0:
+            if asset.upper() in STABLE_QUOTES:
+                unit_price_usd = 1.0
+            else:
+                return self.config.transfer_cost_usd
+        return fee_units * unit_price_usd
+
+    def _apply_transfer_cost(self, cost_usd: float | None = None) -> None:
+        applied = self.config.transfer_cost_usd if cost_usd is None else max(float(cost_usd), 0.0)
+        self.total_pnl_usd -= applied
+        self.balance_usd -= applied
+
+    def _transfer_quote_between_exchanges(self, from_exchange: str, to_exchange: str, amount: float) -> bool:
+        if amount <= 0:
+            return False
+        from_wallet = self.inventory_by_exchange.get(from_exchange)
+        to_wallet = self.inventory_by_exchange.get(to_exchange)
+        if not from_wallet or not to_wallet:
+            return False
+
+        from_quote_balance = float(from_wallet.get("quote_balance", 0.0))
+        if from_quote_balance < amount:
+            return False
+
+        from_wallet["quote_balance"] = from_quote_balance - amount
+        to_wallet["quote_balance"] = float(to_wallet.get("quote_balance", 0.0)) + amount
+        quote_asset = str(from_wallet.get("quote_asset", "USDT"))
+        transfer_cost = self._transfer_cost_for_asset(quote_asset, from_exchange)
+        self._apply_transfer_cost(transfer_cost)
+        return True
+
+    def _transfer_base_between_exchanges(
+        self,
+        *,
+        from_exchange: str,
+        to_exchange: str,
+        base_asset: str,
+        amount: float,
+    ) -> bool:
+        if amount <= 0:
+            return False
+        available = self._get_base_balance(from_exchange, base_asset)
+        if available < amount:
+            return False
+
+        self._add_base_balance(from_exchange, base_asset, -amount)
+        self._add_base_balance(to_exchange, base_asset, amount)
+        transfer_cost = self._transfer_cost_for_asset(base_asset, from_exchange)
+        self._apply_transfer_cost(transfer_cost)
+        return True
+
+    async def rebalance_quotes(self) -> dict[str, float | int]:
+        async with self._lock:
+            wallets = {
+                exchange: float(data.get("quote_balance", 0.0))
+                for exchange, data in self.inventory_by_exchange.items()
+            }
+            if len(wallets) < 2:
+                return {
+                    "transfers": 0,
+                    "moved_quote_usd": 0.0,
+                    "target_quote_usd": 0.0,
+                }
+
+            target_balance = sum(wallets.values()) / len(wallets)
+            moved_quote = 0.0
+            transfer_count = 0
+
+            while True:
+                donor = max(wallets, key=wallets.get)
+                receiver = min(wallets, key=wallets.get)
+                donor_surplus = wallets[donor] - target_balance
+                receiver_deficit = target_balance - wallets[receiver]
+                transfer_amount = min(donor_surplus, receiver_deficit)
+
+                if transfer_amount <= 0.01:
+                    break
+
+                if not self._transfer_quote_between_exchanges(donor, receiver, transfer_amount):
+                    break
+
+                wallets[donor] -= transfer_amount
+                wallets[receiver] += transfer_amount
+                moved_quote += transfer_amount
+                transfer_count += 1
+
+            return {
+                "transfers": transfer_count,
+                "moved_quote_usd": round(moved_quote, 8),
+                "target_quote_usd": round(target_balance, 8),
+            }
+
     def _inventory_view(self) -> dict[str, dict[str, object]]:
         current_base_asset = (_split_symbol_pair(self.config.symbol) or ("BASE", "USDT"))[0]
         inventory: dict[str, dict[str, object]] = {}
@@ -173,6 +426,8 @@ class ArbitrageEngine:
                 "base_asset": current_base_asset,
                 "base_balance": round(normalized_asset_balances.get(current_base_asset, 0.0), 8),
                 "asset_balances": normalized_asset_balances,
+                "total_value_usd": round(self._estimate_wallet_value_usd(exchange, wallet), 8),
+                "status": self._wallet_status(exchange, wallet),
             }
         return inventory
 
@@ -268,7 +523,7 @@ class ArbitrageEngine:
         if filled < size:
             return Opportunity(
                 timestamp=timestamp,
-                status="discarded",
+                status="insufficient_liquidity",
                 reason="insufficient_depth",
                 symbol=buy_book.symbol,
                 buy_exchange=buy_book.exchange,
@@ -290,19 +545,48 @@ class ArbitrageEngine:
         buy_unit_with_fee = buy_vwap * (1 + buy_fee)
         sell_unit_after_fee = sell_vwap * (1 - sell_fee)
 
-        net_profit = ((sell_unit_after_fee - buy_unit_with_fee) * size) - self.config.transfer_cost_usd
+        _, _, transfer_cost_usd = self.estimate_transfer_fee(
+            buy_book.symbol,
+            reference_price=buy_vwap,
+            exchange=buy_book.exchange,
+        )
+        net_profit = ((sell_unit_after_fee - buy_unit_with_fee) * size) - transfer_cost_usd
 
         gross_spread_pct = ((sell_vwap - buy_vwap) / buy_vwap) * 100 if buy_vwap > 0 else 0.0
         buy_total_with_fee = buy_unit_with_fee * size
         net_spread_pct = (net_profit / buy_total_with_fee) * 100 if buy_total_with_fee > 0 else 0.0
 
+        base_asset = (_split_symbol_pair(buy_book.symbol) or ("BASE", "USDT"))[0]
+
         buy_wallet = self.inventory_by_exchange.get(buy_book.exchange)
         buy_quote_balance = float(buy_wallet.get("quote_balance", 0.0)) if buy_wallet else 0.0
+
         if buy_total_with_fee > buy_quote_balance:
             return Opportunity(
                 timestamp=timestamp,
-                status="discarded",
-                reason="insufficient_exchange_balance",
+                status="no_funds",
+                reason="insufficient_quote_balance",
+                symbol=buy_book.symbol,
+                buy_exchange=buy_book.exchange,
+                sell_exchange=sell_book.exchange,
+                trade_size=size,
+                gross_spread_pct=gross_spread_pct,
+                net_spread_pct=net_spread_pct,
+                expected_profit_usd=net_profit,
+                latency_ms=latency_ms,
+                buy_vwap=buy_vwap,
+                sell_vwap=sell_vwap,
+                buy_book_updated_at=buy_book.exchange_timestamp,
+                sell_book_updated_at=sell_book.exchange_timestamp,
+            )
+
+        sell_base_balance = self._get_base_balance(sell_book.exchange, base_asset)
+
+        if sell_base_balance < size:
+            return Opportunity(
+                timestamp=timestamp,
+                status="no_funds",
+                reason="insufficient_base_balance",
                 symbol=buy_book.symbol,
                 buy_exchange=buy_book.exchange,
                 sell_exchange=sell_book.exchange,
@@ -364,6 +648,7 @@ class ArbitrageEngine:
         sell_fee = self.fees.get(opportunity.sell_exchange, 0.0)
         buy_cost = opportunity.buy_vwap * opportunity.trade_size * (1 + buy_fee)
         sell_value = opportunity.sell_vwap * opportunity.trade_size * (1 - sell_fee)
+        base_asset = (_split_symbol_pair(opportunity.symbol) or ("BASE", "USDT"))[0]
 
         buy_wallet = self.inventory_by_exchange.setdefault(
             opportunity.buy_exchange,
@@ -374,10 +659,36 @@ class ArbitrageEngine:
             {"quote_asset": "USDT", "quote_balance": 0.0, "asset_balances": {}},
         )
 
+        buy_quote_balance = float(buy_wallet.get("quote_balance", 0.0))
+        buy_shortfall = buy_cost - buy_quote_balance
+        if buy_shortfall > 0:
+            self._transfer_quote_between_exchanges(
+                from_exchange=opportunity.sell_exchange,
+                to_exchange=opportunity.buy_exchange,
+                amount=buy_shortfall,
+            )
+            buy_quote_balance = float(buy_wallet.get("quote_balance", 0.0))
+
+        if buy_quote_balance < buy_cost:
+            return
+
+        sell_base_balance = self._get_base_balance(opportunity.sell_exchange, base_asset)
+        sell_shortfall = opportunity.trade_size - sell_base_balance
+        if sell_shortfall > 0:
+            self._transfer_base_between_exchanges(
+                from_exchange=opportunity.buy_exchange,
+                to_exchange=opportunity.sell_exchange,
+                base_asset=base_asset,
+                amount=sell_shortfall,
+            )
+            sell_base_balance = self._get_base_balance(opportunity.sell_exchange, base_asset)
+
+        if sell_base_balance < opportunity.trade_size:
+            return
+
         buy_wallet["quote_balance"] = float(buy_wallet.get("quote_balance", 0.0)) - buy_cost
         sell_wallet["quote_balance"] = float(sell_wallet.get("quote_balance", 0.0)) + sell_value
 
-        base_asset = (_split_symbol_pair(opportunity.symbol) or ("BASE", "USDT"))[0]
         self._add_base_balance(opportunity.buy_exchange, base_asset, opportunity.trade_size)
         self._add_base_balance(opportunity.sell_exchange, base_asset, -opportunity.trade_size)
 
@@ -405,6 +716,11 @@ class ArbitrageEngine:
     async def snapshot(self) -> dict:
         async with self._lock:
             latest = self.opportunities[-1] if self.opportunities else None
+            inventory = self._inventory_view()
+            portfolio_total_usd = sum(
+                float(wallet.get("total_value_usd", 0.0))
+                for wallet in inventory.values()
+            )
             return {
                 "symbol": self.config.symbol,
                 "symbols": self.config.symbols,
@@ -412,7 +728,8 @@ class ArbitrageEngine:
                 "simulation_volume_usd": self.simulation_volume_usd,
                 "balance_usd": self.balance_usd,
                 "total_pnl_usd": self.total_pnl_usd,
-                "inventory_by_exchange": self._inventory_view(),
+                "portfolio_total_usd": round(portfolio_total_usd, 8),
+                "inventory_by_exchange": inventory,
                 "active_exchanges": sorted(
                     {
                         exchange
