@@ -73,7 +73,7 @@ class ArbitrageEngine:
         self._lock = asyncio.Lock()
         self._db = db
         self._persistence = persistence
-        self.order_books: dict[str, NormalizedOrderBook] = {}
+        self.order_books: dict[str, dict[str, NormalizedOrderBook]] = {}
         self.opportunities: deque[Opportunity] = deque(maxlen=600)
         self.executed_trades: deque[SimulatedTrade] = deque(maxlen=300)
         self.metrics_log: deque[dict] = deque(maxlen=600)
@@ -98,18 +98,20 @@ class ArbitrageEngine:
 
     async def on_order_book(self, book: NormalizedOrderBook) -> None:
         async with self._lock:
-            self.order_books[book.exchange] = book
-            await self._evaluate_all_pairs(last_exchange=book.exchange)
+            books_by_exchange = self.order_books.setdefault(book.symbol, {})
+            books_by_exchange[book.exchange] = book
+            await self._evaluate_all_pairs(symbol=book.symbol, last_exchange=book.exchange)
 
-    async def _evaluate_all_pairs(self, last_exchange: str) -> None:
-        exchanges = list(self.order_books.keys())
+    async def _evaluate_all_pairs(self, symbol: str, last_exchange: str) -> None:
+        books_by_exchange = self.order_books.get(symbol, {})
+        exchanges = list(books_by_exchange.keys())
         if len(exchanges) < 2:
             return
 
         now = datetime.now(timezone.utc)
         for buy_exchange, sell_exchange in permutations(exchanges, 2):
-            buy_book = self.order_books[buy_exchange]
-            sell_book = self.order_books[sell_exchange]
+            buy_book = books_by_exchange[buy_exchange]
+            sell_book = books_by_exchange[sell_exchange]
             if buy_book.symbol != sell_book.symbol:
                 continue
 
@@ -283,11 +285,18 @@ class ArbitrageEngine:
             latest = self.opportunities[-1] if self.opportunities else None
             return {
                 "symbol": self.config.symbol,
+                "symbols": self.config.symbols,
                 "trade_size": self.config.trade_size,
                 "simulation_volume_usd": self.simulation_volume_usd,
                 "balance_usd": self.balance_usd,
                 "total_pnl_usd": self.total_pnl_usd,
-                "active_exchanges": list(self.order_books.keys()),
+                "active_exchanges": sorted(
+                    {
+                        exchange
+                        for books_by_exchange in self.order_books.values()
+                        for exchange in books_by_exchange
+                    }
+                ),
                 "latest_opportunity": opportunity_to_dict(latest) if latest else None,
             }
 
@@ -300,13 +309,15 @@ class ArbitrageEngine:
         async with self._lock:
             if simulation_volume_usd is not None and simulation_volume_usd > 0:
                 generated: list[Opportunity] = []
-                exchanges = list(self.order_books.keys())
                 symbols_set = {s.upper() for s in symbols} if symbols else None
-                if len(exchanges) >= 2:
-                    now = datetime.now(timezone.utc)
+                now = datetime.now(timezone.utc)
+                for books_by_exchange in self.order_books.values():
+                    exchanges = list(books_by_exchange.keys())
+                    if len(exchanges) < 2:
+                        continue
                     for buy_exchange, sell_exchange in permutations(exchanges, 2):
-                        buy_book = self.order_books[buy_exchange]
-                        sell_book = self.order_books[sell_exchange]
+                        buy_book = books_by_exchange[buy_exchange]
+                        sell_book = books_by_exchange[sell_exchange]
                         if buy_book.symbol != sell_book.symbol:
                             continue
                         if symbols_set and buy_book.symbol.upper() not in symbols_set:

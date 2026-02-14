@@ -20,6 +20,31 @@ OrderBookCallback = Callable[[NormalizedOrderBook], Awaitable[None]]
 
 logger = logging.getLogger(__name__)
 
+QUOTE_SUFFIXES = (
+    "USDT",
+    "USDC",
+    "EUR",
+    "USD",
+    "AVAX",
+    "LINK",
+    "DOT",
+    "XRP",
+    "BNB",
+    "SOL",
+    "ADA",
+    "BTC",
+    "ETH",
+)
+
+
+def split_symbol(symbol: str) -> tuple[str, str] | None:
+    normalized = symbol.upper().strip()
+    for suffix in QUOTE_SUFFIXES:
+        if normalized.endswith(suffix) and len(normalized) > len(suffix):
+            base = normalized[: -len(suffix)]
+            return base, suffix
+    return None
+
 
 class MarketDataFeed(abc.ABC):
     def __init__(self, name: str, symbol: str) -> None:
@@ -121,10 +146,12 @@ class BinanceDepthFeed(MarketDataFeed):
 
 
 def uphold_pair_from_symbol(symbol: str) -> str:
-    if symbol.endswith("USDT"):
-        base = symbol[:-4]
-        quote = "USD"
-        return f"{base}{quote}"
+    parsed = split_symbol(symbol)
+    if parsed is None:
+        return symbol
+    base, quote = parsed
+    if quote == "USDT":
+        return f"{base}USD"
     return symbol
 
 
@@ -189,12 +216,23 @@ class KrakenDepthFeed(MarketDataFeed):
         "BTCUSDT": "BTC/USDT",
         "ETHUSDT": "ETH/USDT",
         "SOLUSDT": "SOL/USDT",
+        "BTCEUR": "BTC/EUR",
+        "ETHEUR": "ETH/EUR",
+        "SOLEUR": "SOL/EUR",
+        "BTCUSD": "BTC/USD",
+        "ETHUSD": "ETH/USD",
+        "SOLUSD": "SOL/USD",
     }
 
     def __init__(self, name: str, symbol: str) -> None:
         super().__init__(name=name, symbol=symbol)
         self.ws_url = "wss://ws.kraken.com/v2"
-        self.kraken_pair = self._SYMBOL_MAP.get(symbol, symbol)
+        mapped = self._SYMBOL_MAP.get(symbol.upper())
+        if mapped:
+            self.kraken_pair = mapped
+        else:
+            parsed = split_symbol(symbol)
+            self.kraken_pair = f"{parsed[0]}/{parsed[1]}" if parsed else symbol
 
     async def _run_loop(self, callback: OrderBookCallback) -> None:
         while self._running:

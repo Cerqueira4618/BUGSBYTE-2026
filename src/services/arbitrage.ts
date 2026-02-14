@@ -1,5 +1,6 @@
 export type ArbitrageStatus = {
   symbol: string;
+  symbols?: string[];
   trade_size: number;
   balance_usd: number;
   total_pnl_usd: number;

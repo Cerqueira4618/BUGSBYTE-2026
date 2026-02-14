@@ -21,31 +21,32 @@ class ArbitrageService:
 
     def _build_feeds(self) -> list[MarketDataFeed]:
         feeds: list[MarketDataFeed] = []
-        for feed_cfg in self.config.feeds:
-            if not feed_cfg.enabled:
-                continue
-            if feed_cfg.kind == "binance_ws":
-                feeds.append(BinanceDepthFeed(name=feed_cfg.name, symbol=self.config.symbol))
-                continue
-            if feed_cfg.kind == "uphold_ticker":
-                feeds.append(UpholdTickerFeed(name=feed_cfg.name, symbol=self.config.symbol))
-                continue
-            if feed_cfg.kind == "kraken_ws":
-                feeds.append(KrakenDepthFeed(name=feed_cfg.name, symbol=self.config.symbol))
-                continue
-            if feed_cfg.kind == "bybit_ws":
-                feeds.append(BybitDepthFeed(name=feed_cfg.name, symbol=self.config.symbol))
-                continue
-            if feed_cfg.kind == "simulated":
-                feeds.append(
-                    SimulatedDepthFeed(
-                        name=feed_cfg.name,
-                        symbol=self.config.symbol,
-                        price_offset=feed_cfg.price_offset,
-                        volatility=feed_cfg.volatility,
-                        depth_levels=feed_cfg.depth_levels,
+        for symbol in self.config.symbols:
+            for feed_cfg in self.config.feeds:
+                if not feed_cfg.enabled:
+                    continue
+                if feed_cfg.kind == "binance_ws":
+                    feeds.append(BinanceDepthFeed(name=feed_cfg.name, symbol=symbol))
+                    continue
+                if feed_cfg.kind == "uphold_ticker":
+                    feeds.append(UpholdTickerFeed(name=feed_cfg.name, symbol=symbol))
+                    continue
+                if feed_cfg.kind == "kraken_ws":
+                    feeds.append(KrakenDepthFeed(name=feed_cfg.name, symbol=symbol))
+                    continue
+                if feed_cfg.kind == "bybit_ws":
+                    feeds.append(BybitDepthFeed(name=feed_cfg.name, symbol=symbol))
+                    continue
+                if feed_cfg.kind == "simulated":
+                    feeds.append(
+                        SimulatedDepthFeed(
+                            name=feed_cfg.name,
+                            symbol=symbol,
+                            price_offset=feed_cfg.price_offset,
+                            volatility=feed_cfg.volatility,
+                            depth_levels=feed_cfg.depth_levels,
+                        )
                     )
-                )
         return feeds
 
     async def start(self) -> None:

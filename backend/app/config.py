@@ -19,6 +19,7 @@ class FeedConfig:
 @dataclass(slots=True)
 class AppConfig:
     symbol: str
+    symbols: list[str]
     trade_size: float
     transfer_cost_usd: float
     starting_balance_usd: float
@@ -28,8 +29,10 @@ class AppConfig:
 
 
 def _default_config() -> AppConfig:
+    default_symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT"]
     return AppConfig(
-        symbol="BTCUSDT",
+        symbol=default_symbols[0],
+        symbols=default_symbols,
         trade_size=0.05,
         transfer_cost_usd=1.0,
         starting_balance_usd=10000,
@@ -66,8 +69,15 @@ def load_config(root_path: Path) -> AppConfig:
         for feed in data.get("feeds", [])
     ]
 
+    raw_symbols = data.get("symbols")
+    symbols = [str(symbol).upper() for symbol in raw_symbols if str(symbol).strip()] if isinstance(raw_symbols, list) else []
+    fallback_symbol = str(data.get("symbol", "BTCUSDT")).upper()
+    if not symbols:
+        symbols = [fallback_symbol]
+
     return AppConfig(
-        symbol=data.get("symbol", "BTCUSDT"),
+        symbol=symbols[0],
+        symbols=symbols,
         trade_size=float(data.get("trade_size", 0.05)),
         transfer_cost_usd=float(data.get("transfer_cost_usd", 1.0)),
         starting_balance_usd=float(data.get("starting_balance_usd", 10000)),

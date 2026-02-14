@@ -42,16 +42,109 @@ const status = ref<ArbitrageStatus | null>(null);
 const opportunities = ref<ArbitrageOpportunity[]>([]);
 const trades = ref<SimulatedTrade[]>([]);
 const spreadSeries = ref<SpreadPoint[]>([]);
+const opportunitiesLimit = 500;
 
-const availablePairs = ["BTCUSDT", "ETHUSDT", "ADAUSDT", "BNBUSDT", "SOLUSDT"];
-const selectedPair = ref<string>("");
+const fallbackPairs = [
+  "BTCEUR",
+  "BTCUSD",
+  "BTCUSDT",
+  "ETHEUR",
+  "ETHUSD",
+  "ETHUSDT",
+  "SOLEUR",
+  "SOLUSD",
+  "SOLUSDT",
+  "BNBEUR",
+  "BNBUSD",
+  "BNBUSDT",
+  "ADAEUR",
+  "ADAUSD",
+  "ADAUSDT",
+  "ETHBTC",
+  "SOLBTC",
+  "SOLETH",
+  "BNBBTC",
+  "BNBETH",
+  "ADABTC",
+  "ADAETH",
+  "ADABNB",
+];
+const selectedBaseCurrency = ref<string>("");
+const selectedQuoteCurrency = ref<string>("");
 const simulationVolumeUsd = ref<number>(1000);
 const performanceCanvas = ref<HTMLCanvasElement | null>(null);
 let performanceChart: Chart | null = null;
 
-const activeSymbols = computed(() =>
-  selectedPair.value ? [selectedPair.value] : [],
+const availablePairs = computed(() => {
+  const fromBackend = status.value?.symbols ?? [];
+  const allPairs = fromBackend.length ? fromBackend : fallbackPairs;
+  return Array.from(new Set(allPairs.map((pair) => pair.toUpperCase())));
+});
+
+const quoteSuffixes = [
+  "USDT",
+  "USDC",
+  "EUR",
+  "USD",
+  "AVAX",
+  "LINK",
+  "DOT",
+  "XRP",
+  "BNB",
+  "SOL",
+  "ADA",
+  "BTC",
+  "ETH",
+];
+
+function splitTradingPair(symbol: string): { base: string; quote: string } | null {
+  const normalized = symbol.toUpperCase();
+  for (const suffix of quoteSuffixes) {
+    if (normalized.endsWith(suffix) && normalized.length > suffix.length) {
+      const base = normalized.slice(0, -suffix.length);
+      return { base, quote: suffix };
+    }
+  }
+  return null;
+}
+
+const parsedPairs = computed(() =>
+  availablePairs.value
+    .map((symbol) => {
+      const parsed = splitTradingPair(symbol);
+      if (!parsed) return null;
+      return { symbol, ...parsed };
+    })
+    .filter((item): item is { symbol: string; base: string; quote: string } => item !== null),
 );
+
+const baseCurrencies = computed(() =>
+  Array.from(new Set(parsedPairs.value.map((pair) => pair.base))).sort(),
+);
+
+const quoteCurrencies = computed(() => {
+  const candidates = selectedBaseCurrency.value
+    ? parsedPairs.value.filter((pair) => pair.base === selectedBaseCurrency.value)
+    : parsedPairs.value;
+  return Array.from(new Set(candidates.map((pair) => pair.quote)))
+    .filter((quote) => quote !== "BNB")
+    .sort();
+});
+
+const matchingPairs = computed(() =>
+  parsedPairs.value
+    .filter((pair) => {
+      if (selectedBaseCurrency.value && pair.base !== selectedBaseCurrency.value) return false;
+      if (selectedQuoteCurrency.value && pair.quote !== selectedQuoteCurrency.value) return false;
+      return true;
+    })
+    .map((pair) => pair.symbol),
+);
+
+const activeSymbols = computed(() => {
+  if (!selectedBaseCurrency.value && !selectedQuoteCurrency.value) return [];
+  return matchingPairs.value;
+});
 
 let socket: WebSocket | null = null;
 let refreshTimer: number | null = null;
@@ -88,18 +181,6 @@ const averageNetSpread = computed(() => {
     0,
   );
   return total / acceptedOpportunities.value.length;
-});
-
-const uniqueOpportunities = computed(() => {
-  const map = new Map<string, ArbitrageOpportunity>();
-  for (const item of opportunities.value) {
-    const key = `${item.buy_exchange}-${item.sell_exchange}`;
-    const existing = map.get(key);
-    if (!existing || item.timestamp > existing.timestamp) {
-      map.set(key, item);
-    }
-  }
-  return Array.from(map.values());
 });
 
 const cumulativePnlSeries = computed(() => {
@@ -156,19 +237,19 @@ function formatDateTime(value: string): string {
   });
 }
 
-function volatilityText(latencyMs: number): string {
+function latencyText(latencyMs: number): string {
   if (latencyMs > 900) return "Alta";
   if (latencyMs > 450) return "Média";
   return "Baixa";
 }
 
-function volatilityClass(latencyMs: number): string {
+function latencyClass(latencyMs: number): string {
   if (latencyMs > 900) return "alta";
   if (latencyMs > 450) return "media";
   return "baixa";
 }
 
-function onSymbolChange(): void {
+function onCurrencyChange(): void {
   void loadData();
 }
 
@@ -270,7 +351,7 @@ async function loadData() {
       await Promise.all([
         getArbitrageStatus(),
         getArbitrageOpportunities(
-          60,
+          opportunitiesLimit,
           activeSymbols.value,
           simulationVolumeUsd.value,
         ),
@@ -279,6 +360,18 @@ async function loadData() {
       ]);
 
     status.value = statusData;
+    if (
+      selectedBaseCurrency.value &&
+      !baseCurrencies.value.includes(selectedBaseCurrency.value)
+    ) {
+      selectedBaseCurrency.value = "";
+    }
+    if (
+      selectedQuoteCurrency.value &&
+      !quoteCurrencies.value.includes(selectedQuoteCurrency.value)
+    ) {
+      selectedQuoteCurrency.value = "";
+    }
     opportunities.value = opportunitiesData;
     trades.value = tradesData;
     spreadSeries.value = spreadData;
@@ -322,7 +415,7 @@ onMounted(async () => {
   refreshTimer = window.setInterval(() => {
     void Promise.all([
       getArbitrageOpportunities(
-        60,
+        opportunitiesLimit,
         activeSymbols.value,
         simulationVolumeUsd.value,
       ),
@@ -369,15 +462,29 @@ watch(simulationVolumeUsd, (value) => {
 
       <div class="filter-bar">
         <div class="filter-group">
-          <label for="pair">Crypto</label>
-          <select id="pair" v-model="selectedPair" @change="onSymbolChange">
-            <option value="">Todos</option>
-            <option
-              v-for="symbol in availablePairs"
-              :key="symbol"
-              :value="symbol"
-            >
-              {{ symbol.slice(0, -4) }} / {{ symbol.slice(-4) }}
+          <label for="base-currency">Moeda base</label>
+          <select
+            id="base-currency"
+            v-model="selectedBaseCurrency"
+            @change="onCurrencyChange"
+          >
+            <option value="">Todas</option>
+            <option v-for="base in baseCurrencies" :key="base" :value="base">
+              {{ base }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="quote-currency">Moeda cotada</label>
+          <select
+            id="quote-currency"
+            v-model="selectedQuoteCurrency"
+            @change="onCurrencyChange"
+          >
+            <option value="">Todas</option>
+            <option v-for="quote in quoteCurrencies" :key="quote" :value="quote">
+              {{ quote }}
             </option>
           </select>
         </div>
@@ -437,22 +544,21 @@ watch(simulationVolumeUsd, (value) => {
               <th>Spread Bruto</th>
               <th>Spread Líquido</th>
               <th>P&L Esperado</th>
-              <th>Latência (ms)</th>
-              <th>Volatilidade</th>
+              <th>Latência</th>
               <th>Atualização</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="loading">
-              <td colspan="10">A carregar dados...</td>
+              <td colspan="9">A carregar dados...</td>
             </tr>
-            <tr v-else-if="!uniqueOpportunities.length">
-              <td colspan="10">Sem oportunidades recebidas.</td>
+            <tr v-else-if="!opportunities.length">
+              <td colspan="9">Sem oportunidades recebidas.</td>
             </tr>
             <tr
-              v-for="item in uniqueOpportunities"
-              :key="`${item.buy_exchange}-${item.sell_exchange}`"
+              v-for="item in opportunities"
+              :key="`${item.symbol}-${item.buy_exchange}-${item.sell_exchange}`"
             >
               <td>
                 <div class="symbol-cell">
@@ -473,10 +579,9 @@ watch(simulationVolumeUsd, (value) => {
               >
                 {{ formatUsd(item.expected_profit_usd) }}
               </td>
-              <td>{{ item.latency_ms.toFixed(1) }}</td>
               <td>
-                <span class="badge" :class="volatilityClass(item.latency_ms)">
-                  {{ volatilityText(item.latency_ms) }}
+                <span class="badge" :class="latencyClass(item.latency_ms)">
+                  {{ latencyText(item.latency_ms) }}
                 </span>
               </td>
               <td>

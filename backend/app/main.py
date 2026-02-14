@@ -13,16 +13,50 @@ from .models import opportunity_to_dict, simulated_trade_to_dict
 from .service import ArbitrageService
 
 
+QUOTE_SUFFIXES = (
+    "USDT",
+    "USDC",
+    "EUR",
+    "USD",
+    "AVAX",
+    "LINK",
+    "DOT",
+    "XRP",
+    "BNB",
+    "SOL",
+    "ADA",
+    "BTC",
+    "ETH",
+)
+
+
+def _split_symbol_pair(symbol: str) -> tuple[str, str] | None:
+    normalized = symbol.upper().strip()
+    for suffix in QUOTE_SUFFIXES:
+        if normalized.endswith(suffix) and len(normalized) > len(suffix):
+            return normalized[: -len(suffix)], suffix
+    return None
+
+
 def _symbol_name(symbol: str) -> str:
-    names = {
-        "BTCUSDT": "Bitcoin (BTC/USDT)",
-        "ETHUSDT": "Ethereum (ETH/USDT)",
-        "ADAUSDT": "Cardano (ADA/USDT)",
-        "BNBUSDT": "BNB (BNB/USDT)",
-        "SOLUSDT": "Solana (SOL/USDT)",
+    base_names = {
+        "BTC": "Bitcoin",
+        "ETH": "Ethereum",
+        "ADA": "Cardano",
+        "BNB": "BNB",
+        "SOL": "Solana",
+        "XRP": "XRP",
+        "AVAX": "Avalanche",
+        "DOT": "Polkadot",
+        "LINK": "Chainlink",
     }
     key = symbol.upper()
-    return names.get(key, key)
+    parsed = _split_symbol_pair(key)
+    if not parsed:
+        return key
+    base, quote = parsed
+    coin_name = base_names.get(base, base)
+    return f"{coin_name} ({base}/{quote})"
 
 
 def _parse_cors_origins(raw: str | None) -> list[str]:
