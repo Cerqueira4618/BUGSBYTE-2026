@@ -71,16 +71,16 @@ const userDisplay = computed(() => {
           </RouterLink>
           <nav class="main-nav">
             <RouterLink
-              :to="{ name: 'Simulator' }"
-              class="nav-item"
-              active-class="nav-item-active"
-              >Simulador</RouterLink
-            >
-            <RouterLink
               :to="{ name: 'Market' }"
               class="nav-item"
               active-class="nav-item-active"
               >Mercado</RouterLink
+            >
+            <RouterLink
+              :to="{ name: 'Simulator' }"
+              class="nav-item"
+              active-class="nav-item-active"
+              >Simulador</RouterLink
             >
             <RouterLink
               :to="{ name: 'Help' }"

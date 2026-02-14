@@ -27,11 +27,7 @@ const assets: CryptoAsset[] = [
   { symbol: 'ETH', name: 'Ethereum', popular: true },
   { symbol: 'SOL', name: 'Solana', popular: true },
   { symbol: 'BNB', name: 'BNB', popular: true },
-  { symbol: 'XRP', name: 'XRP', popular: true },
   { symbol: 'ADA', name: 'Cardano', popular: false },
-  { symbol: 'AVAX', name: 'Avalanche', popular: false },
-  { symbol: 'DOT', name: 'Polkadot', popular: false },
-  { symbol: 'LINK', name: 'Chainlink', popular: false },
 ]
 
 const assetMeta: Record<string, AssetMeta> = {
@@ -51,25 +47,9 @@ const assetMeta: Record<string, AssetMeta> = {
     id: 'binancecoin',
     description: 'Token do ecossistema Binance, usado para taxas, pagamentos e utilidades na rede.',
   },
-  XRP: {
-    id: 'ripple',
-    description: 'Token usado na rede Ripple para liquidação rápida e barata entre instituições.',
-  },
   ADA: {
     id: 'cardano',
     description: 'Blockchain em camadas com ênfase em pesquisa acadêmica e segurança formal.',
-  },
-  AVAX: {
-    id: 'avalanche-2',
-    description: 'Plataforma de sub-redes para apps escaláveis, com foco em velocidade e customização.',
-  },
-  DOT: {
-    id: 'polkadot',
-    description: 'Rede que interliga múltiplas parachains, trazendo interoperabilidade entre blockchains.',
-  },
-  LINK: {
-    id: 'chainlink',
-    description: 'Rede de oráculos que conecta contratos inteligentes a dados e eventos do mundo real.',
   },
 }
 
@@ -253,11 +233,7 @@ const generateFallbackSeries = (symbol: string, days: number): PricePoint[] => {
     ETH: 2300,
     SOL: 95,
     BNB: 300,
-    XRP: 0.55,
     ADA: 0.45,
-    AVAX: 38,
-    DOT: 7,
-    LINK: 14,
   }
 
   const base = baseLookup[symbol] ?? 50

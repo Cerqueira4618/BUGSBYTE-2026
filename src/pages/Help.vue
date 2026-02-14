@@ -59,7 +59,7 @@
           <div class="faq-item">
             <h3>O que são os status das oportunidades?</h3>
             <p>
-              <strong>Accepted:</strong> Oportunidade aceita e executada na simulação<br>
+              <strong>Accepted:</strong> Oportunidade aceite e executada na simulação<br>
               <strong>Discarded:</strong> Oportunidade descartada por não ser lucrativa<br>
               <strong>No Funds:</strong> Fundos insuficientes para executar<br>
               <strong>Insufficient Liquidity:</strong> Liquidez insuficiente no mercado

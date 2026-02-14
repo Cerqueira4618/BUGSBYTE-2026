@@ -74,11 +74,7 @@ def _coingecko_id(symbol: str) -> str | None:
         "ETH": "ethereum",
         "SOL": "solana",
         "BNB": "binancecoin",
-        "XRP": "ripple",
         "ADA": "cardano",
-        "AVAX": "avalanche-2",
-        "DOT": "polkadot",
-        "LINK": "chainlink",
     }
     return ids.get(symbol.upper())
 

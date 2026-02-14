@@ -1142,13 +1142,14 @@ th {
   align-items: center;
   justify-content: center;
   min-width: 72px;
-  max-width: 72px;
   padding: 5px 12px;
   border-radius: 999px;
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 0.1px;
   text-transform: capitalize;
+  text-align: center;
+  white-space: nowrap;
   background: linear-gradient(135deg, #2d1b22, #23141c);
   color: #ffd8d8;
   border: 1.2px solid rgba(255, 95, 95, 0.6);
