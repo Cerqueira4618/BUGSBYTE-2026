@@ -162,6 +162,8 @@ class ArbitrageEngine:
                 latency_ms=latency_ms,
                 buy_vwap=buy_vwap,
                 sell_vwap=sell_vwap,
+                buy_book_updated_at=buy_book.exchange_timestamp,
+                sell_book_updated_at=sell_book.exchange_timestamp,
             )
 
         buy_fee = self.fees.get(buy_book.exchange, 0.0)
@@ -191,6 +193,8 @@ class ArbitrageEngine:
                 latency_ms=latency_ms,
                 buy_vwap=buy_vwap,
                 sell_vwap=sell_vwap,
+                buy_book_updated_at=buy_book.exchange_timestamp,
+                sell_book_updated_at=sell_book.exchange_timestamp,
             )
 
         return Opportunity(
@@ -207,6 +211,8 @@ class ArbitrageEngine:
             latency_ms=latency_ms,
             buy_vwap=buy_vwap,
             sell_vwap=sell_vwap,
+            buy_book_updated_at=buy_book.exchange_timestamp,
+            sell_book_updated_at=sell_book.exchange_timestamp,
         )
 
     def _simulate_execution(

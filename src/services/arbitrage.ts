@@ -22,6 +22,8 @@ export type ArbitrageOpportunity = {
   latency_ms: number;
   buy_vwap: number;
   sell_vwap: number;
+  buy_book_updated_at: string | null;
+  sell_book_updated_at: string | null;
 };
 
 export type SimulatedTrade = {

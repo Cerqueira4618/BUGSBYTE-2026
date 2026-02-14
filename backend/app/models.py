@@ -48,6 +48,8 @@ class Opportunity:
     latency_ms: float
     buy_vwap: float
     sell_vwap: float
+    buy_book_updated_at: datetime | None = None
+    sell_book_updated_at: datetime | None = None
 
 
 @dataclass(slots=True)
@@ -93,6 +95,8 @@ def opportunity_to_dict(item: Opportunity) -> dict:
         "latency_ms": item.latency_ms,
         "buy_vwap": item.buy_vwap,
         "sell_vwap": item.sell_vwap,
+        "buy_book_updated_at": item.buy_book_updated_at.isoformat() if item.buy_book_updated_at else None,
+        "sell_book_updated_at": item.sell_book_updated_at.isoformat() if item.sell_book_updated_at else None,
     }
 
 
