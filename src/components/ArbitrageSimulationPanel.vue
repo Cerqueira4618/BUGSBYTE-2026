@@ -53,18 +53,21 @@ const activeSymbols = computed(() =>
 
 let socket: WebSocket | null = null;
 let refreshTimer: number | null = null;
-let tickTimer: number | null = null;
-const now = ref(Date.now());
-
-function timeAgo(iso: string): string {
-  const diff = Math.max(0, Math.floor((now.value - new Date(iso).getTime()) / 1000));
-  if (diff < 60) return `há ${diff}s`;
-  if (diff < 3600) return `há ${Math.floor(diff / 60)}m`;
-  return `há ${Math.floor(diff / 3600)}h`;
-}
 
 const acceptedOpportunities = computed(() =>
   opportunities.value.filter((item) => item.status === "accepted"),
+);
+
+const acceptedTradesTotal = computed(() => trades.value.length);
+
+const acceptedTradesHistory = computed(() =>
+  trades.value
+    .slice()
+    .sort(
+      (left, right) =>
+        new Date(right.timestamp).getTime() -
+        new Date(left.timestamp).getTime(),
+    ),
 );
 
 const averageNetSpread = computed(() => {
@@ -130,6 +133,16 @@ function formatUsd(value: number): string {
 
 function formatPct(value: number): string {
   return `${value >= 0 ? "+" : ""}${value.toFixed(3)}%`;
+}
+
+function formatDateTime(value: string): string {
+  return new Date(value).toLocaleString("pt-PT", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
 }
 
 function volatilityText(latencyMs: number): string {
@@ -235,7 +248,7 @@ async function loadData() {
       await Promise.all([
         getArbitrageStatus(),
         getArbitrageOpportunities(60, activeSymbols.value),
-        getArbitrageTrades(20, activeSymbols.value),
+        getArbitrageTrades(5000, activeSymbols.value),
         getSpreadSeries(40),
       ]);
 
@@ -276,14 +289,10 @@ onMounted(async () => {
   startSocket();
   renderPerformanceChart();
 
-  tickTimer = window.setInterval(() => {
-    now.value = Date.now();
-  }, 1000);
-
   refreshTimer = window.setInterval(() => {
     void Promise.all([
       getArbitrageOpportunities(60, activeSymbols.value),
-      getArbitrageTrades(20, activeSymbols.value),
+      getArbitrageTrades(5000, activeSymbols.value),
     ]).then(([opportunitiesData, tradesData]) => {
       opportunities.value = opportunitiesData;
       trades.value = tradesData;
@@ -294,9 +303,6 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   if (refreshTimer) {
     window.clearInterval(refreshTimer);
-  }
-  if (tickTimer) {
-    window.clearInterval(tickTimer);
   }
   socket?.close();
   performanceChart?.destroy();
@@ -337,8 +343,8 @@ watch(cumulativePnlSeries, () => {
 
       <div class="metrics">
         <div class="metric">
-          <span>Oportunidades aceites</span>
-          <strong>{{ acceptedOpportunities.length }}</strong>
+          <span>Total aceite</span>
+          <strong>{{ acceptedTradesTotal }}</strong>
         </div>
         <div class="metric">
           <span>P&L acumulado</span>
@@ -379,16 +385,15 @@ watch(cumulativePnlSeries, () => {
               <th>P&L Esperado</th>
               <th>Latência (ms)</th>
               <th>Volatilidade</th>
-              <th>Atualização</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="loading">
-              <td colspan="10">A carregar dados...</td>
+              <td colspan="9">A carregar dados...</td>
             </tr>
             <tr v-else-if="!uniqueOpportunities.length">
-              <td colspan="10">Sem oportunidades recebidas.</td>
+              <td colspan="9">Sem oportunidades recebidas.</td>
             </tr>
             <tr
               v-for="item in uniqueOpportunities"
@@ -420,16 +425,6 @@ watch(cumulativePnlSeries, () => {
                 </span>
               </td>
               <td>
-                <span v-if="item.buy_book_updated_at || item.sell_book_updated_at" class="update-ts">
-                  {{ timeAgo(
-                    [item.buy_book_updated_at, item.sell_book_updated_at]
-                      .filter(Boolean)
-                      .sort()[0]!
-                  ) }}
-                </span>
-                <span v-else>—</span>
-              </td>
-              <td>
                 <span class="status-pill" :class="item.status">{{
                   item.status
                 }}</span>
@@ -452,18 +447,41 @@ watch(cumulativePnlSeries, () => {
         </div>
 
         <div class="trades-section">
-          <h3>Execuções Simuladas</h3>
-          <ul>
-            <li
-              v-for="trade in trades.slice().reverse().slice(0, 5)"
-              :key="trade.timestamp + trade.buy_exchange + trade.sell_exchange"
-            >
-              {{ trade.symbol_name || trade.symbol }} |
-              {{ trade.buy_exchange }} → {{ trade.sell_exchange }} |
-              {{ formatUsd(trade.pnl_usd) }}
-            </li>
-            <li v-if="!trades.length">Ainda não há execuções simuladas.</li>
-          </ul>
+          <h3>Histórico de Trocas Aceites</h3>
+          <div class="trades-history-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data/Hora</th>
+                  <th>Moeda</th>
+                  <th>Compra</th>
+                  <th>Venda</th>
+                  <th>Tamanho</th>
+                  <th>P&L</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="!acceptedTradesHistory.length">
+                  <td colspan="6">Ainda não há trocas aceites.</td>
+                </tr>
+                <tr
+                  v-for="trade in acceptedTradesHistory"
+                  :key="
+                    trade.timestamp + trade.buy_exchange + trade.sell_exchange
+                  "
+                >
+                  <td>{{ formatDateTime(trade.timestamp) }}</td>
+                  <td>{{ trade.symbol_name || trade.symbol }}</td>
+                  <td>{{ trade.buy_exchange }}</td>
+                  <td>{{ trade.sell_exchange }}</td>
+                  <td>{{ trade.size.toFixed(4) }}</td>
+                  <td :class="trade.pnl_usd >= 0 ? 'positive' : 'negative'">
+                    {{ formatUsd(trade.pnl_usd) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="trades-section">
@@ -671,15 +689,6 @@ th {
   color: #ff8f8f;
 }
 
-.update-ts {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 12px;
-  color: #a8bad2;
-  white-space: nowrap;
-}
-
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -766,6 +775,14 @@ th {
   border: 1px solid rgba(120, 151, 189, 0.12);
   background: rgba(255, 255, 255, 0.03);
   padding: 8px;
+}
+
+.trades-history-wrap {
+  max-height: 260px;
+  overflow: auto;
+  border-radius: 10px;
+  border: 1px solid rgba(120, 151, 189, 0.12);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .trades-section {
