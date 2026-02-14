@@ -1,5 +1,16 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import {
+  CategoryScale,
+  Chart,
+  Filler,
+  Legend,
+  LineController,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Tooltip,
+} from "chart.js";
 import {
   connectArbitrageSocket,
   getArbitrageOpportunities,
@@ -12,6 +23,17 @@ import {
   type SpreadPoint,
 } from "../services/arbitrage";
 
+Chart.register(
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+  Filler,
+);
+
 const loading = ref(true);
 const error = ref("");
 const socketState = ref<"connected" | "disconnected">("disconnected");
@@ -22,8 +44,12 @@ const spreadSeries = ref<SpreadPoint[]>([]);
 
 const availablePairs = ["BTCUSDT", "ETHUSDT", "ADAUSDT", "BNBUSDT", "SOLUSDT"];
 const selectedPair = ref<string>("");
+const performanceCanvas = ref<HTMLCanvasElement | null>(null);
+let performanceChart: Chart | null = null;
 
-const activeSymbols = computed(() => (selectedPair.value ? [selectedPair.value] : []));
+const activeSymbols = computed(() =>
+  selectedPair.value ? [selectedPair.value] : [],
+);
 
 let socket: WebSocket | null = null;
 let refreshTimer: number | null = null;
@@ -53,6 +79,38 @@ const uniqueOpportunities = computed(() => {
   return Array.from(map.values());
 });
 
+const cumulativePnlSeries = computed(() => {
+  const sortedTrades = trades.value
+    .slice()
+    .sort(
+      (left, right) =>
+        new Date(left.timestamp).getTime() -
+        new Date(right.timestamp).getTime(),
+    );
+
+  if (!sortedTrades.length) {
+    return [
+      {
+        time: "Agora",
+        pnl: status.value?.total_pnl_usd ?? 0,
+      },
+    ];
+  }
+
+  let runningPnl = 0;
+  return sortedTrades.map((trade) => {
+    runningPnl += trade.pnl_usd;
+    return {
+      time: new Date(trade.timestamp).toLocaleTimeString("pt-PT", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
+      pnl: Number(runningPnl.toFixed(2)),
+    };
+  });
+});
+
 function formatUsd(value: number): string {
   return new Intl.NumberFormat("pt-PT", {
     style: "currency",
@@ -79,6 +137,86 @@ function volatilityClass(latencyMs: number): string {
 
 function onSymbolChange(): void {
   void loadData();
+}
+
+function renderPerformanceChart(): void {
+  const canvas = performanceCanvas.value;
+  if (!canvas) return;
+
+  const labels = cumulativePnlSeries.value.map((point) => point.time);
+  const values = cumulativePnlSeries.value.map((point) => point.pnl);
+
+  if (!performanceChart) {
+    performanceChart = new Chart(canvas, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "P&L Acumulado (USD)",
+            data: values,
+            borderColor: "#66ef8b",
+            backgroundColor: "rgba(102, 239, 139, 0.12)",
+            borderWidth: 2,
+            fill: true,
+            tension: 0.24,
+            pointRadius: 2,
+            pointHoverRadius: 4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: "#dbe9ff",
+            },
+          },
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Tempo",
+              color: "#a8bad2",
+            },
+            ticks: {
+              color: "#b9cae3",
+              maxRotation: 0,
+              autoSkip: true,
+              maxTicksLimit: 8,
+            },
+            grid: {
+              color: "rgba(123, 154, 192, 0.15)",
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: "P&L Acumulado (USD)",
+              color: "#a8bad2",
+            },
+            ticks: {
+              color: "#b9cae3",
+            },
+            grid: {
+              color: "rgba(123, 154, 192, 0.15)",
+            },
+          },
+        },
+      },
+    });
+    return;
+  }
+
+  performanceChart.data.labels = labels;
+  const [dataset] = performanceChart.data.datasets;
+  if (dataset) {
+    dataset.data = values;
+  }
+  performanceChart.update();
 }
 
 async function loadData() {
@@ -127,6 +265,7 @@ function startSocket() {
 onMounted(async () => {
   await loadData();
   startSocket();
+  renderPerformanceChart();
 
   refreshTimer = window.setInterval(() => {
     void Promise.all([
@@ -144,6 +283,12 @@ onBeforeUnmount(() => {
     window.clearInterval(refreshTimer);
   }
   socket?.close();
+  performanceChart?.destroy();
+  performanceChart = null;
+});
+
+watch(cumulativePnlSeries, () => {
+  renderPerformanceChart();
 });
 </script>
 
@@ -163,7 +308,11 @@ onBeforeUnmount(() => {
           <label for="pair">Crypto</label>
           <select id="pair" v-model="selectedPair" @change="onSymbolChange">
             <option value="">Todos</option>
-            <option v-for="symbol in availablePairs" :key="symbol" :value="symbol">
+            <option
+              v-for="symbol in availablePairs"
+              :key="symbol"
+              :value="symbol"
+            >
               {{ symbol.slice(0, -4) }} / {{ symbol.slice(-4) }}
             </option>
           </select>
@@ -254,7 +403,9 @@ onBeforeUnmount(() => {
                 </span>
               </td>
               <td>
-                <span class="status-pill" :class="item.status">{{ item.status }}</span>
+                <span class="status-pill" :class="item.status">{{
+                  item.status
+                }}</span>
               </td>
             </tr>
           </tbody>
@@ -262,6 +413,17 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="split-grid">
+        <div class="chart-section">
+          <h3>Gráfico de Performance Acumulada</h3>
+          <p class="chart-caption">Eixo X: Tempo | Eixo Y: P&amp;L Acumulado</p>
+          <div class="chart-wrap">
+            <canvas
+              ref="performanceCanvas"
+              aria-label="Curva de P&L acumulado"
+            ></canvas>
+          </div>
+        </div>
+
         <div class="trades-section">
           <h3>Execuções Simuladas</h3>
           <ul>
@@ -269,8 +431,8 @@ onBeforeUnmount(() => {
               v-for="trade in trades.slice().reverse().slice(0, 5)"
               :key="trade.timestamp + trade.buy_exchange + trade.sell_exchange"
             >
-              {{ trade.symbol_name || trade.symbol }} | {{ trade.buy_exchange }} →
-              {{ trade.sell_exchange }} |
+              {{ trade.symbol_name || trade.symbol }} |
+              {{ trade.buy_exchange }} → {{ trade.sell_exchange }} |
               {{ formatUsd(trade.pnl_usd) }}
             </li>
             <li v-if="!trades.length">Ainda não há execuções simuladas.</li>
@@ -544,6 +706,32 @@ th {
   gap: 10px;
 }
 
+.chart-section,
+.trades-section {
+  margin-top: 16px;
+}
+
+.chart-section h3,
+.trades-section h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: #dbe9ff;
+}
+
+.chart-caption {
+  margin: 0 0 10px;
+  color: #a8bad2;
+  font-size: 13px;
+}
+
+.chart-wrap {
+  height: 240px;
+  border-radius: 10px;
+  border: 1px solid rgba(120, 151, 189, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px;
+}
+
 .trades-section {
   margin-top: 16px;
 }
@@ -562,5 +750,11 @@ th {
 
 .trades-section li {
   margin-bottom: 6px;
+}
+
+@media (max-width: 980px) {
+  .split-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
