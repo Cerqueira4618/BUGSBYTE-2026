@@ -6,6 +6,7 @@ PARENT_DIR := $(abspath $(ROOT_DIR)/..)
 BACKEND_DIR := $(ROOT_DIR)/backend
 BACKEND_PID_FILE := $(BACKEND_DIR)/.uvicorn.pid
 BACKEND_LOG_FILE := $(BACKEND_DIR)/.uvicorn.log
+BACKEND_DB_FILE := $(BACKEND_DIR)/data/bugsbyte.db
 
 ifneq (,$(wildcard $(ROOT_DIR)/.venv/bin/python))
 PYTHON := $(ROOT_DIR)/.venv/bin/python
@@ -23,7 +24,7 @@ help:
 	@echo "Targets disponíveis:"
 	@echo "  make site           # sobe o frontend (vite)"
 	@echo "  make backend-on     # liga o backend em background"
-	@echo "  make backend-off    # desliga o backend"
+	@echo "  make backend-off    # desliga o backend e limpa a BD SQLite"
 	@echo "  make backend-status # mostra status do backend"
 
 site:
@@ -62,20 +63,22 @@ backend-off:
 	cd "$(BACKEND_DIR)"
 	if [[ ! -f "$(BACKEND_PID_FILE)" ]]; then
 		echo "Backend não está ligado (sem arquivo PID)."
-		exit 0
-	fi
-	PID="$$(cat "$(BACKEND_PID_FILE)")"
-	if kill -0 "$$PID" 2>/dev/null; then
-		kill "$$PID"
-		sleep 1
-		if kill -0 "$$PID" 2>/dev/null; then
-			kill -9 "$$PID" 2>/dev/null || true
-		fi
-		echo "Backend desligado (PID $$PID)."
 	else
-		echo "Processo $$PID não estava em execução."
+		PID="$$(cat "$(BACKEND_PID_FILE)")"
+		if kill -0 "$$PID" 2>/dev/null; then
+			kill "$$PID"
+			sleep 1
+			if kill -0 "$$PID" 2>/dev/null; then
+				kill -9 "$$PID" 2>/dev/null || true
+			fi
+			echo "Backend desligado (PID $$PID)."
+		else
+			echo "Processo $$PID não estava em execução."
+		fi
 	fi
 	rm -f "$(BACKEND_PID_FILE)"
+	rm -f "$(BACKEND_DB_FILE)"
+	echo "Base de dados resetada: $(BACKEND_DB_FILE)"
 
 backend-status:
 	cd "$(BACKEND_DIR)"
