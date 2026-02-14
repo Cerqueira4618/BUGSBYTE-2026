@@ -57,6 +57,7 @@ DEFAULT_ASSET_PRICES_USD = {
     "AVAX": 35.0,
 }
 INITIAL_USD_PER_CRYPTO_PER_WALLET = 2000.0
+INITIAL_USDT_PER_WALLET = 2000.0
 
 
 def _split_symbol_pair(symbol: str) -> tuple[str, str] | None:
@@ -158,11 +159,6 @@ class ArbitrageEngine:
         if not exchanges:
             return {}
 
-        exchange_count = len(exchanges)
-        quote_budget_usd = self.config.starting_balance_usd * 0.5
-
-        quote_per_exchange = quote_budget_usd / exchange_count
-
         inventory: dict[str, dict[str, object]] = {}
         for exchange in exchanges:
             asset_balances: dict[str, float] = {}
@@ -174,7 +170,7 @@ class ArbitrageEngine:
 
             inventory[exchange] = {
                 "quote_asset": "USDT",
-                "quote_balance": quote_per_exchange,
+                "quote_balance": INITIAL_USDT_PER_WALLET,
                 "asset_balances": asset_balances,
             }
 

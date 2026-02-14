@@ -234,7 +234,6 @@ const exchangeInventory = computed(() => {
     baseAsset: wallet.base_asset,
     baseBalance: wallet.base_balance,
     totalValueUsd: wallet.total_value_usd ?? wallet.quote_balance,
-    walletStatus: wallet.status ?? "OK",
     assetBalances: Object.entries(wallet.asset_balances ?? {}).map(
       ([asset, balance]) => ({
         asset,
@@ -244,18 +243,34 @@ const exchangeInventory = computed(() => {
   }));
 });
 
-function walletCryptoBalances(wallet: {
-  baseAsset: string;
-  baseBalance: number;
-  assetBalances: Array<{ asset: string; balance: number }>;
-}): Array<{ asset: string; balance: number }> {
-  if (wallet.assetBalances.length) {
-    return wallet.assetBalances
-      .filter((item) => item.balance > 0)
-      .sort((left, right) => left.asset.localeCompare(right.asset));
+const walletCryptoColumns = computed(() => {
+  const allAssets = new Set<string>();
+  for (const wallet of exchangeInventory.value) {
+    for (const asset of wallet.assetBalances) {
+      allAssets.add(asset.asset.toUpperCase());
+    }
   }
+  return Array.from(allAssets).sort();
+});
 
-  return [{ asset: wallet.baseAsset, balance: wallet.baseBalance }];
+function walletBalanceForAsset(
+  wallet: {
+    baseAsset: string;
+    baseBalance: number;
+    assetBalances: Array<{ asset: string; balance: number }>;
+  },
+  asset: string,
+): number {
+  const match = wallet.assetBalances.find(
+    (entry) => entry.asset.toUpperCase() === asset.toUpperCase(),
+  );
+  if (match) {
+    return match.balance;
+  }
+  if (wallet.baseAsset.toUpperCase() === asset.toUpperCase()) {
+    return wallet.baseBalance;
+  }
+  return 0;
 }
 
 const averageNetSpread = computed(() => {
@@ -632,10 +647,6 @@ watch(simulationVolumeUsd, (value) => {
           <strong>{{ formatUsd(status?.total_pnl_usd ?? 0) }}</strong>
         </div>
         <div class="metric">
-          <span>Saldo simulado</span>
-          <strong>{{ formatUsd(status?.balance_usd ?? 0) }}</strong>
-        </div>
-        <div class="metric">
           <span>Portfólio total</span>
           <strong>{{ formatUsd(status?.portfolio_total_usd ?? 0) }}</strong>
         </div>
@@ -675,38 +686,36 @@ watch(simulationVolumeUsd, (value) => {
               <tr>
                 <th>Exchange</th>
                 <th>Saldo USDT</th>
-                <th>Crypto Balance</th>
+                <th
+                  v-for="asset in walletCryptoColumns"
+                  :key="`head-${asset}`"
+                  class="crypto-col-head"
+                >
+                  {{ asset }}
+                </th>
                 <th>Valor Total (USD)</th>
-                <th>Status</th>
               </tr>
             </thead>
             <tbody>
               <tr v-if="!exchangeInventory.length">
-                <td colspan="5" class="inventory-empty">
+                <td
+                  :colspan="3 + walletCryptoColumns.length"
+                  class="inventory-empty"
+                >
                   Saldos indisponíveis.
                 </td>
               </tr>
               <tr v-for="wallet in exchangeInventory" :key="wallet.exchange">
                 <td>{{ wallet.exchange }}</td>
                 <td>{{ formatUsd(wallet.quoteBalance) }}</td>
-                <td class="crypto-balances-cell">
-                  <div
-                    v-for="asset in walletCryptoBalances(wallet)"
-                    :key="wallet.exchange + asset.asset"
-                    class="crypto-balance-line"
-                  >
-                    {{ asset.balance.toFixed(6) }} {{ asset.asset }}
-                  </div>
+                <td
+                  v-for="asset in walletCryptoColumns"
+                  :key="`${wallet.exchange}-${asset}`"
+                  class="crypto-balances-cell"
+                >
+                  {{ walletBalanceForAsset(wallet, asset).toFixed(3) }}
                 </td>
                 <td>{{ formatUsd(wallet.totalValueUsd) }}</td>
-                <td>
-                  <span
-                    class="wallet-status"
-                    :class="wallet.walletStatus === 'OK' ? 'ok' : 'low'"
-                  >
-                    {{ wallet.walletStatus }}
-                  </span>
-                </td>
               </tr>
             </tbody>
           </table>
@@ -1292,52 +1301,31 @@ th {
 
 .inventory-table th,
 .inventory-table td {
-  padding: 10px;
+  padding: 8px 6px;
   border-bottom: 1px solid rgba(120, 151, 189, 0.12);
 }
 
 .inventory-table th {
   color: #a8bad2;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 12px;
+  letter-spacing: 0.04em;
+  font-size: 11px;
   text-align: left;
 }
 
 .crypto-balances-cell {
-  min-width: 180px;
+  min-width: 74px;
+  text-align: center;
+  font-size: 12px;
 }
 
-.crypto-balance-line {
-  color: #c4d3ea;
-  font-size: 12px;
-  line-height: 1.4;
-  white-space: nowrap;
+.crypto-col-head {
+  text-align: center !important;
 }
 
 .inventory-empty {
   color: #a8bad2;
   text-align: center;
-}
-
-.wallet-status {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  border: 1px solid;
-}
-
-.wallet-status.ok {
-  color: #bfffe0;
-  background: rgba(102, 239, 139, 0.14);
-  border-color: rgba(102, 239, 139, 0.38);
-}
-
-.wallet-status.low {
-  color: #ffe7ad;
-  background: rgba(255, 196, 88, 0.14);
-  border-color: rgba(255, 196, 88, 0.42);
 }
 
 .chart-section,
