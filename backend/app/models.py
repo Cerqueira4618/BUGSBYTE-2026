@@ -61,6 +61,9 @@ class SimulatedTrade:
     size: float
     pnl_usd: float
     latency_ms: float
+    buy_execution_ms: float = 0.0
+    sell_execution_ms: float = 0.0
+    sync_delay_ms: float = 0.0
 
 
 def level_to_dict(level: OrderBookLevel) -> dict:

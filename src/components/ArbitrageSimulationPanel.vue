@@ -45,6 +45,11 @@ const status = computed(() => websocketStore.status);
 const spreadSeries = computed(() => websocketStore.spreadSeries);
 const opportunitiesLimit = 500;
 const rebalancing = ref(false);
+const rebalanceNotification = ref<{
+  show: boolean;
+  message: string;
+  type: "success" | "error" | "info";
+}>({ show: false, message: "", type: "info" });
 
 const fallbackPairs = [
   "BTCEUR",
@@ -352,6 +357,27 @@ function networkFeeLabel(item: ArbitrageOpportunity): string {
   return `⛽ ${feeUnits.toFixed(4)} ${feeAsset} (${formatUsd(feeCost)})`;
 }
 
+function formatExpectedProfit(item: ArbitrageOpportunity): string {
+  if (item.status === "no_funds" || item.status === "insufficient_liquidity") {
+    return "—";
+  }
+  return formatUsd(item.expected_profit_usd);
+}
+
+function formatGrossSpread(item: ArbitrageOpportunity): string {
+  if (item.status === "no_funds" || item.status === "insufficient_liquidity") {
+    return "—";
+  }
+  return formatPct(item.gross_spread_pct);
+}
+
+function formatNetSpread(item: ArbitrageOpportunity): string {
+  if (item.status === "no_funds" || item.status === "insufficient_liquidity") {
+    return "—";
+  }
+  return formatPct(item.net_spread_pct);
+}
+
 function latencyText(latencyMs: number): string {
   if (latencyMs > 900) return "Alta";
   if (latencyMs > 450) return "Média";
@@ -382,11 +408,42 @@ function onSimulationVolumeChange(): void {
 async function onRebalance(): Promise<void> {
   if (rebalancing.value) return;
   rebalancing.value = true;
+
+  // Show rebalancing notification
+  rebalanceNotification.value = {
+    show: true,
+    message: "Rebalancing...",
+    type: "info",
+  };
+
   try {
-    await rebalanceArbitrageWallets();
+    const result = await rebalanceArbitrageWallets();
+    const movedUsd = result.rebalance?.moved_quote_usd ?? 0;
+    const transfers = result.rebalance?.transfers ?? 0;
+
+    // Show success notification with moved amount
+    rebalanceNotification.value = {
+      show: true,
+      message: `Rebalance concluído. ${transfers} transferências, ${formatUsd(movedUsd)} movidos`,
+      type: "success",
+    };
+
     await loadData();
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      rebalanceNotification.value.show = false;
+    }, 3000);
   } catch {
-    error.value = "Não foi possível executar o rebalance.";
+    rebalanceNotification.value = {
+      show: true,
+      message: "Não foi possível executar o rebalance.",
+      type: "error",
+    };
+
+    setTimeout(() => {
+      rebalanceNotification.value.show = false;
+    }, 3000);
   } finally {
     rebalancing.value = false;
   }
@@ -564,6 +621,15 @@ watch(simulationVolumeUsd, (value) => {
 
       <p v-if="error" class="error-box">{{ error }}</p>
 
+      <!-- Rebalance Notification Toast -->
+      <div
+        v-if="rebalanceNotification.show"
+        class="notification-toast"
+        :class="rebalanceNotification.type"
+      >
+        {{ rebalanceNotification.message }}
+      </div>
+
       <div class="filter-bar">
         <div class="filter-group">
           <label for="base-currency">Moeda base</label>
@@ -702,10 +768,10 @@ watch(simulationVolumeUsd, (value) => {
               <th>Moeda</th>
               <th>Compra (A)</th>
               <th>Venda (B)</th>
-              <th>Spread Bruto</th>
-              <th>Spread Líquido</th>
+              <th class="centered-col">Spread Bruto</th>
+              <th class="centered-col">Spread Líquido</th>
               <th class="network-fee-head">Gas</th>
-              <th>P&L Esperado</th>
+              <th class="centered-col">P&L Esperado</th>
               <th>Latência</th>
               <th>Atualização</th>
               <th>Status</th>
@@ -730,19 +796,47 @@ watch(simulationVolumeUsd, (value) => {
               </td>
               <td>{{ item.buy_exchange }}</td>
               <td>{{ item.sell_exchange }}</td>
-              <td :class="item.gross_spread_pct >= 0 ? 'positive' : 'negative'">
-                {{ formatPct(item.gross_spread_pct) }}
+              <td
+                class="centered-col"
+                :class="
+                  item.status === 'no_funds' ||
+                  item.status === 'insufficient_liquidity'
+                    ? 'spread-disabled'
+                    : item.gross_spread_pct >= 0
+                      ? 'positive'
+                      : 'negative'
+                "
+              >
+                {{ formatGrossSpread(item) }}
               </td>
-              <td :class="item.net_spread_pct >= 0 ? 'positive' : 'negative'">
-                {{ formatPct(item.net_spread_pct) }}
+              <td
+                class="centered-col"
+                :class="
+                  item.status === 'no_funds' ||
+                  item.status === 'insufficient_liquidity'
+                    ? 'spread-disabled'
+                    : item.net_spread_pct >= 0
+                      ? 'positive'
+                      : 'negative'
+                "
+              >
+                {{ formatNetSpread(item) }}
               </td>
               <td class="network-fee-cell">
                 {{ networkFeeLabel(item) }}
               </td>
               <td
-                :class="item.expected_profit_usd >= 0 ? 'positive' : 'negative'"
+                class="centered-col"
+                :class="
+                  item.status === 'no_funds' ||
+                  item.status === 'insufficient_liquidity'
+                    ? 'spread-disabled'
+                    : item.expected_profit_usd >= 0
+                      ? 'positive'
+                      : 'negative'
+                "
               >
-                {{ formatUsd(item.expected_profit_usd) }}
+                {{ formatExpectedProfit(item) }}
               </td>
               <td>
                 <span class="badge" :class="latencyClass(item.latency_ms)">
@@ -830,12 +924,13 @@ watch(simulationVolumeUsd, (value) => {
                   <th>Compra</th>
                   <th>Venda</th>
                   <th>Tamanho</th>
+                  <th>Sync Timing</th>
                   <th>P&L</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-if="!acceptedTradesHistory.length">
-                  <td colspan="6">Ainda não há trocas aceites.</td>
+                  <td colspan="7">Ainda não há trocas aceites.</td>
                 </tr>
                 <tr
                   v-for="trade in acceptedTradesHistory"
@@ -848,6 +943,22 @@ watch(simulationVolumeUsd, (value) => {
                   <td>{{ trade.buy_exchange }}</td>
                   <td>{{ trade.sell_exchange }}</td>
                   <td>{{ trade.size.toFixed(4) }}</td>
+                  <td class="sync-timing-cell">
+                    <span
+                      v-if="trade.buy_execution_ms && trade.sell_execution_ms"
+                      class="sync-timing"
+                    >
+                      Compra {{ trade.buy_exchange }} ({{
+                        trade.buy_execution_ms.toFixed(1)
+                      }}ms) / Venda {{ trade.sell_exchange }} ({{
+                        trade.sell_execution_ms.toFixed(1)
+                      }}ms)
+                      <span class="sync-delta"
+                        >Δ: {{ trade.sync_delay_ms?.toFixed(1) }}ms</span
+                      >
+                    </span>
+                    <span v-else>—</span>
+                  </td>
                   <td :class="trade.pnl_usd >= 0 ? 'positive' : 'negative'">
                     {{ formatUsd(trade.pnl_usd) }}
                   </td>
@@ -855,22 +966,6 @@ watch(simulationVolumeUsd, (value) => {
               </tbody>
             </table>
           </div>
-        </div>
-
-        <div class="trades-section">
-          <h3>Série de Spread (últimos 6)</h3>
-          <ul>
-            <li
-              v-for="item in spreadSeries.slice(-6)"
-              :key="item.timestamp + item.pair"
-            >
-              {{ item.pair }} | {{ formatPct(item.spread_net_pct) }} |
-              {{ item.latency_ms.toFixed(1) }} ms
-            </li>
-            <li v-if="!spreadSeries.length">
-              Ainda não há dados de série temporal.
-            </li>
-          </ul>
         </div>
       </div>
     </div>
@@ -1053,6 +1148,14 @@ th {
 
 .negative {
   color: #ff8f8f;
+}
+
+.spread-disabled {
+  color: #8899b0;
+}
+
+.centered-col {
+  text-align: center !important;
 }
 
 .badge {
@@ -1354,6 +1457,66 @@ th {
 
 .trades-section li {
   margin-bottom: 6px;
+}
+
+.notification-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
+}
+
+.notification-toast.info {
+  background: linear-gradient(135deg, #2b3e5f, #1d2942);
+  color: #d4e4ff;
+  border: 1px solid rgba(102, 191, 255, 0.5);
+}
+
+.notification-toast.success {
+  background: linear-gradient(135deg, #103428, #0b2620);
+  color: #bfffe0;
+  border: 1px solid rgba(102, 239, 139, 0.6);
+}
+
+.notification-toast.error {
+  background: linear-gradient(135deg, #3a1f28, #2c161d);
+  color: #ffd8d8;
+  border: 1px solid rgba(255, 120, 120, 0.65);
+}
+
+.sync-timing-cell {
+  font-size: 11px;
+  color: #a8bad2;
+  max-width: 280px;
+}
+
+.sync-timing {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sync-delta {
+  color: #66ef8b;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 980px) {

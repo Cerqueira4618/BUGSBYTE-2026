@@ -53,6 +53,9 @@ export type SimulatedTrade = {
   size: number;
   pnl_usd: number;
   latency_ms: number;
+  buy_execution_ms?: number;
+  sell_execution_ms?: number;
+  sync_delay_ms?: number;
 };
 
 export type SpreadPoint = {

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import random
 from collections import deque
 from datetime import datetime, timezone
 from itertools import permutations
@@ -691,6 +692,11 @@ class ArbitrageEngine:
         _reserve_from_levels(buy_book.asks, opportunity.trade_size)
         _reserve_from_levels(sell_book.bids, opportunity.trade_size)
 
+        # Simulate execution timing for synchronization demonstration
+        buy_execution_ms = random.uniform(15.0, 50.0)
+        sell_execution_ms = random.uniform(15.0, 50.0)
+        sync_delay_ms = abs(buy_execution_ms - sell_execution_ms)
+
         self.total_pnl_usd += opportunity.expected_profit_usd
         self.balance_usd += opportunity.expected_profit_usd
         self.executed_trades.append(
@@ -702,6 +708,9 @@ class ArbitrageEngine:
                 size=opportunity.trade_size,
                 pnl_usd=opportunity.expected_profit_usd,
                 latency_ms=opportunity.latency_ms,
+                buy_execution_ms=buy_execution_ms,
+                sell_execution_ms=sell_execution_ms,
+                sync_delay_ms=sync_delay_ms,
             )
         )
         if self._persistence is not None and self.executed_trades:
