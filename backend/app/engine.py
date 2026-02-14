@@ -248,27 +248,35 @@ class ArbitrageEngine:
                 "latest_opportunity": opportunity_to_dict(latest) if latest else None,
             }
 
-    async def list_opportunities(self, limit: int = 100) -> list[Opportunity]:
+    async def list_opportunities(self, limit: int = 100, symbols: list[str] | None = None) -> list[Opportunity]:
         async with self._lock:
             if self._db is not None:
                 list_fn = getattr(self._db, "list_opportunities", None)
                 if callable(list_fn):
                     try:
-                        return await list_fn(limit=limit)
+                        return await list_fn(limit=limit, symbols=symbols)
                     except Exception:
                         return list(self.opportunities)[-limit:]
-            return list(self.opportunities)[-limit:]
+            items = list(self.opportunities)[-limit:]
+            if symbols:
+                symbols_set = {s.upper() for s in symbols}
+                return [item for item in items if item.symbol.upper() in symbols_set]
+            return items
 
-    async def list_trades(self, limit: int = 100) -> list[SimulatedTrade]:
+    async def list_trades(self, limit: int = 100, symbols: list[str] | None = None) -> list[SimulatedTrade]:
         async with self._lock:
             if self._db is not None:
                 list_fn = getattr(self._db, "list_trades", None)
                 if callable(list_fn):
                     try:
-                        return await list_fn(limit=limit)
+                        return await list_fn(limit=limit, symbols=symbols)
                     except Exception:
                         return list(self.executed_trades)[-limit:]
-            return list(self.executed_trades)[-limit:]
+            items = list(self.executed_trades)[-limit:]
+            if symbols:
+                symbols_set = {s.upper() for s in symbols}
+                return [item for item in items if item.symbol.upper() in symbols_set]
+            return items
 
     async def spread_series(self, limit: int = 200) -> list[dict]:
         async with self._lock:

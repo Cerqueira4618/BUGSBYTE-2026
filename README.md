@@ -73,6 +73,8 @@ Edita `backend/config.json` para:
   - oportunidades aceites e descartadas
 - `GET /api/arbitrage/trades?limit=100`
   - execuções simuladas
+- Ambos aceitam filtro opcional por símbolo: `?symbols=BTCUSDT&symbols=ETHUSDT`
+- Cada item devolve também `symbol_name` (ex.: "Bitcoin / Tether")
 - `GET /api/arbitrage/spread-series?limit=200`
   - série temporal de spread bruto/líquido e latência
 - `WS /ws/arbitrage`

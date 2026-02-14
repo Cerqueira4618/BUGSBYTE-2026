@@ -3,11 +3,23 @@ import asyncio
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from .models import opportunity_to_dict, simulated_trade_to_dict
 from .service import ArbitrageService
+
+
+def _symbol_name(symbol: str) -> str:
+    names = {
+        "BTCUSDT": "Bitcoin (BTC/USDT)",
+        "ETHUSDT": "Ethereum (ETH/USDT)",
+        "ADAUSDT": "Cardano (ADA/USDT)",
+        "BNBUSDT": "BNB (BNB/USDT)",
+        "SOLUSDT": "Solana (SOL/USDT)",
+    }
+    key = symbol.upper()
+    return names.get(key, key)
 
 
 def _parse_cors_origins(raw: str | None) -> list[str]:
@@ -68,17 +80,33 @@ async def arbitrage_status() -> dict:
 
 
 @app.get("/api/arbitrage/opportunities")
-async def arbitrage_opportunities(limit: int = 100) -> dict:
+async def arbitrage_opportunities(limit: int = 100, symbols: list[str] | None = Query(None)) -> dict:
     service: ArbitrageService = app.state.arbitrage_service
-    items = await service.engine.list_opportunities(limit=limit)
-    return {"items": [opportunity_to_dict(item) for item in items]}
+    items = await service.engine.list_opportunities(limit=limit, symbols=symbols)
+    return {
+        "items": [
+            {
+                **opportunity_to_dict(item),
+                "symbol_name": _symbol_name(item.symbol),
+            }
+            for item in items
+        ]
+    }
 
 
 @app.get("/api/arbitrage/trades")
-async def arbitrage_trades(limit: int = 100) -> dict:
+async def arbitrage_trades(limit: int = 100, symbols: list[str] | None = Query(None)) -> dict:
     service: ArbitrageService = app.state.arbitrage_service
-    items = await service.engine.list_trades(limit=limit)
-    return {"items": [simulated_trade_to_dict(item) for item in items]}
+    items = await service.engine.list_trades(limit=limit, symbols=symbols)
+    return {
+        "items": [
+            {
+                **simulated_trade_to_dict(item),
+                "symbol_name": _symbol_name(item.symbol),
+            }
+            for item in items
+        ]
+    }
 
 
 @app.get("/api/arbitrage/spread-series")

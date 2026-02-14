@@ -12,6 +12,7 @@ export type ArbitrageOpportunity = {
   status: "accepted" | "discarded";
   reason: string;
   symbol: string;
+  symbol_name?: string;
   buy_exchange: string;
   sell_exchange: string;
   trade_size: number;
@@ -26,6 +27,7 @@ export type ArbitrageOpportunity = {
 export type SimulatedTrade = {
   timestamp: string;
   symbol: string;
+  symbol_name?: string;
   buy_exchange: string;
   sell_exchange: string;
   size: number;
@@ -95,18 +97,24 @@ export async function getArbitrageStatus(): Promise<ArbitrageStatus> {
 
 export async function getArbitrageOpportunities(
   limit = 100,
+  symbols: string[] = [],
 ): Promise<ArbitrageOpportunity[]> {
+  const querySymbols = symbols.map((s) => `symbols=${encodeURIComponent(s)}`).join("&");
+  const query = [`limit=${limit}`, querySymbols].filter(Boolean).join("&");
   const data = await requestJson<{ items: ArbitrageOpportunity[] }>(
-    `/api/arbitrage/opportunities?limit=${limit}`,
+    `/api/arbitrage/opportunities?${query}`,
   );
   return data.items;
 }
 
 export async function getArbitrageTrades(
   limit = 50,
+  symbols: string[] = [],
 ): Promise<SimulatedTrade[]> {
+  const querySymbols = symbols.map((s) => `symbols=${encodeURIComponent(s)}`).join("&");
+  const query = [`limit=${limit}`, querySymbols].filter(Boolean).join("&");
   const data = await requestJson<{ items: SimulatedTrade[] }>(
-    `/api/arbitrage/trades?limit=${limit}`,
+    `/api/arbitrage/trades?${query}`,
   );
   return data.items;
 }

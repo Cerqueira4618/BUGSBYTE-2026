@@ -20,6 +20,11 @@ const opportunities = ref<ArbitrageOpportunity[]>([]);
 const trades = ref<SimulatedTrade[]>([]);
 const spreadSeries = ref<SpreadPoint[]>([]);
 
+const availablePairs = ["BTCUSDT", "ETHUSDT", "ADAUSDT", "BNBUSDT", "SOLUSDT"];
+const selectedPair = ref<string>("");
+
+const activeSymbols = computed(() => (selectedPair.value ? [selectedPair.value] : []));
+
 let socket: WebSocket | null = null;
 let refreshTimer: number | null = null;
 
@@ -72,14 +77,18 @@ function volatilityClass(latencyMs: number): string {
   return "baixa";
 }
 
+function onSymbolChange(): void {
+  void loadData();
+}
+
 async function loadData() {
   try {
     error.value = "";
     const [statusData, opportunitiesData, tradesData, spreadData] =
       await Promise.all([
         getArbitrageStatus(),
-        getArbitrageOpportunities(60),
-        getArbitrageTrades(20),
+        getArbitrageOpportunities(60, activeSymbols.value),
+        getArbitrageTrades(20, activeSymbols.value),
         getSpreadSeries(40),
       ]);
 
@@ -121,8 +130,8 @@ onMounted(async () => {
 
   refreshTimer = window.setInterval(() => {
     void Promise.all([
-      getArbitrageOpportunities(60),
-      getArbitrageTrades(20),
+      getArbitrageOpportunities(60, activeSymbols.value),
+      getArbitrageTrades(20, activeSymbols.value),
     ]).then(([opportunitiesData, tradesData]) => {
       opportunities.value = opportunitiesData;
       trades.value = tradesData;
@@ -148,6 +157,18 @@ onBeforeUnmount(() => {
       </div>
 
       <p v-if="error" class="error-box">{{ error }}</p>
+
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label for="pair">Crypto</label>
+          <select id="pair" v-model="selectedPair" @change="onSymbolChange">
+            <option value="">Todos</option>
+            <option v-for="symbol in availablePairs" :key="symbol" :value="symbol">
+              {{ symbol.slice(0, -4) }} / {{ symbol.slice(-4) }}
+            </option>
+          </select>
+        </div>
+      </div>
 
       <div class="metrics">
         <div class="metric">
@@ -185,7 +206,7 @@ onBeforeUnmount(() => {
         <table>
           <thead>
             <tr>
-              <th>Symbol</th>
+              <th>Moeda</th>
               <th>Compra (A)</th>
               <th>Venda (B)</th>
               <th>Spread Bruto</th>
@@ -207,7 +228,12 @@ onBeforeUnmount(() => {
               v-for="item in uniqueOpportunities"
               :key="`${item.buy_exchange}-${item.sell_exchange}`"
             >
-              <td>{{ item.symbol }}</td>
+              <td>
+                <div class="symbol-cell">
+                  <strong>{{ item.symbol_name || item.symbol }}</strong>
+                  <small>{{ item.symbol }}</small>
+                </div>
+              </td>
               <td>{{ item.buy_exchange }}</td>
               <td>{{ item.sell_exchange }}</td>
               <td :class="item.gross_spread_pct >= 0 ? 'positive' : 'negative'">
@@ -227,7 +253,9 @@ onBeforeUnmount(() => {
                   {{ volatilityText(item.latency_ms) }}
                 </span>
               </td>
-              <td>{{ item.status }}</td>
+              <td>
+                <span class="status-pill" :class="item.status">{{ item.status }}</span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -241,7 +269,7 @@ onBeforeUnmount(() => {
               v-for="trade in trades.slice().reverse().slice(0, 5)"
               :key="trade.timestamp + trade.buy_exchange + trade.sell_exchange"
             >
-              {{ trade.symbol }} | {{ trade.buy_exchange }} →
+              {{ trade.symbol_name || trade.symbol }} | {{ trade.buy_exchange }} →
               {{ trade.sell_exchange }} |
               {{ formatUsd(trade.pnl_usd) }}
             </li>
@@ -297,6 +325,42 @@ onBeforeUnmount(() => {
   margin: 0;
   color: #aebcd3;
   line-height: 1.45;
+}
+
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 12px 0 6px;
+  color: #c9d6ea;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 140px;
+}
+
+.filter-group label {
+  font-size: 13px;
+  color: #e5edff;
+  font-weight: 600;
+}
+
+.filter-group select {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(102, 239, 139, 0.35);
+  color: #e6f7ff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  outline: none;
+}
+
+.filter-group select:focus {
+  border-color: #66ef8b;
+  box-shadow: 0 0 0 2px rgba(102, 239, 139, 0.25);
 }
 
 .connection {
@@ -370,6 +434,17 @@ td {
   font-size: 14px;
 }
 
+.symbol-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.symbol-cell small {
+  color: #90a3c2;
+  font-size: 12px;
+}
+
 th {
   color: #a8bad2;
   font-weight: 600;
@@ -405,6 +480,62 @@ th {
 .badge.alta {
   background: rgba(255, 124, 124, 0.16);
   color: #ff8f8f;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1px;
+  text-transform: capitalize;
+  background: linear-gradient(135deg, #2d1b22, #23141c);
+  color: #ffd8d8;
+  border: 1.2px solid rgba(255, 95, 95, 0.6);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.status-pill.accepted {
+  background: linear-gradient(135deg, #103428, #0b2620);
+  color: #bfffe0;
+  border-color: rgba(102, 239, 139, 0.6);
+  box-shadow: 0 6px 12px rgba(102, 239, 139, 0.2);
+}
+
+.status-pill.discarded {
+  background: linear-gradient(135deg, #3a1f28, #2c161d);
+  color: #ffd8d8;
+  border-color: rgba(255, 120, 120, 0.65);
+  box-shadow: 0 6px 12px rgba(255, 120, 120, 0.18);
+}
+
+.status-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  background: rgba(255, 95, 95, 0.25);
+  border: 1px solid rgba(255, 95, 95, 0.6);
+}
+
+.status-dot.accepted {
+  background: rgba(102, 239, 139, 0.5);
+  border-color: rgba(102, 239, 139, 0.9);
+}
+
+.status-dot.discarded {
+  background: rgba(255, 95, 95, 0.5);
+  border-color: rgba(255, 95, 95, 0.9);
+}
+
+.status-text {
+  vertical-align: middle;
 }
 
 .split-grid {

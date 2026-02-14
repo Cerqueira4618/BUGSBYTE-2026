@@ -127,20 +127,22 @@ class Database:
             session.add(TradeRecord.from_model(item))
             await session.commit()
 
-    async def list_opportunities(self, limit: int = 100) -> list[Opportunity]:
+    async def list_opportunities(self, limit: int = 100, symbols: list[str] | None = None) -> list[Opportunity]:
         limit = max(1, min(int(limit), 5000))
+        symbols = [s.upper() for s in symbols] if symbols else None
         async with self.sessionmaker() as session:
-            rows = (
-                await session.execute(
-                    select(OpportunityRecord).order_by(desc(OpportunityRecord.timestamp)).limit(limit)
-                )
-            ).scalars().all()
+            stmt = select(OpportunityRecord).order_by(desc(OpportunityRecord.timestamp)).limit(limit)
+            if symbols:
+                stmt = stmt.where(OpportunityRecord.symbol.in_(symbols))
+            rows = (await session.execute(stmt)).scalars().all()
         return [row.to_model() for row in reversed(rows)]
 
-    async def list_trades(self, limit: int = 100) -> list[SimulatedTrade]:
+    async def list_trades(self, limit: int = 100, symbols: list[str] | None = None) -> list[SimulatedTrade]:
         limit = max(1, min(int(limit), 5000))
+        symbols = [s.upper() for s in symbols] if symbols else None
         async with self.sessionmaker() as session:
-            rows = (
-                await session.execute(select(TradeRecord).order_by(desc(TradeRecord.timestamp)).limit(limit))
-            ).scalars().all()
+            stmt = select(TradeRecord).order_by(desc(TradeRecord.timestamp)).limit(limit)
+            if symbols:
+                stmt = stmt.where(TradeRecord.symbol.in_(symbols))
+            rows = (await session.execute(stmt)).scalars().all()
         return [row.to_model() for row in reversed(rows)]
