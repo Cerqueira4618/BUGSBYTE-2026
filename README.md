@@ -1,5 +1,7 @@
 BUGSBYTE 2026
 
+Sistema de Simulação e Monitoramento de Arbitragem de Criptomoedas em Tempo Real
+
 Equipa de Trabalho:
 
 Guilherme Gomes - a110449
@@ -9,6 +11,95 @@ João Cerqueira - a111753
 Nuno Pereira - a110067
 
 Rafael Esteves - a112032
+
+## Arquitetura do Projeto
+
+O projeto está dividido em duas partes principais:
+
+### Backend (Python + FastAPI)
+- API REST para dados de arbitragem
+- WebSocket para atualizações em tempo real
+- Motor de cálculo de spread e oportunidades
+- Persistência em SQLite/PostgreSQL
+
+### Frontend (Vue 3 + TypeScript + Vite)
+- Interface interativa para monitoramento
+- Dashboard em tempo real via WebSocket
+- Sistema de autenticação
+- Múltiplas páginas (Home, Login, Simulador, Mercado, Ajuda)
+
+## Frontend (Vue 3)
+
+### Requisitos
+
+```bash
+sudo apt install nodejs npm
+```
+
+### Instalação e Execução
+
+Para correr o frontend (a partir da raiz do repo):
+
+```bash
+npm install
+npm run dev
+```
+
+O frontend estará disponível em `http://localhost:5173`
+
+### Estrutura do Frontend
+
+```
+src/
+├── components/
+│   └── ArbitrageSimulationPanel.vue  # Painel principal de simulação
+├── pages/
+│   ├── Home.vue                      # Página inicial
+│   ├── Login.vue                     # Página de autenticação
+│   ├── Main.vue                      # Dashboard principal
+│   ├── Market.vue                    # Página de mercado
+│   └── Help.vue                      # Página de ajuda
+├── router/
+│   └── index.ts                      # Configuração de rotas
+├── services/
+│   └── arbitrage.ts                  # Serviço de API
+├── stores/
+│   ├── counter.ts                    # Store exemplo
+│   └── websocket.ts                  # Store global do WebSocket
+├── App.vue                           # Componente raiz
+└── main.ts                           # Entry point
+```
+
+### Funcionalidades do Frontend
+
+#### Sistema de Autenticação
+- Login com email/senha
+- Sessão persistente no localStorage
+- Proteção de rotas
+- Display do utilizador na navbar
+
+#### Painel de Simulação (Simulador)
+- **Conexão WebSocket em Tempo Real**: Estado de conexão (connected/disconnected) visível na navbar
+- **Filtros Dinâmicos**: Filtrar por moeda base, moeda cotada e volume de simulação
+- **Métricas em Tempo Real**:
+  - Total de trades aceites
+  - P&L acumulado
+  - Portfólio total
+  - Latência da última oportunidade
+  - Exchanges ativas
+- **Carteiras por Exchange**: Visualização de saldos USDT e criptomoedas por exchange
+- **Tabela de Oportunidades**: Paginação, status (accepted/discarded/no_funds/insufficient_liquidity)
+- **Gráfico de Performance**: Chart.js mostrando P&L acumulado ao longo do tempo
+- **Histórico de Trades**: Lista de todas as trades executadas com detalhes
+
+#### Gestão de Estado Global
+- **Pinia Store**: Store WebSocket global que mantém a conexão entre páginas
+- **Reatividade**: Atualizações automáticas via WebSocket
+- **Persistência**: Conexão mantida ao navegar entre páginas
+
+#### Páginas Adicionais
+- **Mercado**: Visualização de dados de mercado
+- **Ajuda**: Documentação e FAQs sobre o sistema
 
 ## Backend em Python (FastAPI)
 
@@ -96,9 +187,9 @@ Exemplos:
 export DATABASE_URL='postgresql+asyncpg://user:pass@localhost:5432/bugsbyte'
 ```
 
-### Como testar rápido
+### Como testar o sistema completo
 
-1. Arranca o backend:
+#### 1. Arranca o Backend
 
 ```bash
 cd backend
@@ -107,8 +198,48 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-2. Verifica:
-   - `http://localhost:8000/api/arbitrage/status`
-   - `http://localhost:8000/api/arbitrage/opportunities`
+Verifica que o backend está a funcionar:
+- `http://localhost:8000/api/arbitrage/status`
+- `http://localhost:8000/api/arbitrage/opportunities`
+
+#### 2. Arranca o Frontend
+
+Em outro terminal, a partir da raiz do projeto:
+
+```bash
+npm install
+npm run dev
+```
+
+Acede ao frontend em: `http://localhost:5173`
+
+#### 3. Utilização
+
+1. **Login**: Faz login na página inicial (email/senha)
+2. **Simulador**: Acede ao painel de simulação para visualizar oportunidades em tempo real
+3. **Filtros**: Usa os filtros de moeda base, moeda cotada e volume para ajustar a simulação
+4. **Monitoramento**: Observa o estado da conexão WebSocket na navbar (connected/disconnected)
+5. **Navegação**: Navega entre as páginas sem perder a conexão WebSocket
+
+### Configuração de CORS
 
 Se precisares ajustar CORS para o frontend, define `CORS_ORIGINS` em `.env` (ver `backend/.env.example`).
+
+### Tecnologias Utilizadas
+
+#### Backend
+- Python 3.x
+- FastAPI
+- WebSockets
+- SQLAlchemy (async)
+- SQLite/PostgreSQL
+- CCXT (para integração com exchanges)
+
+#### Frontend
+- Vue 3 (Composition API)
+- TypeScript
+- Vite
+- Vue Router
+- Pinia (State Management)
+- Chart.js (Gráficos)
+- CSS Scoped (Estilização)
