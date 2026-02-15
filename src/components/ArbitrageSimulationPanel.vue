@@ -87,6 +87,7 @@ const simulationVolumeUsd = ref<number>(1000);
 const botEnabled = ref<boolean>(false);
 const performanceCanvas = ref<HTMLCanvasElement | null>(null);
 let performanceChart: Chart | null = null;
+const openBreakdown = ref<string | null>(null);
 
 const availablePairs = computed(() => {
   const fromBackend = status.value?.symbols ?? [];
@@ -207,6 +208,7 @@ function goToPage(page: number): void {
 
 let refreshTimer: number | null = null;
 let tickTimer: number | null = null;
+let clickOutsideHandler: ((event: MouseEvent) => void) | null = null;
 const now = ref(Date.now());
 
 function timeAgo(iso: string): string {
@@ -349,7 +351,7 @@ function formatDateTime(value: string): string {
 function statusLabel(statusValue: ArbitrageOpportunity["status"]): string {
   if (statusValue === "accepted") return "Accepted";
   if (statusValue === "no_funds") return "No Funds";
-  if (statusValue === "insufficient_liquidity") return "Insufficient Liquidity";
+  if (statusValue === "insufficient_liquidity") return "Low Liquidity";
   return "Discarded";
 }
 
@@ -394,12 +396,17 @@ function computeSpreadBreakdown(item: ArbitrageOpportunity): {
   // Gross spread
   const grossSpread = item.gross_spread_pct;
 
-  // Estimate fees (buy + sell fee, typically 0.1% each = 0.2% total)
-  const fees = 0.2;
+  // Use real fees from API if available, otherwise estimate
+  const buyFee = item.buy_fee_pct ?? 0.1;
+  const sellFee = item.sell_fee_pct ?? 0.1;
+  const fees = buyFee + sellFee;
+
+  // Gas cost impact percentage
+  const transferCostUsd = item.transfer_cost_usd ?? item.network_cost_usd ?? 0;
+  const gasImpactPct =
+    (transferCostUsd / (item.buy_vwap * item.trade_size)) * 100;
 
   // Slippage = difference between gross and net after removing fees and gas
-  const gasImpactPct =
-    ((item.network_cost_usd ?? 0) / (item.buy_vwap * item.trade_size)) * 100;
   const slippage = grossSpread - item.net_spread_pct - fees - gasImpactPct;
 
   return {
@@ -417,11 +424,57 @@ function spreadBreakdownTooltip(item: ArbitrageOpportunity): string {
   }
 
   const breakdown = computeSpreadBreakdown(item);
-  return `Spread Bruto: ${breakdown.grossSpread.toFixed(3)}%
-Impacto Volume (Slippage): -${breakdown.slippage.toFixed(3)}%
-Fees: -${breakdown.fees.toFixed(3)}%
-Gas: -${breakdown.gas.toFixed(3)}%
-= Spread Líquido: ${breakdown.netSpread.toFixed(3)}%`;
+  const transferCostUsd = item.transfer_cost_usd ?? item.network_cost_usd ?? 0;
+
+  return `Spread Bruto:      +${breakdown.grossSpread.toFixed(2)}%
+Taxas Exchange:   -${breakdown.fees.toFixed(2)}%
+Slippage (Vol):   -${breakdown.slippage.toFixed(2)}%
+Gas/Network:      -${breakdown.gas.toFixed(2)}% (${transferCostUsd.toFixed(2)} USD)
+───────────────────────────
+= Spread Líquido: +${breakdown.netSpread.toFixed(2)}%`;
+}
+
+function profitBreakdownTooltip(item: ArbitrageOpportunity): string {
+  if (item.status === "no_funds" || item.status === "insufficient_liquidity") {
+    return "";
+  }
+
+  const tradeValue = item.buy_vwap * item.trade_size;
+  const buyFeeUsd = (tradeValue * (item.buy_fee_pct ?? 0.1)) / 100;
+  const sellFeeUsd = (tradeValue * (item.sell_fee_pct ?? 0.1)) / 100;
+  const grossProfit = (item.gross_spread_pct / 100) * tradeValue;
+  const transferCostUsd = item.transfer_cost_usd ?? item.network_cost_usd ?? 0;
+  const netProfit = item.expected_profit_usd;
+
+  return `Valor da Trade:        ${tradeValue.toFixed(2)} USD
+Lucro Bruto:          +${grossProfit.toFixed(2)} USD
+Taxa Compra:          -${buyFeeUsd.toFixed(2)} USD
+Taxa Venda:           -${sellFeeUsd.toFixed(2)} USD
+Gas/Network:          -${transferCostUsd.toFixed(2)} USD
+─────────────────────────────────
+= Lucro Líquido:      ${netProfit >= 0 ? "+" : ""}${netProfit.toFixed(2)} USD`;
+}
+
+function getBreakdownKey(
+  item: ArbitrageOpportunity,
+  type: "spread" | "profit",
+): string {
+  return `${item.symbol}-${item.buy_exchange}-${item.sell_exchange}-${type}`;
+}
+
+function toggleBreakdown(
+  item: ArbitrageOpportunity,
+  type: "spread" | "profit",
+): void {
+  const key = getBreakdownKey(item, type);
+  openBreakdown.value = openBreakdown.value === key ? null : key;
+}
+
+function isBreakdownOpen(
+  item: ArbitrageOpportunity,
+  type: "spread" | "profit",
+): boolean {
+  return openBreakdown.value === getBreakdownKey(item, type);
 }
 
 function latencyText(latencyMs: number): string {
@@ -470,11 +523,11 @@ async function onRebalance(): Promise<void> {
 
     // Build message with base assets if any were moved
     let message = `Rebalance concluído. ${transfers} transferências, ${formatUsd(movedUsd)} movidos`;
-    
+
     const baseAssetsList = Object.entries(movedBaseAssets)
       .map(([asset, amount]) => `${amount.toFixed(4)} ${asset}`)
       .join(", ");
-    
+
     if (baseAssetsList) {
       message += `, ${baseAssetsList}`;
     }
@@ -536,13 +589,9 @@ async function onDemoCrash(): Promise<void> {
       ? ` | ${result.accepted_count} aceites`
       : " | nenhuma aceite";
 
-    const tradesMsg = result.debug?.recent_trades_count
-      ? ` | ${result.debug.recent_trades_count} trades`
-      : "";
-
     rebalanceNotification.value = {
       show: true,
-      message: `Crash simulado! ${result.crash_exchange}: ${formatUsd(result.crashed_price)} (${result.spread_pct}% spread)${acceptedMsg}${tradesMsg}`,
+      message: `Crash simulado! Kraken: ${formatUsd(result.kraken_price || result.crashed_price)} (+${result.spread_pct}%) | Outros: ${formatUsd(result.others_price || result.normal_price)} (-${result.spread_pct}%)${acceptedMsg}`,
       type: "success",
     };
 
@@ -694,6 +743,15 @@ onMounted(async () => {
     console.error("Failed to load bot status");
   }
 
+  // Close breakdown popup when clicking outside
+  clickOutsideHandler = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest(".value-with-info") && !target.closest(".info-btn")) {
+      openBreakdown.value = null;
+    }
+  };
+  document.addEventListener("click", clickOutsideHandler);
+
   tickTimer = window.setInterval(() => {
     now.value = Date.now();
   }, 1000);
@@ -719,6 +777,9 @@ onBeforeUnmount(() => {
   }
   if (tickTimer) {
     window.clearInterval(tickTimer);
+  }
+  if (clickOutsideHandler) {
+    document.removeEventListener("click", clickOutsideHandler);
   }
   performanceChart?.destroy();
   performanceChart = null;
@@ -801,14 +862,12 @@ watch(botEnabled, async (enabled) => {
           <label for="bot-toggle">Estado do Bot</label>
           <div class="toggle-wrapper">
             <label class="toggle-switch">
-              <input
-                id="bot-toggle"
-                v-model="botEnabled"
-                type="checkbox"
-              />
+              <input id="bot-toggle" v-model="botEnabled" type="checkbox" />
               <span class="toggle-slider"></span>
             </label>
-            <span class="toggle-label">{{ botEnabled ? 'Ativo' : 'Inativo' }}</span>
+            <span class="toggle-label">{{
+              botEnabled ? "Ativo" : "Inativo"
+            }}</span>
           </div>
         </div>
       </div>
@@ -920,7 +979,7 @@ watch(botEnabled, async (enabled) => {
               <th class="centered-col">P&L Esperado</th>
               <th>Latência</th>
               <th>Atualização</th>
-              <th>Status</th>
+              <th class="centered-col">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -965,9 +1024,27 @@ watch(botEnabled, async (enabled) => {
                       ? 'positive'
                       : 'negative'
                 "
-                :title="spreadBreakdownTooltip(item)"
               >
-                {{ formatNetSpread(item) }}
+                <div class="value-with-info">
+                  <span>{{ formatNetSpread(item) }}</span>
+                  <button
+                    v-if="
+                      item.status !== 'no_funds' &&
+                      item.status !== 'insufficient_liquidity'
+                    "
+                    class="info-btn"
+                    @click.stop="toggleBreakdown(item, 'spread')"
+                    :class="{ active: isBreakdownOpen(item, 'spread') }"
+                  >
+                    ⓘ
+                  </button>
+                  <div
+                    v-if="isBreakdownOpen(item, 'spread')"
+                    class="breakdown-popup"
+                  >
+                    <pre>{{ spreadBreakdownTooltip(item) }}</pre>
+                  </div>
+                </div>
               </td>
               <td class="network-fee-cell">
                 {{ networkFeeLabel(item) }}
@@ -983,7 +1060,26 @@ watch(botEnabled, async (enabled) => {
                       : 'negative'
                 "
               >
-                {{ formatExpectedProfit(item) }}
+                <div class="value-with-info">
+                  <span>{{ formatExpectedProfit(item) }}</span>
+                  <button
+                    v-if="
+                      item.status !== 'no_funds' &&
+                      item.status !== 'insufficient_liquidity'
+                    "
+                    class="info-btn"
+                    @click.stop="toggleBreakdown(item, 'profit')"
+                    :class="{ active: isBreakdownOpen(item, 'profit') }"
+                  >
+                    ⓘ
+                  </button>
+                  <div
+                    v-if="isBreakdownOpen(item, 'profit')"
+                    class="breakdown-popup"
+                  >
+                    <pre>{{ profitBreakdownTooltip(item) }}</pre>
+                  </div>
+                </div>
               </td>
               <td>
                 <span class="badge" :class="latencyClass(item.latency_ms)">
@@ -1005,7 +1101,7 @@ watch(botEnabled, async (enabled) => {
                 </span>
                 <span v-else>—</span>
               </td>
-              <td>
+              <td class="centered-col">
                 <span class="status-pill" :class="item.status">{{
                   statusLabel(item.status)
                 }}</span>
@@ -1239,7 +1335,9 @@ watch(botEnabled, async (enabled) => {
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 24px;
-  transition: background-color 0.3s, border-color 0.3s;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s;
 }
 
 .toggle-slider::before {
@@ -1338,6 +1436,7 @@ td {
   text-align: left;
   color: #d9e6f7;
   font-size: 14px;
+  vertical-align: middle;
 }
 
 .symbol-cell {
@@ -1460,6 +1559,7 @@ th {
   align-items: center;
   justify-content: center;
   min-width: 72px;
+  height: 28px;
   padding: 5px 12px;
   border-radius: 999px;
   font-weight: 700;
@@ -1479,6 +1579,7 @@ th {
   color: #bfffe0;
   border-color: rgba(102, 239, 139, 0.6);
   box-shadow: 0 6px 12px rgba(102, 239, 139, 0.2);
+  min-width: 88px;
 }
 
 .status-pill.discarded {
@@ -1486,6 +1587,7 @@ th {
   color: #ffd8d8;
   border-color: rgba(255, 120, 120, 0.65);
   box-shadow: 0 6px 12px rgba(255, 120, 120, 0.18);
+  min-width: 88px;
 }
 
 .status-pill.no_funds {
@@ -1493,6 +1595,7 @@ th {
   color: #ffe7ad;
   border-color: rgba(255, 196, 88, 0.65);
   box-shadow: 0 6px 12px rgba(255, 196, 88, 0.18);
+  min-width: 88px;
 }
 
 .status-pill.insufficient_liquidity {
@@ -1500,6 +1603,7 @@ th {
   color: #d7d2ff;
   border-color: rgba(152, 136, 255, 0.6);
   box-shadow: 0 6px 12px rgba(152, 136, 255, 0.2);
+  min-width: 88px;
 }
 
 .status-dot {
@@ -1750,6 +1854,103 @@ th {
   color: #66ef8b;
   font-weight: 700;
   font-size: 12px;
+}
+
+.value-with-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.info-btn {
+  background: transparent;
+  border: 1px solid rgba(109, 141, 180, 0.3);
+  color: #6d8db4;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.info-btn:hover {
+  border-color: #6d8db4;
+  color: #8fa9cc;
+  background: rgba(109, 141, 180, 0.1);
+}
+
+.info-btn.active {
+  background: rgba(109, 141, 180, 0.2);
+  border-color: #8fa9cc;
+  color: #a8bad2;
+}
+
+.breakdown-popup {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 25, 44, 0.97) 0%,
+    rgba(10, 18, 31, 0.98) 100%
+  );
+  border: 1px solid rgba(109, 141, 180, 0.4);
+  border-radius: 8px;
+  padding: 12px 14px;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  min-width: 320px;
+  animation: fadeInPopup 0.2s ease;
+}
+
+.breakdown-popup::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: rgba(109, 141, 180, 0.4);
+}
+
+.breakdown-popup::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: rgba(15, 25, 44, 0.97);
+}
+
+.breakdown-popup pre {
+  margin: 0;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #d4e2f4;
+  white-space: pre;
+}
+
+@keyframes fadeInPopup {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 @keyframes slideIn {

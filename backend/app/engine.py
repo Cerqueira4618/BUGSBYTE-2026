@@ -57,8 +57,8 @@ DEFAULT_ASSET_PRICES_USD = {
     "LINK": 18.0,
     "AVAX": 35.0,
 }
-INITIAL_USD_PER_CRYPTO_PER_WALLET = 2000.0
-INITIAL_USDT_PER_WALLET = 1500.0
+INITIAL_USD_PER_CRYPTO_PER_WALLET = 50.0
+INITIAL_USDT_PER_WALLET = 12050.0
 
 
 def _split_symbol_pair(symbol: str) -> tuple[str, str] | None:
@@ -161,18 +161,32 @@ class ArbitrageEngine:
         if not exchanges:
             return {}
 
+        # Estratégia de distribuição: exchanges especializadas para arbitragem
+        # Binance = compradora (só USDT), Kraken = vendedora (só cripto)
+        # Uphold/Bybit = híbridas (50% USDT, 50% cripto)
+        exchange_profiles = {
+            "binance": {"usdt": 2500.0, "crypto_usd": 0.0},      # Sniper de compra
+            "kraken": {"usdt": 0.0, "crypto_usd": 2500.0},        # Sniper de venda
+            "uphold": {"usdt": 1250.0, "crypto_usd": 1250.0},     # Híbrida
+            "bybit": {"usdt": 1250.0, "crypto_usd": 1250.0},      # Híbrida
+        }
+
         inventory: dict[str, dict[str, object]] = {}
         for exchange in exchanges:
+            exchange_lower = exchange.lower()
+            profile = exchange_profiles.get(exchange_lower, {"usdt": 1750.0, "crypto_usd": 1250.0})
+            
             asset_balances: dict[str, float] = {}
-            for asset in base_assets:
-                reference_price = self._reference_asset_price(asset)
-                if reference_price <= 0:
-                    continue
-                asset_balances[asset] = INITIAL_USD_PER_CRYPTO_PER_WALLET / reference_price
+            if profile["crypto_usd"] > 0:
+                for asset in base_assets:
+                    reference_price = self._reference_asset_price(asset)
+                    if reference_price <= 0:
+                        continue
+                    asset_balances[asset] = profile["crypto_usd"] / reference_price
 
             inventory[exchange] = {
                 "quote_asset": "USDT",
-                "quote_balance": INITIAL_USDT_PER_WALLET,
+                "quote_balance": profile["usdt"],
                 "asset_balances": asset_balances,
             }
 
@@ -505,7 +519,11 @@ class ArbitrageEngine:
         normal_exchanges: list[str] | None = None,
         price_drop_pct: float = 10.0,
     ) -> dict:
-        """Inject synthetic orderbooks with price discrepancy for demo purposes."""
+        """Inject synthetic orderbooks with price discrepancy for demo purposes.
+        
+        Strategy: Kraken has HIGH price (to sell crypto), others have LOW price (to buy with USDT).
+        This matches the inventory distribution where Kraken has crypto and Binance has USDT.
+        """
         if normal_exchanges is None:
             normal_exchanges = ["Binance", "Uphold", "Bybit"]
 
@@ -515,30 +533,32 @@ class ArbitrageEngine:
         base_asset = (_split_symbol_pair(symbol) or ("BTC", "USDT"))[0]
         normal_price = self._reference_asset_price(base_asset)
         
-        # Crashed price - lower on crash exchange
-        crashed_price = normal_price * (1 - price_drop_pct / 100)
+        # INVERTED: crash_exchange has HIGH price (pump), normal exchanges have LOW price (crash)
+        # This way: BUY cheap on Binance (has USDT), SELL expensive on Kraken (has crypto)
+        pumped_price = normal_price * (1 + price_drop_pct / 100)  # Kraken pumped (high)
+        crashed_price = normal_price * (1 - price_drop_pct / 100)  # Others crashed (low)
         
         async with self._lock:
             # Create orderbooks with spread
             books_by_exchange = self.order_books.setdefault(symbol, {})
             
-            # Crashed exchange (lower ask - good for buying)
+            # Crash exchange has PUMPED price (high bid - good for selling crypto)
             books_by_exchange[crash_exchange] = NormalizedOrderBook(
                 exchange=crash_exchange,
                 symbol=symbol,
-                bids=[OrderBookLevel(price=crashed_price * 0.999, quantity=100.0)],
-                asks=[OrderBookLevel(price=crashed_price * 1.001, quantity=100.0)],
+                bids=[OrderBookLevel(price=pumped_price * 0.999, quantity=100.0)],
+                asks=[OrderBookLevel(price=pumped_price * 1.001, quantity=100.0)],
                 exchange_timestamp=now,
                 received_timestamp=now,
             )
             
-            # Normal exchanges (higher bid - good for selling)
+            # Normal exchanges have CRASHED price (low ask - good for buying with USDT)
             for exchange in normal_exchanges:
                 books_by_exchange[exchange] = NormalizedOrderBook(
                     exchange=exchange,
                     symbol=symbol,
-                    bids=[OrderBookLevel(price=normal_price * 0.999, quantity=100.0)],
-                    asks=[OrderBookLevel(price=normal_price * 1.001, quantity=100.0)],
+                    bids=[OrderBookLevel(price=crashed_price * 0.999, quantity=100.0)],
+                    asks=[OrderBookLevel(price=crashed_price * 1.001, quantity=100.0)],
                     exchange_timestamp=now,
                     received_timestamp=now,
                 )
@@ -572,7 +592,8 @@ class ArbitrageEngine:
             "status": "injected",
             "symbol": symbol,
             "crash_exchange": crash_exchange,
-            "crashed_price": round(crashed_price, 2),
+            "kraken_price": round(pumped_price, 2),
+            "others_price": round(crashed_price, 2),
             "normal_price": round(normal_price, 2),
             "spread_pct": round(price_drop_pct, 2),
             "opportunities_created": len([o for o in self.opportunities if o.symbol == symbol and o.timestamp >= now]),
@@ -658,6 +679,9 @@ class ArbitrageEngine:
                 sell_vwap=0.0,
                 buy_book_updated_at=buy_book.exchange_timestamp,
                 sell_book_updated_at=sell_book.exchange_timestamp,
+                buy_fee_pct=0.0,
+                sell_fee_pct=0.0,
+                transfer_cost_usd=0.0,
             )
 
         buy_vwap, buy_filled = _compute_vwap_for_buy(buy_book.asks, size)
@@ -681,6 +705,9 @@ class ArbitrageEngine:
                 sell_vwap=sell_vwap,
                 buy_book_updated_at=buy_book.exchange_timestamp,
                 sell_book_updated_at=sell_book.exchange_timestamp,
+                buy_fee_pct=0.0,
+                sell_fee_pct=0.0,
+                transfer_cost_usd=0.0,
             )
 
         buy_fee = self.fees.get(buy_book.exchange, 0.0)
@@ -722,6 +749,9 @@ class ArbitrageEngine:
                 sell_vwap=sell_vwap,
                 buy_book_updated_at=buy_book.exchange_timestamp,
                 sell_book_updated_at=sell_book.exchange_timestamp,
+                buy_fee_pct=buy_fee * 100,
+                sell_fee_pct=sell_fee * 100,
+                transfer_cost_usd=transfer_cost_usd,
             )
 
         sell_base_balance = self._get_base_balance(sell_book.exchange, base_asset)
@@ -743,6 +773,9 @@ class ArbitrageEngine:
                 sell_vwap=sell_vwap,
                 buy_book_updated_at=buy_book.exchange_timestamp,
                 sell_book_updated_at=sell_book.exchange_timestamp,
+                buy_fee_pct=buy_fee * 100,
+                sell_fee_pct=sell_fee * 100,
+                transfer_cost_usd=transfer_cost_usd,
             )
 
         if net_profit <= 0:
@@ -762,6 +795,9 @@ class ArbitrageEngine:
                 sell_vwap=sell_vwap,
                 buy_book_updated_at=buy_book.exchange_timestamp,
                 sell_book_updated_at=sell_book.exchange_timestamp,
+                buy_fee_pct=buy_fee * 100,
+                sell_fee_pct=sell_fee * 100,
+                transfer_cost_usd=transfer_cost_usd,
             )
 
         return Opportunity(
@@ -780,6 +816,9 @@ class ArbitrageEngine:
             sell_vwap=sell_vwap,
             buy_book_updated_at=buy_book.exchange_timestamp,
             sell_book_updated_at=sell_book.exchange_timestamp,
+            buy_fee_pct=buy_fee * 100,
+            sell_fee_pct=sell_fee * 100,
+            transfer_cost_usd=transfer_cost_usd,
         )
 
     def _simulate_execution(

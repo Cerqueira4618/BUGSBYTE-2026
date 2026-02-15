@@ -50,6 +50,9 @@ class Opportunity:
     sell_vwap: float
     buy_book_updated_at: datetime | None = None
     sell_book_updated_at: datetime | None = None
+    buy_fee_pct: float = 0.0
+    sell_fee_pct: float = 0.0
+    transfer_cost_usd: float = 0.0
 
 
 @dataclass(slots=True)
@@ -100,6 +103,9 @@ def opportunity_to_dict(item: Opportunity) -> dict:
         "sell_vwap": item.sell_vwap,
         "buy_book_updated_at": item.buy_book_updated_at.isoformat() if item.buy_book_updated_at else None,
         "sell_book_updated_at": item.sell_book_updated_at.isoformat() if item.sell_book_updated_at else None,
+        "buy_fee_pct": item.buy_fee_pct,
+        "sell_fee_pct": item.sell_fee_pct,
+        "transfer_cost_usd": item.transfer_cost_usd,
     }
 
 

@@ -42,6 +42,9 @@ export type ArbitrageOpportunity = {
   network_cost_usd?: number;
   buy_book_updated_at: string | null;
   sell_book_updated_at: string | null;
+  buy_fee_pct?: number;
+  sell_fee_pct?: number;
+  transfer_cost_usd?: number;
 };
 
 export type SimulatedTrade = {
@@ -157,7 +160,9 @@ export async function getBotStatus(): Promise<{ enabled: boolean }> {
   return requestJson<{ enabled: boolean }>("/api/arbitrage/bot-status");
 }
 
-export async function setBotEnabled(enabled: boolean): Promise<{ enabled: boolean }> {
+export async function setBotEnabled(
+  enabled: boolean,
+): Promise<{ enabled: boolean }> {
   return requestJsonPost<{ enabled: boolean }>("/api/arbitrage/bot-control", {
     enabled,
   });
@@ -193,6 +198,8 @@ export async function triggerDemoCrash(
   crash_exchange: string;
   crashed_price: number;
   normal_price: number;
+  kraken_price: number;
+  others_price: number;
   spread_pct: number;
   opportunities_created?: number;
   accepted_count?: number;
@@ -217,6 +224,8 @@ export async function triggerDemoCrash(
     crash_exchange: string;
     crashed_price: number;
     normal_price: number;
+    kraken_price: number;
+    others_price: number;
     spread_pct: number;
     opportunities_created?: number;
     accepted_count?: number;
