@@ -275,7 +275,7 @@ const userDisplay = computed(() => {
 }
 
 .app-footer {
-  background-color: #333;
+  background-color: transparent;
   color: white;
   text-align: center;
   padding: 15px;
