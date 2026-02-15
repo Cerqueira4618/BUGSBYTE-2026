@@ -62,7 +62,7 @@
               <strong>Accepted:</strong> Oportunidade aceite e executada na simulação<br>
               <strong>Discarded:</strong> Oportunidade descartada por não ser lucrativa<br>
               <strong>No Funds:</strong> Fundos insuficientes para executar<br>
-              <strong>Insufficient Liquidity:</strong> Liquidez insuficiente no mercado
+              <strong>Low Liquidity:</strong> Liquidez insuficiente no mercado
             </p>
           </div>
         </article>
@@ -77,17 +77,9 @@
             </p>
           </div>
           <div class="faq-item">
-            <h3>O que significa o status "LOW" nas carteiras?</h3>
-            <p>
-              Indica que o saldo disponível naquela exchange está abaixo do recomendado para executar operações de arbitragem. 
-              Considere fazer um rebalance.
-            </p>
-          </div>
-          <div class="faq-item">
             <h3>Os valores são reais?</h3>
             <p>
-              Não! Todos os valores, operações e saldos são <strong>simulados</strong>. 
-              Nenhuma transação real é executada. A plataforma serve apenas para estudo e análise de estratégias.
+              Sim, os dados de mercado e cotações são atualizados em tempo real. No entanto, o capital e as operações são simulados. Nenhuma transação financeira real é executada, permitindo que você estude e valide estratégias em um ambiente seguro e sem risco financeiro.
             </p>
           </div>
         </article>
