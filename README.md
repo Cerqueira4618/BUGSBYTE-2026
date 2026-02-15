@@ -28,6 +28,17 @@ O projeto está dividido em duas partes principais:
 - Sistema de autenticação
 - Múltiplas páginas (Home, Login, Simulador, Mercado, Ajuda)
 
+## 📸 Interface do Simulador
+
+![Simulador de Arbitragem](docs/simulator-screenshot.png)
+
+O painel principal mostra em tempo real:
+- **Navbar Superior**: Estado da conexão WebSocket (verde=conectado), utilizador autenticado e logout
+- **Filtros**: Seleção de moeda base/cotada, volume de simulação e controlo do bot automático
+- **Métricas**: Total de trades, P&L acumulado, portfólio total, latência e exchanges ativas
+- **Carteiras**: Saldos USDT e criptomoedas distribuídos pelas 4 exchanges (Binance, Bybit, Kraken, Uphold)
+- **Tabela de Oportunidades**: Lista paginada com spreads, custos de gas, P&L esperado e status (Discarded/Accepted)
+
 ## Frontend (Vue 3)
 
 ### Requisitos
@@ -88,7 +99,7 @@ src/
   - Latência da última oportunidade
   - Exchanges ativas
 - **Carteiras por Exchange**: Visualização de saldos USDT e criptomoedas por exchange
-- **Tabela de Oportunidades**: Paginação, status (accepted/discarded/no_funds/insufficient_liquidity)
+- **Tabela de Oportunidades**: Paginação, status (accepted/discarded/no_funds/low_liquidity)
 - **Gráfico de Performance**: Chart.js mostrando P&L acumulado ao longo do tempo
 - **Histórico de Trades**: Lista de todas as trades executadas com detalhes
 
