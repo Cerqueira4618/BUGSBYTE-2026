@@ -24,7 +24,7 @@
 
 ## 📖 O que é este projeto?
 
-**CRYTOBYTE 2026** é uma plataforma completa (Full-Stack) desenhada para **detetar, calcular e simular em tempo real oportunidades de arbitragem entre diferentes bolsas de criptomoedas (*exchanges*)**.
+**CRYPTOBYTE 2026** é uma plataforma completa (Full-Stack) desenhada para **detetar, calcular e simular em tempo real oportunidades de arbitragem entre diferentes bolsas de criptomoedas (*exchanges*)**.
 
 ### 🤔 O que é Arbitragem de Criptomoedas?
 Em mercados financeiros descentralizados, o mesmo ativo (por exemplo, **Bitcoin**) pode estar a ser transacionado a preços ligeiramente diferentes em corretoras distintas ao mesmo segundo:
