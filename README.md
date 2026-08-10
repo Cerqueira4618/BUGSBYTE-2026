@@ -13,18 +13,18 @@
 
 ## 👥 Equipa de Desenvolvimento
 
-| Nome | Número de Estudante |
-| :--- | :--- |
-| **Guilherme Gomes** | `a110449` |
-| **João Cerqueira** | `a111753` |
-| **Nuno Pereira** | `a110067` |
-| **Rafael Esteves** | `a112032` |
+| Nome 
+| :--
+| **Guilherme Gomes** 
+| **João Cerqueira** 
+| **Nuno Pereira** 
+| **Rafael Esteves** 
 
 ---
 
 ## 📖 O que é este projeto?
 
-O **BUGSBYTE 2026** é uma plataforma completa (Full-Stack) desenhada para **detetar, calcular e simular em tempo real oportunidades de arbitragem entre diferentes bolsas de criptomoedas (*exchanges*)**.
+**CRYTOBYTE 2026** é uma plataforma completa (Full-Stack) desenhada para **detetar, calcular e simular em tempo real oportunidades de arbitragem entre diferentes bolsas de criptomoedas (*exchanges*)**.
 
 ### 🤔 O que é Arbitragem de Criptomoedas?
 Em mercados financeiros descentralizados, o mesmo ativo (por exemplo, **Bitcoin**) pode estar a ser transacionado a preços ligeiramente diferentes em corretoras distintas ao mesmo segundo:
@@ -38,7 +38,7 @@ No mundo real, a maioria das ferramentas comete o erro de olhar apenas para o "t
 3. **Liquidez e Profundidade (*Order Book Depth*)**: Se quisermos comprar 1 BTC mas só existirem 0.1 BTC ao preço mais baixo, teremos de comprar o restante a preços mais caros (*Slippage*).
 
 ### 💡 A Solução BUGSBYTE
-O **BUGSBYTE 2026** resolve isto através de um **Motor de Cálculo Realista em Python**:
+**BCRYPTOBYTE 2026** resolve isto através de um **Motor de Cálculo Realista em Python**:
 * Analisa a **profundidade real dos livros de ordens (L2 Order Books)** em milissegundos.
 * Calcula o **VWAP (*Volume-Weighted Average Price*)** com base no volume simulado exato.
 * Deduz **taxas específicas de cada exchange** e **custos de rede estimados**.
