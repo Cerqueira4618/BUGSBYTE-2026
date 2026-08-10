@@ -38,7 +38,7 @@ No mundo real, a maioria das ferramentas comete o erro de olhar apenas para o "t
 3. **Liquidez e Profundidade (*Order Book Depth*)**: Se quisermos comprar 1 BTC mas só existirem 0.1 BTC ao preço mais baixo, teremos de comprar o restante a preços mais caros (*Slippage*).
 
 ### 💡 A Solução BUGSBYTE
-**BCRYPTOBYTE 2026** resolve isto através de um **Motor de Cálculo Realista em Python**:
+**CRYPTOBYTE 2026** resolve isto através de um **Motor de Cálculo Realista em Python**:
 * Analisa a **profundidade real dos livros de ordens (L2 Order Books)** em milissegundos.
 * Calcula o **VWAP (*Volume-Weighted Average Price*)** com base no volume simulado exato.
 * Deduz **taxas específicas de cada exchange** e **custos de rede estimados**.
